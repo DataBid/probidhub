@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { BidResponseRate } from "./BidResponseRate";
-import { Project } from "./types";
+import { Project, Bid } from "./types";
 import { addDays } from "date-fns";
 import { ProjectsSorting } from "./ProjectsSorting";
 import { useState } from "react";
@@ -43,10 +43,10 @@ export const ProjectsAttentionList = () => {
           ...project,
           pendingBids: pendingBidsCount || 0,
           issues: calculateIssues(project),
-        };
+        } as Project;
       }));
 
-      return sortProjects(enhancedProjects as Project[], sortBy);
+      return sortProjects(enhancedProjects, sortBy);
     },
   });
 
@@ -83,8 +83,8 @@ export const ProjectsAttentionList = () => {
   };
 
   const calculateResponseRate = (project: Project) => {
-    const totalResponses = project.bids[0]?.count || 0;
-    const totalInvites = totalResponses + project.pendingBids;
+    const totalResponses = project.bids.filter(bid => bid.status === 'responded').length;
+    const totalInvites = project.bids.length + project.pendingBids;
     return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
   };
 
