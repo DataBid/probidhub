@@ -44,6 +44,17 @@ export const BidInvitations = () => {
     return <div>Loading...</div>;
   }
 
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "responded":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "viewed":
+        return "bg-accent text-accent-foreground";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold text-construction-900">Recent Bid Invitations</h2>
@@ -51,7 +62,9 @@ export const BidInvitations = () => {
         {bids?.map((bid) => (
           <div
             key={bid.id}
-            className="flex items-center justify-between p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-shadow"
+            className={`flex items-center justify-between p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow ${
+              bid.status === "responded" ? "bg-green-50 border-green-200" : "bg-white"
+            }`}
           >
             <div>
               <h3 className="font-medium text-construction-900">{bid.project?.title}</h3>
@@ -64,13 +77,7 @@ export const BidInvitations = () => {
             </div>
             <div className="flex items-center gap-2">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  bid.status === "responded"
-                    ? "bg-green-100 text-green-800"
-                    : bid.status === "viewed"
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-muted text-muted-foreground"
-                }`}
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(bid.status)}`}
               >
                 {bid.status}
               </span>

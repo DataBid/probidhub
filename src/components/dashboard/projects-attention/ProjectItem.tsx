@@ -76,8 +76,18 @@ export const ProjectItem = ({ project, onRefetch }: ProjectItemProps) => {
     return "text-construction-600";
   };
 
+  const getPriorityStyles = () => {
+    if (project.issues.length > 0 || isPast(new Date(project.bids_due))) {
+      return "border-red-200 bg-red-50";
+    }
+    if (isWithinDaysFromNow(new Date(project.bids_due), 7)) {
+      return "border-yellow-200 bg-yellow-50";
+    }
+    return "border-gray-200 bg-white";
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-shadow">
+    <div className={`flex flex-col lg:flex-row p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow ${getPriorityStyles()}`}>
       <div className="flex-1 space-y-3 lg:space-y-0 lg:flex lg:items-center lg:gap-4">
         <div className="flex items-center gap-2 min-w-[200px]">
           {getStatusIcon()}
