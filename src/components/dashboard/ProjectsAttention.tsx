@@ -1,11 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bell, Calendar, MessageSquare, AlertOctagon, ArrowRight, CalendarPlus } from "lucide-react";
-import { format, addDays } from "date-fns";
+import { 
+  Bell, 
+  Calendar, 
+  MessageSquare, 
+  AlertOctagon, 
+  ArrowRight, 
+  CalendarPlus,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  ExternalLink
+} from "lucide-react";
+import { format, addDays, isPast, isWithinDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface Project {
   id: string;
@@ -19,12 +31,12 @@ interface Project {
 }
 
 export const ProjectsAttention = () => {
+  const navigate = useNavigate();
   const { data: projects, isLoading, refetch } = useQuery({
     queryKey: ["projects-attention"],
     queryFn: async () => {
       const sevenDaysFromNow = addDays(new Date(), 7).toISOString();
       
-      // Get projects with their bid counts
       const { data: projectsData, error } = await supabase
         .from("projects")
         .select(`
@@ -37,9 +49,7 @@ export const ProjectsAttention = () => {
 
       if (error) throw error;
       
-      // Enhance projects with additional data
       const enhancedProjects = await Promise.all((projectsData || []).map(async (project) => {
-        // Get pending bids count
         const { count: pendingBidsCount } = await supabase
           .from("bids")
           .select("*", { count: "exact", head: true })
@@ -80,7 +90,6 @@ export const ProjectsAttention = () => {
   };
 
   const handleSendReminder = async (projectId: string) => {
-    // Create a notification for pending bids
     const { error } = await supabase
       .from("notifications")
       .insert({
@@ -96,9 +105,35 @@ export const ProjectsAttention = () => {
     }
   };
 
+  const getStatusIcon = (project: Project) => {
+    if (project.issues.length > 0) {
+      return <AlertOctagon className="h-5 w-5 text-red-500" />;
+    }
+    if (isPast(new Date(project.bids_due))) {
+      return <AlertTriangle className="h-5 w-5 text-red-500" />;
+    }
+    if (isWithinDays(new Date(project.bids_due), new Date(), 7)) {
+      return <Clock className="h-5 w-5 text-yellow-500" />;
+    }
+    return <CheckCircle className="h-5 w-5 text-green-500" />;
+  };
+
+  const getDeadlineColor = (deadline: string) => {
+    if (isPast(new Date(deadline))) return "text-red-600";
+    if (isWithinDays(new Date(deadline), new Date(), 7)) return "text-yellow-600";
+    return "text-construction-600";
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  const calculateOverallResponseRate = () => {
+    if (!projects?.length) return 0;
+    const totalResponses = projects.reduce((acc, project) => acc + (project.bids[0]?.count || 0), 0);
+    const totalInvites = projects.reduce((acc, project) => acc + ((project.bids[0]?.count || 0) + project.pendingBids), 0);
+    return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
+  };
 
   return (
     <Card className="bg-white">
@@ -111,47 +146,33 @@ export const ProjectsAttention = () => {
           {projects?.map((project) => (
             <div
               key={project.id}
-              className="flex flex-col p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-shadow"
+              className="flex flex-col lg:flex-row p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-medium text-construction-900">{project.title}</h3>
-                  <div className="flex items-center gap-2 text-sm text-construction-500 mt-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>
-                      Due: {format(new Date(project.bids_due), "MMM d, yyyy")}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleSendReminder(project.id)}
-                    className="text-primary hover:text-primary-foreground hover:bg-primary"
+              <div className="flex-1 space-y-3 lg:space-y-0 lg:flex lg:items-center lg:gap-4">
+                <div className="flex items-center gap-2 min-w-[200px]">
+                  {getStatusIcon(project)}
+                  <button 
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                    className="font-medium text-primary hover:text-primary-hover hover:underline"
                   >
-                    <ArrowRight className="h-4 w-4 mr-1" />
-                    Send Reminder
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleExtendDeadline(project.id)}
-                    className="text-primary hover:text-primary-foreground hover:bg-primary"
-                  >
-                    <CalendarPlus className="h-4 w-4 mr-1" />
-                    Extend Deadline
-                  </Button>
+                    {project.title}
+                  </button>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-2">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span className={`text-sm ${getDeadlineColor(project.bids_due)}`}>
+                    {format(new Date(project.bids_due), "MMM d, yyyy")}
+                  </span>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-construction-500" />
                   <span className="text-sm text-construction-700">
-                    {project.pendingBids} Pending Bids
+                    {project.bids[0]?.count || 0}/{(project.bids[0]?.count || 0) + project.pendingBids} Responses
                   </span>
                 </div>
+
                 {project.issues.length > 0 && (
                   <div className="flex items-center gap-2">
                     <AlertOctagon className="h-4 w-4 text-red-500" />
@@ -162,24 +183,50 @@ export const ProjectsAttention = () => {
                 )}
               </div>
 
-              <div className="mt-3">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-construction-600">Bid Response Progress</span>
-                  <span className="text-construction-600">
-                    {project.bids[0]?.count || 0} / {(project.bids[0]?.count || 0) + project.pendingBids} Responses
-                  </span>
-                </div>
-                <Progress 
-                  value={
-                    project.bids[0]?.count 
-                      ? (project.bids[0].count / (project.bids[0].count + project.pendingBids)) * 100 
-                      : 0
-                  }
-                  className="h-2"
-                />
+              <div className="flex flex-col lg:flex-row gap-2 mt-3 lg:mt-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleSendReminder(project.id)}
+                  className="text-primary hover:text-primary-foreground hover:bg-primary"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                  Send Reminder
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleExtendDeadline(project.id)}
+                  className="text-primary hover:text-primary-foreground hover:bg-primary"
+                >
+                  <CalendarPlus className="h-4 w-4" />
+                  Extend Deadline
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/projects/${project.id}`)}
+                  className="text-primary hover:text-primary-foreground hover:bg-primary"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View Details
+                </Button>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-6 p-4 border rounded-lg bg-muted">
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-construction-700 font-medium">Overall Bid Response Rate</span>
+            <span className="text-construction-600">
+              {calculateOverallResponseRate().toFixed(1)}%
+            </span>
+          </div>
+          <Progress 
+            value={calculateOverallResponseRate()}
+            className="h-2"
+          />
         </div>
       </CardContent>
     </Card>
