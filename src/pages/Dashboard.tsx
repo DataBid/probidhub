@@ -7,7 +7,8 @@ import { QuickMetrics } from "@/components/dashboard/QuickMetrics";
 import { BidInvitations } from "@/components/dashboard/BidInvitations";
 import { ProjectsAttention } from "@/components/dashboard/ProjectsAttention";
 import { NotificationsWidget } from "@/components/dashboard/NotificationsWidget";
-import { AnalyticsSnapshot } from "@/components/dashboard/AnalyticsSnapshot";
+import { ResponseRateChart } from "@/components/dashboard/ResponseRateChart";
+import { TotalBidsChart } from "@/components/dashboard/TotalBidsChart";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, FolderOpen } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -121,9 +122,13 @@ const Dashboard = () => {
           <ProjectsAttention />
         </div>
 
-        {/* Analytics Snapshot */}
-        <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6 w-full">
-          <AnalyticsSnapshot />
+        {/* Analytics Charts - Two Column Layout */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Response Rate Chart */}
+          <ResponseRateChart />
+          
+          {/* Total Bids Chart */}
+          <TotalBidsChart />
         </div>
       </div>
     </MainLayout>
