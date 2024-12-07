@@ -6,6 +6,7 @@ import { RecentProjects } from "@/components/dashboard/RecentProjects";
 import { QuickMetrics } from "@/components/dashboard/QuickMetrics";
 import { BidInvitations } from "@/components/dashboard/BidInvitations";
 import { ProjectsAttention } from "@/components/dashboard/ProjectsAttention";
+import { NotificationsWidget } from "@/components/dashboard/NotificationsWidget";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, FolderOpen } from "lucide-react";
 
@@ -54,6 +55,12 @@ const Dashboard = () => {
         <QuickMetrics />
 
         <div className="grid gap-6 md:grid-cols-2">
+          {/* Notifications and Projects Requiring Attention */}
+          <div className="space-y-6">
+            <NotificationsWidget />
+            <ProjectsAttention />
+          </div>
+
           {/* Recent Projects */}
           <div className="rounded-lg border bg-white shadow-sm">
             <div className="p-6">
@@ -63,9 +70,6 @@ const Dashboard = () => {
               <RecentProjects />
             </div>
           </div>
-
-          {/* Projects Requiring Attention */}
-          <ProjectsAttention />
         </div>
 
         {/* Bid Invitations */}
