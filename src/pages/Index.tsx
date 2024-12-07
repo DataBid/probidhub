@@ -1,20 +1,19 @@
+import { useEffect } from "react";
 import { AuthForm } from "@/components/auth/AuthForm";
+import { useNavigate } from "react-router-dom";
+import { useSession } from "@supabase/auth-helpers-react";
 
 const Index = () => {
-  const isAuthenticated = false; // This will be replaced with actual auth check
+  const session = useSession();
+  const navigate = useNavigate();
 
-  if (!isAuthenticated) {
-    return <AuthForm />;
-  }
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard");
+    }
+  }, [session, navigate]);
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-construction-900">Welcome to BuildBid</h1>
-      <p className="mt-2 text-construction-600">
-        Connect with contractors and manage your projects efficiently.
-      </p>
-    </div>
-  );
+  return <AuthForm />;
 };
 
 export default Index;

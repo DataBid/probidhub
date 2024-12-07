@@ -77,36 +77,45 @@ export type Database = {
       profiles: {
         Row: {
           company_id: string | null
+          company_name: string | null
           contact_email: string
           created_at: string
           id: string
           is_primary_user: boolean | null
+          is_verified: boolean | null
           last_login: string | null
           max_additional_users: number | null
+          phone: string | null
           primary_user_id: string | null
           role: string | null
           user_status: string | null
         }
         Insert: {
           company_id?: string | null
+          company_name?: string | null
           contact_email: string
           created_at?: string
           id: string
           is_primary_user?: boolean | null
+          is_verified?: boolean | null
           last_login?: string | null
           max_additional_users?: number | null
+          phone?: string | null
           primary_user_id?: string | null
           role?: string | null
           user_status?: string | null
         }
         Update: {
           company_id?: string | null
+          company_name?: string | null
           contact_email?: string
           created_at?: string
           id?: string
           is_primary_user?: boolean | null
+          is_verified?: boolean | null
           last_login?: string | null
           max_additional_users?: number | null
+          phone?: string | null
           primary_user_id?: string | null
           role?: string | null
           user_status?: string | null
@@ -320,7 +329,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "gc" | "sub" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
