@@ -98,9 +98,12 @@ export const ProjectsAttentionList = () => {
   return (
     <Card className="bg-white">
       <CardContent className="pt-6">
-        <h2 className="text-lg font-semibold text-construction-900 mb-4">Projects Requiring Attention</h2>
-        <ProjectsSorting sortBy={sortBy} onSortChange={setSortBy} />
-        <div className="space-y-4">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-construction-900">Projects Requiring Attention</h2>
+          <ProjectsSorting sortBy={sortBy} onSortChange={setSortBy} />
+        </div>
+        
+        <div className="space-y-6">
           {projects?.map((project) => (
             <ProjectAttentionItem 
               key={project.id} 
@@ -109,7 +112,10 @@ export const ProjectsAttentionList = () => {
             />
           ))}
         </div>
-        <BidResponseRate responseRate={calculateOverallResponseRate()} />
+
+        <div className="mt-8 pt-6 border-t">
+          <BidResponseRate responseRate={calculateOverallResponseRate()} />
+        </div>
       </CardContent>
     </Card>
   );
