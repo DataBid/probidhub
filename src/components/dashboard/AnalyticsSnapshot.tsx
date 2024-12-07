@@ -46,18 +46,18 @@ export const AnalyticsSnapshot = () => {
   });
 
   return (
-    <Card className="p-4 sm:p-6">
+    <Card className="p-4 sm:p-6 w-full">
       <h2 className="text-lg font-semibold text-construction-900 mb-4">Analytics Overview</h2>
-      <Tabs defaultValue="response-rate" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs defaultValue="response-rate" className="w-full">
+        <TabsList className="w-full grid grid-cols-2 mb-4">
           <TabsTrigger value="response-rate">Response Rate</TabsTrigger>
           <TabsTrigger value="total-bids">Total Bids</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="response-rate" className="mt-4">
-          <ChartContainer className="h-[300px] -ml-4 sm:ml-0" config={{}}>
+        <TabsContent value="response-rate">
+          <ChartContainer className="h-[300px] w-full" config={{}}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={analyticsData || []}>
+              <LineChart data={analyticsData || []} margin={{ top: 5, right: 20, bottom: 65, left: 40 }}>
                 <XAxis 
                   dataKey="name" 
                   tick={{ fontSize: 12 }}
@@ -84,10 +84,10 @@ export const AnalyticsSnapshot = () => {
           </ChartContainer>
         </TabsContent>
 
-        <TabsContent value="total-bids" className="mt-4">
-          <ChartContainer className="h-[300px] -ml-4 sm:ml-0" config={{}}>
+        <TabsContent value="total-bids">
+          <ChartContainer className="h-[300px] w-full" config={{}}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analyticsData || []}>
+              <BarChart data={analyticsData || []} margin={{ top: 5, right: 20, bottom: 65, left: 40 }}>
                 <XAxis 
                   dataKey="name" 
                   tick={{ fontSize: 12 }}
