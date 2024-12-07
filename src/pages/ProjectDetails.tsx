@@ -69,6 +69,12 @@ const ProjectDetails = () => {
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
+      // For development, always return test data
+      console.log('Returning test data for development');
+      return testProject;
+
+      // The following code will be used when connecting to Supabase:
+      /*
       if (!id) {
         console.error('No project ID provided');
         toast.error('Project ID is required');
@@ -84,7 +90,7 @@ const ProjectDetails = () => {
       }
 
       try {
-        console.log('Fetching project with ID:', id); // Debug log
+        console.log('Fetching project with ID:', id);
         
         const { data, error } = await supabase
           .from('projects')
@@ -112,15 +118,16 @@ const ProjectDetails = () => {
           return testProject;
         }
 
-        console.log('Project data received:', data); // Debug log
+        console.log('Project data received:', data);
         return data || testProject;
       } catch (error) {
         console.error('Query error:', error);
         toast.error('An error occurred while fetching project details');
         return testProject;
       }
+      */
     },
-    enabled: !!id && id !== ':id' // Only run query if we have a valid id
+    enabled: true // Always enabled for development
   });
 
   if (isLoading) {
