@@ -80,7 +80,7 @@ const Dashboard = () => {
               Invite Subcontractors
             </Button>
             <Button 
-              className="bg-secondary hover:bg-secondary-hover text-white transition-colors duration-200 min-w-[180px]"
+              className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 min-w-[180px]"
             >
               <FolderOpen className="mr-2 h-4 w-4" />
               View All Projects
