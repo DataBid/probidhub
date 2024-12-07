@@ -13,7 +13,7 @@ import {
   AlertTriangle,
   ExternalLink
 } from "lucide-react";
-import { format, addDays, isPast, isWithinDays } from "date-fns";
+import { format, addDays, isPast, isWithinInterval } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
@@ -29,6 +29,13 @@ interface Project {
   pendingBids: number;
   issues: string[];
 }
+
+// Helper function to check if a date is within X days from now
+const isWithinDaysFromNow = (date: Date, days: number): boolean => {
+  const now = new Date();
+  const futureDate = addDays(now, days);
+  return isWithinInterval(date, { start: now, end: futureDate });
+};
 
 export const ProjectsAttention = () => {
   const navigate = useNavigate();
@@ -112,7 +119,7 @@ export const ProjectsAttention = () => {
     if (isPast(new Date(project.bids_due))) {
       return <AlertTriangle className="h-5 w-5 text-red-500" />;
     }
-    if (isWithinDays(new Date(project.bids_due), new Date(), 7)) {
+    if (isWithinDaysFromNow(new Date(project.bids_due), 7)) {
       return <Clock className="h-5 w-5 text-yellow-500" />;
     }
     return <CheckCircle className="h-5 w-5 text-green-500" />;
@@ -120,7 +127,7 @@ export const ProjectsAttention = () => {
 
   const getDeadlineColor = (deadline: string) => {
     if (isPast(new Date(deadline))) return "text-red-600";
-    if (isWithinDays(new Date(deadline), new Date(), 7)) return "text-yellow-600";
+    if (isWithinDaysFromNow(new Date(deadline), 7)) return "text-yellow-600";
     return "text-construction-600";
   };
 
