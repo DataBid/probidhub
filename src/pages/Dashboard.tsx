@@ -26,15 +26,15 @@ const Dashboard = () => {
       <div className="p-6 space-y-6">
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-4">
-          <Button className="bg-primary hover:bg-primary/90">
+          <Button className="bg-primary hover:bg-primary-hover text-white">
             <Plus className="mr-2 h-4 w-4" />
             Create New Project
           </Button>
-          <Button variant="secondary">
+          <Button variant="secondary" className="bg-secondary hover:bg-secondary/90 text-white">
             <Users className="mr-2 h-4 w-4" />
             Invite Subcontractors
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" className="text-primary hover:text-primary-hover">
             <FolderOpen className="mr-2 h-4 w-4" />
             View All Projects
           </Button>
@@ -45,9 +45,11 @@ const Dashboard = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Recent Projects */}
-          <div className="rounded-lg border bg-card">
+          <div className="rounded-lg border bg-white shadow-sm">
             <div className="p-6">
-              <h2 className="text-lg font-semibold mb-6">Recently Posted Projects</h2>
+              <h2 className="text-lg font-semibold text-construction-900 mb-6">
+                Recently Posted Projects
+              </h2>
               <RecentProjects />
             </div>
           </div>
@@ -57,7 +59,7 @@ const Dashboard = () => {
         </div>
 
         {/* Bid Invitations */}
-        <div className="rounded-lg border bg-card p-6">
+        <div className="rounded-lg border bg-white shadow-sm p-6">
           <BidInvitations />
         </div>
       </div>

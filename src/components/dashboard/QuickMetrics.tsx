@@ -12,10 +12,9 @@ export const QuickMetrics = () => {
 
       if (error) throw error;
 
-      // Calculate metrics
       const activeProjects = projects?.filter(p => p.stage === 'active').length || 0;
-      const totalBids = 0; // To be implemented when bids table is added
-      const responseRate = 0; // To be implemented when bids table is added
+      const totalBids = 0;
+      const responseRate = 0;
 
       return {
         activeProjects,
@@ -27,22 +26,22 @@ export const QuickMetrics = () => {
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      <Card>
+      <Card className="bg-white border-primary/20 hover:border-primary/40 transition-colors">
         <CardContent className="pt-6">
-          <div className="text-2xl font-bold">{metrics?.activeProjects || 0}</div>
-          <p className="text-sm text-muted-foreground">Active Projects</p>
+          <div className="text-2xl font-bold text-primary">{metrics?.activeProjects || 0}</div>
+          <p className="text-sm text-construction-500">Active Projects</p>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="bg-white border-secondary/20 hover:border-secondary/40 transition-colors">
         <CardContent className="pt-6">
-          <div className="text-2xl font-bold">{metrics?.totalBids || 0}</div>
-          <p className="text-sm text-muted-foreground">Total Bids Received</p>
+          <div className="text-2xl font-bold text-secondary">{metrics?.totalBids || 0}</div>
+          <p className="text-sm text-construction-500">Total Bids Received</p>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="bg-white border-accent/20 hover:border-accent/40 transition-colors">
         <CardContent className="pt-6">
-          <div className="text-2xl font-bold">{metrics?.responseRate || 0}%</div>
-          <p className="text-sm text-muted-foreground">Subcontractor Response Rate</p>
+          <div className="text-2xl font-bold text-accent-foreground">{metrics?.responseRate || 0}%</div>
+          <p className="text-sm text-construction-500">Subcontractor Response Rate</p>
         </CardContent>
       </Card>
     </div>

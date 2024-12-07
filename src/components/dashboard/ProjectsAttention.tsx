@@ -27,21 +27,21 @@ export const ProjectsAttention = () => {
   }
 
   return (
-    <Card>
+    <Card className="bg-white">
       <CardContent className="pt-6">
         <div className="flex items-center gap-2 mb-4">
-          <Bell className="h-5 w-5 text-yellow-500" />
-          <h2 className="text-lg font-semibold">Projects Requiring Attention</h2>
+          <Bell className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold text-construction-900">Projects Requiring Attention</h2>
         </div>
         <div className="space-y-4">
           {projects?.map((project) => (
             <div
               key={project.id}
-              className="flex items-center justify-between p-4 rounded-lg border bg-card"
+              className="flex items-center justify-between p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-shadow"
             >
               <div>
-                <h3 className="font-medium">{project.title}</h3>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <h3 className="font-medium text-construction-900">{project.title}</h3>
+                <div className="flex items-center gap-2 text-sm text-construction-500">
                   <Clock className="h-4 w-4" />
                   <span>
                     Deadline: {format(new Date(project.bids_due), "MMM d, yyyy")}

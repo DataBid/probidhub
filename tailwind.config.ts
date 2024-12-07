@@ -37,24 +37,25 @@ export default {
           900: "#0F172A",
         },
         primary: {
-          DEFAULT: "#3B82F6",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#9b87f5", // Updated to brand purple
+          hover: "#7E69AB", // Secondary purple
+          foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#334155",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#6E59A5", // Tertiary purple
+          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#F1F0FB", // Soft gray
+          foreground: "#8E9196", // Neutral gray
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#D6BCFA", // Light purple
+          foreground: "#1A1F2C", // Dark purple
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

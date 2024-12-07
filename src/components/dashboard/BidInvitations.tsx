@@ -26,7 +26,6 @@ export const BidInvitations = () => {
   });
 
   const handleReminder = async (bidId: string, email: string) => {
-    // In a real app, this would trigger an email notification
     await supabase
       .from('bids')
       .update({ 
@@ -47,19 +46,19 @@ export const BidInvitations = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Recent Bid Invitations</h2>
+      <h2 className="text-lg font-semibold text-construction-900">Recent Bid Invitations</h2>
       <div className="space-y-4">
         {bids?.map((bid) => (
           <div
             key={bid.id}
-            className="flex items-center justify-between p-4 rounded-lg border bg-card"
+            className="flex items-center justify-between p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-shadow"
           >
             <div>
-              <h3 className="font-medium">{bid.project?.title}</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-medium text-construction-900">{bid.project?.title}</h3>
+              <p className="text-sm text-construction-500">
                 {bid.subcontractor?.company_name}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-construction-400">
                 Sent: {format(new Date(bid.created_at), "MMM d, yyyy")}
               </p>
             </div>
@@ -69,8 +68,8 @@ export const BidInvitations = () => {
                   bid.status === "responded"
                     ? "bg-green-100 text-green-800"
                     : bid.status === "viewed"
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-yellow-100 text-yellow-800"
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-muted text-muted-foreground"
                 }`}
               >
                 {bid.status}
@@ -79,6 +78,7 @@ export const BidInvitations = () => {
                 <Button
                   variant="outline"
                   size="sm"
+                  className="text-primary hover:text-primary-hover"
                   onClick={() => handleReminder(bid.id, bid.subcontractor?.contact_email)}
                 >
                   <Mail className="h-4 w-4" />

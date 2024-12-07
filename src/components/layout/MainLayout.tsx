@@ -7,7 +7,7 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <div className="min-h-screen bg-construction-50">
+    <div className="min-h-screen bg-muted">
       <Navbar />
       <div className="flex">
         <DashboardSidebar />
