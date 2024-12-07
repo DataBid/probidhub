@@ -1,22 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjectHeader } from "@/components/projects/details/ProjectHeader";
-import { ProjectDetailsTab } from "@/components/projects/details/ProjectDetailsTab";
-import { ProjectChecklistTab } from "@/components/projects/details/ProjectChecklistTab";
-import { ProjectFilesTab } from "@/components/projects/details/ProjectFilesTab";
-import { ProjectSubcontractorsTab } from "@/components/projects/details/ProjectSubcontractorsTab";
-import { ProjectIntelligenceTab } from "@/components/projects/details/ProjectIntelligenceTab";
-import { SimilarProjects } from "@/components/projects/details/SimilarProjects";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
 import { useProjectData } from "@/hooks/useProjectData";
 import { ProjectTabs } from "@/components/projects/details/components/ProjectTabs";
 
 const ProjectDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { project, isLoading } = useProjectData(id);
+  const { data: project, isLoading } = useProjectData(id);
 
   if (isLoading) {
     return <ProjectDetailsSkeleton />;
