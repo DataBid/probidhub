@@ -86,6 +86,10 @@ export const ProjectItem = ({ project, onRefetch }: ProjectItemProps) => {
     return "border-gray-200 bg-white";
   };
 
+  const getResponseCount = () => {
+    return project.bids.filter(bid => bid.status === 'responded').length;
+  };
+
   return (
     <div className={`flex flex-col lg:flex-row p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow ${getPriorityStyles()}`}>
       <div className="flex-1 space-y-3 lg:space-y-0 lg:flex lg:items-center lg:gap-4">
@@ -109,7 +113,7 @@ export const ProjectItem = ({ project, onRefetch }: ProjectItemProps) => {
         <div className="flex items-center gap-2">
           <MessageSquare className="h-4 w-4 text-construction-500" />
           <span className="text-sm text-construction-700">
-            {project.bids[0]?.count || 0}/{(project.bids[0]?.count || 0) + project.pendingBids} Responses
+            {getResponseCount()}/{project.bids.length + project.pendingBids} Responses
           </span>
         </div>
 
