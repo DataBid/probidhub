@@ -7,6 +7,7 @@ import { QuickMetrics } from "@/components/dashboard/QuickMetrics";
 import { BidInvitations } from "@/components/dashboard/BidInvitations";
 import { ProjectsAttention } from "@/components/dashboard/ProjectsAttention";
 import { NotificationsWidget } from "@/components/dashboard/NotificationsWidget";
+import { AnalyticsSnapshot } from "@/components/dashboard/AnalyticsSnapshot";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, FolderOpen } from "lucide-react";
 
@@ -75,6 +76,11 @@ const Dashboard = () => {
         {/* Bid Invitations */}
         <div className="rounded-lg border bg-white shadow-sm p-6">
           <BidInvitations />
+        </div>
+
+        {/* Analytics Snapshot */}
+        <div className="rounded-lg border bg-white shadow-sm p-6">
+          <AnalyticsSnapshot />
         </div>
       </div>
     </MainLayout>

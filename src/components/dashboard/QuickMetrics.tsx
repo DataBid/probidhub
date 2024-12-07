@@ -6,16 +6,35 @@ export const QuickMetrics = () => {
   const { data: metrics } = useQuery({
     queryKey: ['dashboard-metrics'],
     queryFn: async () => {
-      const { data: projects, error } = await supabase
+      console.log('Fetching dashboard metrics...');
+      
+      const { data: projects, error: projectsError } = await supabase
         .from('projects')
-        .select('*');
+        .select(`
+          *,
+          bids (
+            id,
+            status
+          )
+        `);
 
-      if (error) throw error;
+      if (projectsError) {
+        console.error('Error fetching projects:', projectsError);
+        throw projectsError;
+      }
 
       const activeProjects = projects?.filter(p => p.stage === 'active').length || 0;
-      const totalBids = 0;
-      const responseRate = 0;
+      const totalBids = projects?.reduce((acc, project) => acc + (project.bids?.length || 0), 0) || 0;
+      
+      // Calculate response rate
+      const totalResponses = projects?.reduce((acc, project) => {
+        const respondedBids = project.bids?.filter(bid => bid.status !== 'pending').length || 0;
+        return acc + respondedBids;
+      }, 0) || 0;
+      
+      const responseRate = totalBids > 0 ? Math.round((totalResponses / totalBids) * 100) : 0;
 
+      console.log('Processed metrics:', { activeProjects, totalBids, responseRate });
       return {
         activeProjects,
         totalBids,
