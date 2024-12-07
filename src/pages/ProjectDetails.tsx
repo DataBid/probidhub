@@ -10,6 +10,7 @@ import { ProjectSubcontractorsTab } from "@/components/projects/details/ProjectS
 import { ProjectIntelligenceTab } from "@/components/projects/details/ProjectIntelligenceTab";
 import { SimilarProjects } from "@/components/projects/details/SimilarProjects";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 // Test data for development
 const testProject = {
@@ -61,22 +62,29 @@ const testProject = {
 };
 
 const ProjectDetails = () => {
-  // Extract projectId from URL parameters
-  const params = useParams();
-  const projectId = params.id;
+  const { id } = useParams<{ id: string }>();
   
-  console.log('Project ID from params:', projectId); // Debug log
+  console.log('Project ID from URL:', id); // Debug log
 
   const { data: project, isLoading, error } = useQuery({
-    queryKey: ['project', projectId],
+    queryKey: ['project', id],
     queryFn: async () => {
-      if (!projectId) {
+      if (!id) {
         console.error('No project ID provided');
+        toast.error('Project ID is required');
         throw new Error('Project ID is required');
       }
 
+      // Validate UUID format using regex
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id)) {
+        console.error('Invalid UUID format:', id);
+        toast.error('Invalid project ID format');
+        return testProject;
+      }
+
       try {
-        console.log('Fetching project with ID:', projectId); // Debug log
+        console.log('Fetching project with ID:', id); // Debug log
         
         const { data, error } = await supabase
           .from('projects')
@@ -95,12 +103,12 @@ const ProjectDetails = () => {
               )
             )
           `)
-          .eq('id', projectId)
+          .eq('id', id)
           .single();
 
         if (error) {
           console.error('Supabase error:', error);
-          // For development, return test data if the query fails
+          toast.error('Failed to fetch project details');
           return testProject;
         }
 
@@ -108,11 +116,11 @@ const ProjectDetails = () => {
         return data || testProject;
       } catch (error) {
         console.error('Query error:', error);
-        // For development, return test data if the query fails
+        toast.error('An error occurred while fetching project details');
         return testProject;
       }
     },
-    enabled: !!projectId // Only run query if we have a projectId
+    enabled: !!id && id !== ':id' // Only run query if we have a valid id
   });
 
   if (isLoading) {
