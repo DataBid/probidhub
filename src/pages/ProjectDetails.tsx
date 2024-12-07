@@ -12,11 +12,14 @@ import { SimilarProjects } from "@/components/projects/details/SimilarProjects";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ProjectDetails = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const { data: project, isLoading } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
+      console.log('Fetching project with ID:', id); // Debug log
+      if (!id) throw new Error('Project ID is required');
+      
       const { data, error } = await supabase
         .from('projects')
         .select(`
@@ -37,9 +40,15 @@ const ProjectDetails = () => {
         .eq('id', id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error); // Debug log
+        throw error;
+      }
+      
+      console.log('Project data:', data); // Debug log
       return data;
     },
+    enabled: !!id, // Only run query if id exists
   });
 
   if (isLoading) {
