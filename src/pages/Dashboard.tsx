@@ -28,7 +28,6 @@ const Dashboard = () => {
           return;
         }
 
-        // Verify the session is still valid
         const { data: { user }, error } = await supabase.auth.getUser();
         console.log("User verification result:", user ? "User found" : "No user found");
         
@@ -93,21 +92,24 @@ const Dashboard = () => {
         {/* Quick Metrics */}
         <QuickMetrics />
 
+        {/* Projects Requiring Attention - Full Width */}
+        <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6 w-full">
+          <ProjectsAttention />
+        </div>
+
+        {/* Two Column Layout for Recent Bids and Projects */}
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Left Column: Notifications and Projects Requiring Attention */}
-          <div className="space-y-6 w-full">
+          {/* Recent Bid Notifications */}
+          <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6">
             <NotificationsWidget />
-            <ProjectsAttention />
           </div>
 
-          {/* Right Column: Recent Projects */}
-          <div className="rounded-lg border bg-white shadow-sm w-full">
-            <div className="p-4 sm:p-6">
-              <h2 className="text-lg font-semibold text-construction-900 mb-6">
-                Recently Posted Projects
-              </h2>
-              <RecentProjects />
-            </div>
+          {/* Recently Posted Projects */}
+          <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6">
+            <h2 className="text-lg font-semibold text-construction-900 mb-6">
+              Recently Posted Projects
+            </h2>
+            <RecentProjects />
           </div>
         </div>
 
