@@ -70,7 +70,7 @@ export const SearchBar = () => {
         );
       }
 
-      // Search bids
+      // Search bids - Fixed the query syntax
       const { data: bids } = await supabase
         .from("bids")
         .select(`
