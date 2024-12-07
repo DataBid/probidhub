@@ -39,13 +39,14 @@ export const Navbar = () => {
           <span className="text-xl font-bold text-construction-900">BidWall</span>
         </div>
         
-        <div className="flex-1 max-w-2xl mx-8">
-          <SearchBar />
+        <div className="flex items-center gap-4">
+          <div className="w-64">
+            <SearchBar />
+          </div>
+          <Button variant="ghost" onClick={handleSignOut}>
+            Sign Out
+          </Button>
         </div>
-        
-        <Button variant="ghost" onClick={handleSignOut}>
-          Sign Out
-        </Button>
       </div>
     </nav>
   );

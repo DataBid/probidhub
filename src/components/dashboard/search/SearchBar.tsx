@@ -106,19 +106,17 @@ export const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto mb-6">
+    <div className="relative w-full">
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "relative w-full flex items-center rounded-md border border-input bg-background px-4 py-2 text-sm",
+          "relative w-full flex items-center rounded-md border border-input bg-background px-3 py-1.5 text-sm",
           "text-muted-foreground transition-colors hover:border-accent-foreground"
         )}
       >
-        <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-        <span className="inline-flex">
-          Search projects, subcontractors, or bids...
-        </span>
-        <kbd className="pointer-events-none absolute right-4 top-2.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+        <Search className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+        <span className="inline-flex">Search...</span>
+        <kbd className="pointer-events-none absolute right-3 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>
