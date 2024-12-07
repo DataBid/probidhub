@@ -5,12 +5,16 @@ import { RecentProjects } from "./RecentProjects";
 import { ProjectsAttention } from "./ProjectsAttention";
 import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
 import { DashboardActions } from "./DashboardActions";
+import { SearchBar } from "./search/SearchBar";
 
 export const DashboardLayout = () => {
   return (
     <div className="px-4 sm:px-6 space-y-6 max-w-full overflow-hidden">
       <DashboardActions />
       
+      {/* Universal Search */}
+      <SearchBar />
+
       {/* Quick Metrics */}
       <QuickMetrics />
 
