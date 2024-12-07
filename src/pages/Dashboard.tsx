@@ -21,17 +21,24 @@ const Dashboard = () => {
           return;
         }
 
+        // Only verify user if we have a session
         const { data: { user }, error } = await supabase.auth.getUser();
         console.log("User verification result:", user ? "User found" : "No user found");
         
-        if (error || !user) {
-          console.log("Session verification failed:", error?.message);
+        if (error) {
+          console.log("Session verification failed:", error.message);
           toast({
             title: "Session expired",
             description: "Please log in again",
             variant: "destructive",
           });
           await supabase.auth.signOut();
+          navigate("/");
+          return;
+        }
+
+        if (!user) {
+          console.log("No user found, redirecting to login");
           navigate("/");
         }
       } catch (error) {
@@ -48,6 +55,7 @@ const Dashboard = () => {
     checkSession();
   }, [session, navigate, supabase.auth, toast]);
 
+  // If no session, return null early to prevent flash of content
   if (!session) {
     console.log("No session, returning null");
     return null;
