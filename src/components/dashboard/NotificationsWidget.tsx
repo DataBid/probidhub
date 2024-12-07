@@ -44,8 +44,8 @@ export const NotificationsWidget = () => {
           {pendingBids > 0 && (
             <div className="flex items-start gap-1.5 p-2 rounded-lg bg-accent/10 border border-accent/20">
               <AlertTriangle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm text-construction-800 break-words" style={{ maxWidth: "25ch" }}>
+              <div className="flex-1 px-1">
+                <p className="text-sm text-construction-800 break-words text-center" style={{ maxWidth: "25ch", margin: "0 auto" }}>
                   <span className="font-medium">{pendingBids}</span>{" "}
                   {pendingBids === 1 ? 
                     "subcontractor has not" : 
@@ -58,8 +58,8 @@ export const NotificationsWidget = () => {
           {urgentProjects > 0 && (
             <div className="flex items-start gap-1.5 p-2 rounded-lg bg-accent/10 border border-accent/20">
               <AlertTriangle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm text-construction-800 break-words" style={{ maxWidth: "25ch" }}>
+              <div className="flex-1 px-1">
+                <p className="text-sm text-construction-800 break-words text-center" style={{ maxWidth: "25ch", margin: "0 auto" }}>
                   <span className="font-medium">{urgentProjects}</span>{" "}
                   {urgentProjects === 1 ? 
                     "project has a" : 
