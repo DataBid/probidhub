@@ -4,6 +4,7 @@ import { BidInvitations } from "./BidInvitations";
 import { RecentProjects } from "./RecentProjects";
 import { ProjectsAttention } from "./ProjectsAttention";
 import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
+import { DashboardActions } from "./DashboardActions";
 
 export const DashboardLayout = () => {
   return (
