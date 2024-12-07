@@ -38,10 +38,7 @@ export const NotificationsWidget = () => {
   return (
     <Card className="bg-white mb-6 border-2 border-construction-200 hover:border-construction-300 transition-colors duration-200">
       <CardContent className="pt-6">
-        <div className="flex items-center gap-1.5 mb-4">
-          <Bell className="h-5 w-5 text-accent shrink-0" />
-          <h2 className="text-lg font-semibold text-construction-900">Notifications</h2>
-        </div>
+        <h2 className="text-lg font-semibold text-construction-900 mb-4">Recent Notifications</h2>
         <div className="space-y-3">
           {pendingBids > 0 && (
             <div className="group relative flex items-start gap-2 p-3 rounded-lg bg-[#FFC300]/10 border border-[#FFC300]/20 hover:bg-[#FFC300]/15 transition-colors duration-200">

@@ -46,7 +46,7 @@ export const ResponseRateChart = () => {
 
   return (
     <Card className="p-4 sm:p-6">
-      <h3 className="text-sm font-medium mb-4">Subcontractor Response Rate</h3>
+      <h2 className="text-lg font-semibold text-construction-900 mb-4">Response Rate Analysis</h2>
       <ChartContainer className="h-[200px] sm:h-[250px] -ml-4 sm:ml-0" config={{}}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={analyticsData || []}>

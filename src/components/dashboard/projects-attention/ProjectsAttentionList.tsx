@@ -64,10 +64,7 @@ export const ProjectsAttentionList = () => {
   return (
     <Card className="bg-white">
       <CardContent className="pt-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Bell className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold text-construction-900">Projects Requiring Attention</h2>
-        </div>
+        <h2 className="text-lg font-semibold text-construction-900 mb-4">Projects Requiring Attention</h2>
         <div className="space-y-4">
           {projects?.map((project) => (
             <ProjectItem 
