@@ -15,17 +15,10 @@ export const NotificationsWidget = () => {
   const { data: pendingBidsDetails } = useQuery({
     queryKey: ["pending-bids-details"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      console.log("Fetching pending bids details...");
+      const { data: bidsData, error } = await supabase
         .from("bids")
-        .select(`
-          id,
-          project_id,
-          status,
-          viewed: CASE 
-            WHEN response_date IS NOT NULL THEN true
-            ELSE false
-          END
-        `)
+        .select("id, project_id, status, response_date")
         .eq("status", "pending");
 
       if (error) {
@@ -33,15 +26,28 @@ export const NotificationsWidget = () => {
         return { viewed: 0, notViewed: 0, total: 0, bids: [] };
       }
 
-      const bids = data || [];
-      const viewed = bids.filter(bid => bid.viewed).length;
-      const notViewed = bids.filter(bid => !bid.viewed).length;
+      const bids = bidsData || [];
+      // Process the response_date to determine viewed status
+      const processedBids = bids.map(bid => ({
+        ...bid,
+        viewed: bid.response_date !== null
+      }));
+
+      const viewed = processedBids.filter(bid => bid.viewed).length;
+      const notViewed = processedBids.filter(bid => !bid.viewed).length;
+
+      console.log("Processed bids:", {
+        total: bids.length,
+        viewed,
+        notViewed,
+        bids: processedBids
+      });
 
       return {
         viewed,
         notViewed,
         total: bids.length,
-        bids
+        bids: processedBids
       };
     },
   });
