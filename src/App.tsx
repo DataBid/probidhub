@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "./components/layout/MainLayout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import { createClient } from '@supabase/supabase-js';
+import ProjectDetails from "./pages/ProjectDetails";
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabase } from "./integrations/supabase/client";
 
@@ -23,6 +23,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/projects/:id" element={<ProjectDetails />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
