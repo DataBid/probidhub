@@ -56,7 +56,7 @@ export const NotificationsWidget = () => {
                 </p>
                 <Button 
                   variant="link" 
-                  className="text-xs text-[#FFC300] hover:text-[#E6B000] p-0 h-auto mt-1"
+                  className="text-xs text-primary hover:text-primary-hover p-0 h-auto mt-1"
                   onClick={() => console.log("View pending bids")}
                 >
                   View Details →
