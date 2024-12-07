@@ -44,10 +44,13 @@ export const NotificationsWidget = () => {
           {pendingBids > 0 && (
             <div className="flex items-start gap-1.5 p-2 rounded-lg bg-accent/10 border border-accent/20">
               <AlertTriangle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-              <div className="flex-1 break-words">
-                <p className="text-sm text-construction-800">
+              <div className="flex-1">
+                <p className="text-sm text-construction-800 break-words" style={{ maxWidth: "30ch" }}>
                   <span className="font-medium">{pendingBids}</span>{" "}
-                  {pendingBids === 1 ? "subcontractor has" : "subcontractors have"} not responded to invitations
+                  {pendingBids === 1 ? 
+                    "subcontractor has not" : 
+                    "subcontractors have not"} 
+                  {" "}responded to invitations
                 </p>
               </div>
             </div>
@@ -55,10 +58,13 @@ export const NotificationsWidget = () => {
           {urgentProjects > 0 && (
             <div className="flex items-start gap-1.5 p-2 rounded-lg bg-accent/10 border border-accent/20">
               <AlertTriangle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-              <div className="flex-1 break-words">
-                <p className="text-sm text-construction-800">
+              <div className="flex-1">
+                <p className="text-sm text-construction-800 break-words" style={{ maxWidth: "30ch" }}>
                   <span className="font-medium">{urgentProjects}</span>{" "}
-                  {urgentProjects === 1 ? "project has" : "projects have"} a deadline within 3 days
+                  {urgentProjects === 1 ? 
+                    "project has a" : 
+                    "projects have a"} 
+                  {" "}deadline within 3 days
                 </p>
               </div>
             </div>
