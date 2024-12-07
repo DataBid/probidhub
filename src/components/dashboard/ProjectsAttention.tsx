@@ -2,10 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Bell, Calendar, MessageSquare, AlertOctagon, ArrowRight, CalendarPlus } from "lucide-react";
-import { format, addDays, isBefore } from "date-fns";
+import { format, addDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+
+interface Project {
+  id: string;
+  title: string;
+  bids_due: string;
+  project_document_info: string | null;
+  questions_contact: string | null;
+  bids: { count: number }[];
+  pendingBids: number;
+  issues: string[];
+}
 
 export const ProjectsAttention = () => {
   const { data: projects, isLoading, refetch } = useQuery({
@@ -27,7 +38,7 @@ export const ProjectsAttention = () => {
       if (error) throw error;
       
       // Enhance projects with additional data
-      const enhancedProjects = await Promise.all(projectsData.map(async (project) => {
+      const enhancedProjects = await Promise.all((projectsData || []).map(async (project) => {
         // Get pending bids count
         const { count: pendingBidsCount } = await supabase
           .from("bids")
@@ -42,7 +53,7 @@ export const ProjectsAttention = () => {
         };
       }));
 
-      return enhancedProjects;
+      return enhancedProjects as Project[];
     },
   });
 
@@ -155,11 +166,15 @@ export const ProjectsAttention = () => {
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-construction-600">Bid Response Progress</span>
                   <span className="text-construction-600">
-                    {project.bids.count} / {project.pendingBids + project.bids.count} Responses
+                    {project.bids[0]?.count || 0} / {(project.bids[0]?.count || 0) + project.pendingBids} Responses
                   </span>
                 </div>
                 <Progress 
-                  value={project.bids.count ? (project.bids.count / (project.pendingBids + project.bids.count)) * 100 : 0}
+                  value={
+                    project.bids[0]?.count 
+                      ? (project.bids[0].count / (project.bids[0].count + project.pendingBids)) * 100 
+                      : 0
+                  }
                   className="h-2"
                 />
               </div>
