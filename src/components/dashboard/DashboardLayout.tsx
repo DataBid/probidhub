@@ -3,9 +3,7 @@ import { NotificationsWidget } from "./NotificationsWidget";
 import { BidInvitations } from "./BidInvitations";
 import { RecentProjects } from "./RecentProjects";
 import { ProjectsAttention } from "./ProjectsAttention";
-import { ResponseRateChart } from "./ResponseRateChart";
-import { TotalBidsChart } from "./TotalBidsChart";
-import { DashboardActions } from "./DashboardActions";
+import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
 
 export const DashboardLayout = () => {
   return (
@@ -44,11 +42,8 @@ export const DashboardLayout = () => {
         <ProjectsAttention />
       </div>
 
-      {/* Analytics Charts - Two Column Layout */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <ResponseRateChart />
-        <TotalBidsChart />
-      </div>
+      {/* Analytics Snapshot */}
+      <AnalyticsSnapshot />
     </div>
   );
 };
