@@ -92,19 +92,22 @@ const Dashboard = () => {
         {/* Quick Metrics */}
         <QuickMetrics />
 
-        {/* Projects Requiring Attention - Full Width */}
-        <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6 w-full">
-          <ProjectsAttention />
-        </div>
-
-        {/* Two Column Layout for Recent Bids and Projects */}
+        {/* Two Column Layout */}
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Recent Bid Notifications */}
-          <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6">
-            <NotificationsWidget />
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Recent Bid Notifications */}
+            <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6">
+              <NotificationsWidget />
+            </div>
+            
+            {/* Bid Invitations */}
+            <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6">
+              <BidInvitations />
+            </div>
           </div>
 
-          {/* Recently Posted Projects */}
+          {/* Right Column */}
           <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6">
             <h2 className="text-lg font-semibold text-construction-900 mb-6">
               Recently Posted Projects
@@ -113,9 +116,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Bid Invitations */}
+        {/* Projects Requiring Attention */}
         <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6 w-full">
-          <BidInvitations />
+          <ProjectsAttention />
         </div>
 
         {/* Analytics Snapshot */}
