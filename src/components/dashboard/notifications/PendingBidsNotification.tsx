@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { AlertTriangle, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -66,40 +66,37 @@ export const PendingBidsNotification = () => {
   if (!pendingBidsDetails?.total) return null;
 
   return (
-    <div className="group relative flex items-start gap-2 p-3 rounded-lg bg-[#FFC300]/10 border border-[#FFC300]/20 hover:bg-[#FFC300]/15 transition-colors duration-200">
-      <AlertTriangle className="h-5 w-5 text-[#FFC300] shrink-0 mt-0.5" />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm text-construction-800 break-words">
-          <span className="font-medium">{pendingBidsDetails.total}</span>{" "}
-          {pendingBidsDetails.total === 1 ? 
-            "subcontractor has" : 
-            "subcontractors have"} 
-          {" "}not responded to invitations
-        </p>
-        <div className="flex items-center gap-2 mt-1 text-xs text-construction-600">
-          <Eye className="h-4 w-4" />
-          <span>{pendingBidsDetails.viewed} viewed</span>
-          <EyeOff className="h-4 w-4 ml-2" />
-          <span>{pendingBidsDetails.notViewed} not viewed</span>
-        </div>
-        <div className="flex gap-2 mt-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="text-xs text-primary hover:text-primary-hover"
-            onClick={() => navigate("/projects")}
-          >
-            View Projects
-          </Button>
-          <Button 
-            variant="outline"
-            size="sm"
-            className="text-xs text-primary hover:text-primary-hover"
-            onClick={() => handleSendReminder(pendingBidsDetails.bids[0]?.project_id)}
-          >
-            Send Reminder
-          </Button>
-        </div>
+    <div className="w-full">
+      <p className="text-sm text-construction-800 break-words">
+        <span className="font-medium">{pendingBidsDetails.total}</span>{" "}
+        {pendingBidsDetails.total === 1 ? 
+          "subcontractor has" : 
+          "subcontractors have"} 
+        {" "}not responded to invitations
+      </p>
+      <div className="flex items-center gap-2 mt-1 text-xs text-construction-600">
+        <Eye className="h-4 w-4" />
+        <span>{pendingBidsDetails.viewed} viewed</span>
+        <EyeOff className="h-4 w-4 ml-2" />
+        <span>{pendingBidsDetails.notViewed} not viewed</span>
+      </div>
+      <div className="flex gap-2 mt-2">
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="text-xs text-primary hover:text-primary-hover"
+          onClick={() => navigate("/projects")}
+        >
+          View Projects
+        </Button>
+        <Button 
+          variant="outline"
+          size="sm"
+          className="text-xs text-primary hover:text-primary-hover"
+          onClick={() => handleSendReminder(pendingBidsDetails.bids[0]?.project_id)}
+        >
+          Send Reminder
+        </Button>
       </div>
     </div>
   );

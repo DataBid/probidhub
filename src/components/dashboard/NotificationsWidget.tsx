@@ -46,33 +46,41 @@ export const NotificationsWidget = () => {
           </Badge>
         </div>
         
-        <div className="space-y-3 w-full">
+        <div className="space-y-4 w-full">
           {/* Pending Bids Notification with Bell Icon */}
-          <div className="relative flex items-start gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/80 transition-colors w-full">
-            <Bell className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-            <PendingBidsNotification />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => handleDismiss("pending-bids")}
-            >
-              <X className="h-4 w-4 text-muted-foreground" />
-            </Button>
+          <div className="relative flex items-start w-full">
+            <div className="flex items-start gap-3 p-4 bg-muted rounded-lg group hover:bg-muted/80 transition-colors w-full">
+              <Bell className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div className="flex-grow min-w-0">
+                <PendingBidsNotification />
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => handleDismiss("pending-bids")}
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </Button>
+            </div>
           </div>
 
           {/* Urgent Projects Notification with Warning Icon */}
-          <div className="relative flex items-start gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/80 transition-colors w-full">
-            <AlertTriangle className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
-            <UrgentProjectsNotification />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => handleDismiss("urgent-projects")}
-            >
-              <X className="h-4 w-4 text-muted-foreground" />
-            </Button>
+          <div className="relative flex items-start w-full">
+            <div className="flex items-start gap-3 p-4 bg-muted rounded-lg group hover:bg-muted/80 transition-colors w-full">
+              <AlertTriangle className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
+              <div className="flex-grow min-w-0">
+                <UrgentProjectsNotification />
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => handleDismiss("urgent-projects")}
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </Button>
+            </div>
           </div>
         </div>
 
