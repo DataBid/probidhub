@@ -1,7 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MetricsData {
   activeProjects: number;
@@ -49,9 +55,9 @@ export const QuickMetrics = () => {
 
       // Simulate trend data (in a real app, you'd fetch historical data)
       const trends = {
-        activeProjects: 5, // Positive trend
-        totalBids: -2,     // Negative trend
-        responseRate: 3     // Positive trend
+        activeProjects: 5,
+        totalBids: -2,
+        responseRate: 3
       };
 
       console.log('Processed metrics:', { activeProjects, totalBids, responseRate, trends });
@@ -84,6 +90,22 @@ export const QuickMetrics = () => {
     }
   };
 
+  const MetricTooltip = ({ title, description }: { title: string; description: string }) => (
+    <div className="flex items-center gap-1">
+      <span>{title}</span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <HelpCircle className="w-4 h-4 text-muted-foreground" />
+          </TooltipTrigger>
+          <TooltipContent className="max-w-[200px] text-sm">
+            <p>{description}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+
   return (
     <div>
       <h2 className="text-base sm:text-lg font-semibold text-construction-900 mb-3 sm:mb-4">Quick Metrics</h2>
@@ -96,7 +118,10 @@ export const QuickMetrics = () => {
               </div>
               {metrics?.trends && getTrendIcon(metrics.trends.activeProjects)}
             </div>
-            <p className="text-xs sm:text-sm text-construction-500">Active Projects</p>
+            <MetricTooltip 
+              title="Active Projects"
+              description="Number of ongoing projects that are currently accepting bids or in progress."
+            />
           </CardContent>
         </Card>
 
@@ -108,7 +133,10 @@ export const QuickMetrics = () => {
               </div>
               {metrics?.trends && getTrendIcon(metrics.trends.totalBids)}
             </div>
-            <p className="text-xs sm:text-sm text-construction-500">Total Bids</p>
+            <MetricTooltip 
+              title="Total Bids"
+              description="Total number of bid invitations sent to subcontractors across all projects."
+            />
           </CardContent>
         </Card>
 
@@ -120,7 +148,10 @@ export const QuickMetrics = () => {
               </div>
               {metrics?.trends && getTrendIcon(metrics.trends.responseRate)}
             </div>
-            <p className="text-xs sm:text-sm text-construction-500">Response Rate</p>
+            <MetricTooltip 
+              title="Response Rate"
+              description="The percentage of subcontractors who have responded to your bid invitations. Higher rates indicate better engagement."
+            />
           </CardContent>
         </Card>
       </div>
