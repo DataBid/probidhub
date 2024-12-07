@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search } from "lucide-react";
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 type SearchResult = {
@@ -14,19 +14,7 @@ type SearchResult = {
 };
 
 export const SearchBar = () => {
-  const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
 
   const { data: searchResults } = useQuery({
     queryKey: ["universal-search", searchQuery],
@@ -70,7 +58,7 @@ export const SearchBar = () => {
         );
       }
 
-      // Search bids - Fixed the query syntax
+      // Search bids
       const { data: bids } = await supabase
         .from("bids")
         .select(`
@@ -99,93 +87,41 @@ export const SearchBar = () => {
     enabled: searchQuery.length > 0,
   });
 
-  const handleSelect = (result: SearchResult) => {
-    console.log("Selected:", result);
-    setOpen(false);
-    // Here you could add navigation logic based on the result type
-  };
-
   return (
     <div className="relative w-full">
-      <button
-        onClick={() => setOpen(true)}
-        className={cn(
-          "relative w-full flex items-center rounded-md border border-input bg-background px-3 py-1.5 text-sm",
-          "text-muted-foreground transition-colors hover:border-accent-foreground"
-        )}
-      >
-        <Search className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
-        <span className="inline-flex">Search...</span>
-        <kbd className="pointer-events-none absolute right-3 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
-      </button>
-
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <Command>
-          <CommandInput 
-            placeholder="Search projects, subcontractors, or bids..." 
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-          />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            {searchResults?.length ? (
-              <>
-                <CommandGroup heading="Projects">
-                  {searchResults
-                    .filter((result) => result.type === "project")
-                    .map((result) => (
-                      <CommandItem
-                        key={result.id}
-                        onSelect={() => handleSelect(result)}
-                      >
-                        <Search className="mr-2 h-4 w-4" />
-                        {result.title}
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
-                <CommandGroup heading="Subcontractors">
-                  {searchResults
-                    .filter((result) => result.type === "subcontractor")
-                    .map((result) => (
-                      <CommandItem
-                        key={result.id}
-                        onSelect={() => handleSelect(result)}
-                      >
-                        <Search className="mr-2 h-4 w-4" />
-                        <div>
-                          <div>{result.title}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {result.subtitle}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
-                <CommandGroup heading="Bids">
-                  {searchResults
-                    .filter((result) => result.type === "bid")
-                    .map((result) => (
-                      <CommandItem
-                        key={result.id}
-                        onSelect={() => handleSelect(result)}
-                      >
-                        <Search className="mr-2 h-4 w-4" />
-                        <div>
-                          <div>{result.title}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {result.subtitle} • Status: {result.status}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
-              </>
-            ) : null}
-          </CommandList>
-        </Command>
-      </CommandDialog>
+      <div className="relative">
+        <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-8 py-1.5 h-8 text-sm"
+        />
+      </div>
+      
+      {searchResults?.length > 0 && searchQuery && (
+        <div className="absolute top-full mt-1 w-full bg-white rounded-md border shadow-lg py-1 z-50">
+          {searchResults.map((result) => (
+            <div
+              key={result.id}
+              className="px-3 py-1.5 hover:bg-gray-100 cursor-pointer"
+              onClick={() => {
+                console.log("Selected:", result);
+                setSearchQuery("");
+              }}
+            >
+              <div className="text-sm font-medium">{result.title}</div>
+              {result.subtitle && (
+                <div className="text-xs text-muted-foreground">
+                  {result.subtitle}
+                  {result.status && ` • ${result.status}`}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
