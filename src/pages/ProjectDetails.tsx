@@ -61,15 +61,23 @@ const testProject = {
 };
 
 const ProjectDetails = () => {
-  const { id } = useParams<{ id: string }>();
-  console.log('Project ID:', id); // Debug log
+  // Extract projectId from URL parameters
+  const params = useParams();
+  const projectId = params.id;
+  
+  console.log('Project ID from params:', projectId); // Debug log
 
-  const { data: project, isLoading } = useQuery({
-    queryKey: ['project', id],
+  const { data: project, isLoading, error } = useQuery({
+    queryKey: ['project', projectId],
     queryFn: async () => {
-      if (!id) throw new Error('Project ID is required');
-      
+      if (!projectId) {
+        console.error('No project ID provided');
+        throw new Error('Project ID is required');
+      }
+
       try {
+        console.log('Fetching project with ID:', projectId); // Debug log
+        
         const { data, error } = await supabase
           .from('projects')
           .select(`
@@ -87,7 +95,7 @@ const ProjectDetails = () => {
               )
             )
           `)
-          .eq('id', id)
+          .eq('id', projectId)
           .single();
 
         if (error) {
@@ -96,6 +104,7 @@ const ProjectDetails = () => {
           return testProject;
         }
 
+        console.log('Project data received:', data); // Debug log
         return data || testProject;
       } catch (error) {
         console.error('Query error:', error);
@@ -103,7 +112,7 @@ const ProjectDetails = () => {
         return testProject;
       }
     },
-    enabled: !!id
+    enabled: !!projectId // Only run query if we have a projectId
   });
 
   if (isLoading) {
