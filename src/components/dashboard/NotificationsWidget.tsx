@@ -42,7 +42,7 @@ export const NotificationsWidget = () => {
         </div>
         <div className="space-y-2">
           {pendingBids > 0 && (
-            <div className="flex items-start gap-1.5 p-1 rounded-lg bg-accent/10 border border-accent/20">
+            <div className="flex items-start gap-1.5 p-1.5 rounded-lg bg-accent/10 border border-accent/20">
               <AlertTriangle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm text-construction-800 break-words px-0.5" style={{ maxWidth: "25ch" }}>
@@ -56,7 +56,7 @@ export const NotificationsWidget = () => {
             </div>
           )}
           {urgentProjects > 0 && (
-            <div className="flex items-start gap-1.5 p-1 rounded-lg bg-accent/10 border border-accent/20">
+            <div className="flex items-start gap-1.5 p-1.5 rounded-lg bg-accent/10 border border-accent/20">
               <AlertTriangle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm text-construction-800 break-words px-0.5" style={{ maxWidth: "25ch" }}>
