@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { ProjectItem } from "./ProjectItem";
 import { BidResponseRate } from "./BidResponseRate";
 import { Project } from "./types";
 import { addDays } from "date-fns";
 import { ProjectsSorting } from "./ProjectsSorting";
 import { useState } from "react";
+import { ProjectAttentionItem } from "./ProjectAttentionItem";
 
 export const ProjectsAttentionList = () => {
   const [sortBy, setSortBy] = useState("deadline");
@@ -42,7 +42,6 @@ export const ProjectsAttentionList = () => {
         };
       }));
 
-      // Sort the projects based on the selected criteria
       return sortProjects(enhancedProjects as Project[], sortBy);
     },
   });
@@ -85,16 +84,16 @@ export const ProjectsAttentionList = () => {
     return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   const calculateOverallResponseRate = () => {
     if (!projects?.length) return 0;
     const totalResponses = projects.reduce((acc, project) => acc + (project.bids[0]?.count || 0), 0);
     const totalInvites = projects.reduce((acc, project) => acc + ((project.bids[0]?.count || 0) + project.pendingBids), 0);
     return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Card className="bg-white">
@@ -103,9 +102,9 @@ export const ProjectsAttentionList = () => {
         <ProjectsSorting sortBy={sortBy} onSortChange={setSortBy} />
         <div className="space-y-4">
           {projects?.map((project) => (
-            <ProjectItem 
+            <ProjectAttentionItem 
               key={project.id} 
-              project={project} 
+              project={project}
               onRefetch={refetch}
             />
           ))}

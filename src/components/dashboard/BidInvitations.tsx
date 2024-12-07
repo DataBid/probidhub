@@ -1,11 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Mail } from "lucide-react";
-import { format, subDays, startOfDay } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { BidInvitationFilters } from "./bid-invitations/BidInvitationFilters";
+import { BidInvitationItem } from "./bid-invitations/BidInvitationItem";
 
 export const BidInvitations = () => {
   const { toast } = useToast();
@@ -36,13 +34,13 @@ export const BidInvitations = () => {
         
         switch (dateFilter) {
           case "today":
-            startDate = startOfDay(now);
+            startDate = new Date(now.setHours(0, 0, 0, 0));
             break;
           case "week":
-            startDate = subDays(now, 7);
+            startDate = new Date(now.setDate(now.getDate() - 7));
             break;
           case "month":
-            startDate = subDays(now, 30);
+            startDate = new Date(now.setDate(now.getDate() - 30));
             break;
         }
         
@@ -74,10 +72,6 @@ export const BidInvitations = () => {
     });
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   const getStatusStyles = (status: string) => {
     switch (status) {
       case "responded":
@@ -88,6 +82,10 @@ export const BidInvitations = () => {
         return "bg-muted text-muted-foreground";
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-4">
@@ -100,40 +98,12 @@ export const BidInvitations = () => {
       />
       <div className="space-y-4">
         {bids?.map((bid) => (
-          <div
+          <BidInvitationItem
             key={bid.id}
-            className={`flex items-center justify-between p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow ${
-              bid.status === "responded" ? "bg-green-50 border-green-200" : "bg-white"
-            }`}
-          >
-            <div>
-              <h3 className="font-medium text-construction-900">{bid.project?.title}</h3>
-              <p className="text-sm text-construction-500">
-                {bid.subcontractor?.company_name}
-              </p>
-              <p className="text-sm text-construction-400">
-                Sent: {format(new Date(bid.created_at), "MMM d, yyyy")}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(bid.status)}`}
-              >
-                {bid.status}
-              </span>
-              {bid.status !== "responded" && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-primary hover:text-primary-hover"
-                  onClick={() => handleReminder(bid.id, bid.subcontractor?.contact_email)}
-                >
-                  <Mail className="h-4 w-4" />
-                  <span className="sr-only">Send Reminder</span>
-                </Button>
-              )}
-            </div>
-          </div>
+            bid={bid}
+            onReminder={handleReminder}
+            getStatusStyles={getStatusStyles}
+          />
         ))}
       </div>
     </div>
