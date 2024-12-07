@@ -11,7 +11,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <Navbar />
       <div className="flex">
         <DashboardSidebar />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6 w-full">{children}</main>
       </div>
     </div>
   );
