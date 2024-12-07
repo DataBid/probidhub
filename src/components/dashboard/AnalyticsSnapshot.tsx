@@ -34,7 +34,7 @@ export const AnalyticsSnapshot = () => {
         const responseRate = totalBids > 0 ? (respondedBids / totalBids) * 100 : 0;
 
         return {
-          name: project.title.length > 15 ? project.title.substring(0, 15) + '...' : project.title,
+          name: project.title.length > 10 ? project.title.substring(0, 10) + '...' : project.title,
           responseRate,
           totalBids
         };
@@ -46,8 +46,8 @@ export const AnalyticsSnapshot = () => {
   });
 
   return (
-    <Card className="p-4 sm:p-6 w-full">
-      <h2 className="text-lg font-semibold text-construction-900 mb-4">Analytics Overview</h2>
+    <Card className="p-3 sm:p-6 w-full">
+      <h2 className="text-base sm:text-lg font-semibold text-construction-900 mb-3 sm:mb-4">Analytics Overview</h2>
       <Tabs defaultValue="response-rate" className="w-full">
         <TabsList className="w-full grid grid-cols-2 mb-4">
           <TabsTrigger value="response-rate">Response Rate</TabsTrigger>
@@ -55,12 +55,12 @@ export const AnalyticsSnapshot = () => {
         </TabsList>
         
         <TabsContent value="response-rate">
-          <ChartContainer className="h-[300px] w-full" config={{}}>
+          <ChartContainer className="h-[250px] sm:h-[300px] w-full" config={{}}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={analyticsData || []} margin={{ top: 5, right: 20, bottom: 65, left: 40 }}>
+              <LineChart data={analyticsData || []} margin={{ top: 5, right: 10, bottom: 45, left: 30 }}>
                 <XAxis 
                   dataKey="name" 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 10 }}
                   interval={0}
                   angle={-45}
                   textAnchor="end"
@@ -68,8 +68,8 @@ export const AnalyticsSnapshot = () => {
                 />
                 <YAxis 
                   unit="%" 
-                  tick={{ fontSize: 12 }}
-                  width={40}
+                  tick={{ fontSize: 10 }}
+                  width={30}
                 />
                 <ChartTooltip />
                 <Line 
@@ -85,20 +85,20 @@ export const AnalyticsSnapshot = () => {
         </TabsContent>
 
         <TabsContent value="total-bids">
-          <ChartContainer className="h-[300px] w-full" config={{}}>
+          <ChartContainer className="h-[250px] sm:h-[300px] w-full" config={{}}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analyticsData || []} margin={{ top: 5, right: 20, bottom: 65, left: 40 }}>
+              <BarChart data={analyticsData || []} margin={{ top: 5, right: 10, bottom: 45, left: 30 }}>
                 <XAxis 
                   dataKey="name" 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 10 }}
                   interval={0}
                   angle={-45}
                   textAnchor="end"
                   height={60}
                 />
                 <YAxis 
-                  tick={{ fontSize: 12 }}
-                  width={40}
+                  tick={{ fontSize: 10 }}
+                  width={30}
                 />
                 <ChartTooltip />
                 <Bar 
