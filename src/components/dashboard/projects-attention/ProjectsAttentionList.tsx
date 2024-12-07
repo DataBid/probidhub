@@ -1,15 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bell } from "lucide-react";
 import { ProjectItem } from "./ProjectItem";
 import { BidResponseRate } from "./BidResponseRate";
 import { Project } from "./types";
 import { addDays } from "date-fns";
+import { ProjectsSorting } from "./ProjectsSorting";
+import { useState } from "react";
 
 export const ProjectsAttentionList = () => {
+  const [sortBy, setSortBy] = useState("deadline");
+
   const { data: projects, isLoading, refetch } = useQuery({
-    queryKey: ["projects-attention"],
+    queryKey: ["projects-attention", sortBy],
     queryFn: async () => {
       const sevenDaysFromNow = addDays(new Date(), 7).toISOString();
       
@@ -39,7 +42,8 @@ export const ProjectsAttentionList = () => {
         };
       }));
 
-      return enhancedProjects as Project[];
+      // Sort the projects based on the selected criteria
+      return sortProjects(enhancedProjects as Project[], sortBy);
     },
   });
 
@@ -48,6 +52,37 @@ export const ProjectsAttentionList = () => {
     if (!project.project_document_info) issues.push("Missing documents");
     if (!project.questions_contact) issues.push("Missing contact info");
     return issues;
+  };
+
+  const sortProjects = (projects: Project[], sortCriteria: string) => {
+    switch (sortCriteria) {
+      case "deadline":
+        return [...projects].sort((a, b) => 
+          new Date(a.bids_due).getTime() - new Date(b.bids_due).getTime()
+        );
+      case "issues":
+        return [...projects].sort((a, b) => b.issues.length - a.issues.length);
+      case "response-rate-asc":
+        return [...projects].sort((a, b) => {
+          const rateA = calculateResponseRate(a);
+          const rateB = calculateResponseRate(b);
+          return rateA - rateB;
+        });
+      case "response-rate-desc":
+        return [...projects].sort((a, b) => {
+          const rateA = calculateResponseRate(a);
+          const rateB = calculateResponseRate(b);
+          return rateB - rateA;
+        });
+      default:
+        return projects;
+    }
+  };
+
+  const calculateResponseRate = (project: Project) => {
+    const totalResponses = project.bids[0]?.count || 0;
+    const totalInvites = totalResponses + project.pendingBids;
+    return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
   };
 
   if (isLoading) {
@@ -65,6 +100,7 @@ export const ProjectsAttentionList = () => {
     <Card className="bg-white">
       <CardContent className="pt-6">
         <h2 className="text-lg font-semibold text-construction-900 mb-4">Projects Requiring Attention</h2>
+        <ProjectsSorting sortBy={sortBy} onSortChange={setSortBy} />
         <div className="space-y-4">
           {projects?.map((project) => (
             <ProjectItem 

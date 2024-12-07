@@ -2,24 +2,58 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
-import { format } from "date-fns";
+import { format, subDays, startOfDay } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { BidInvitationFilters } from "./bid-invitations/BidInvitationFilters";
 
 export const BidInvitations = () => {
   const { toast } = useToast();
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
+
   const { data: bids, isLoading } = useQuery({
-    queryKey: ["bid-invitations"],
+    queryKey: ["bid-invitations", statusFilter, dateFilter],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("bids")
         .select(`
           *,
           project:projects(title),
           subcontractor:profiles(company_name, contact_email)
         `)
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .order('created_at', { ascending: false });
 
+      // Apply status filter
+      if (statusFilter !== "all") {
+        query = query.eq('status', statusFilter);
+      }
+
+      // Apply date filter
+      if (dateFilter !== "all") {
+        const now = new Date();
+        let startDate;
+        
+        switch (dateFilter) {
+          case "today":
+            startDate = startOfDay(now);
+            break;
+          case "week":
+            startDate = subDays(now, 7);
+            break;
+          case "month":
+            startDate = subDays(now, 30);
+            break;
+        }
+        
+        if (startDate) {
+          query = query.gte('created_at', startDate.toISOString());
+        }
+      }
+
+      query = query.limit(5);
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -58,6 +92,12 @@ export const BidInvitations = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold text-construction-900">Recent Bid Invitations</h2>
+      <BidInvitationFilters
+        statusFilter={statusFilter}
+        dateFilter={dateFilter}
+        onStatusChange={setStatusFilter}
+        onDateChange={setDateFilter}
+      />
       <div className="space-y-4">
         {bids?.map((bid) => (
           <div
