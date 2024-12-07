@@ -7,8 +7,10 @@ import { addDays } from "date-fns";
 import { ProjectsSorting } from "./ProjectsSorting";
 import { useState } from "react";
 import { ProjectAttentionItem } from "./ProjectAttentionItem";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
-export const ProjectsAttentionList = () => {
+export const ProjectsAttentionList = ({ onExport }: { onExport: (projects: Project[]) => void }) => {
   const [sortBy, setSortBy] = useState("deadline");
 
   const { data: projects, isLoading, refetch } = useQuery({
@@ -134,7 +136,17 @@ export const ProjectsAttentionList = () => {
       <CardContent className="pt-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold text-construction-900">Projects Requiring Attention</h2>
-          <ProjectsSorting sortBy={sortBy} onSortChange={setSortBy} />
+          <div className="flex gap-2 items-center">
+            <ProjectsSorting sortBy={sortBy} onSortChange={setSortBy} />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onExport(projects || [])}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
         </div>
         
         <div className="space-y-6">
