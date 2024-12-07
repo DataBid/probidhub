@@ -46,9 +46,9 @@ export const NotificationsWidget = () => {
           </Badge>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-3 w-full">
           {/* Pending Bids Notification with Bell Icon */}
-          <div className="relative flex items-start gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/80 transition-colors">
+          <div className="relative flex items-start gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/80 transition-colors w-full">
             <Bell className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
             <PendingBidsNotification />
             <Button
@@ -62,7 +62,7 @@ export const NotificationsWidget = () => {
           </div>
 
           {/* Urgent Projects Notification with Warning Icon */}
-          <div className="relative flex items-start gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/80 transition-colors">
+          <div className="relative flex items-start gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/80 transition-colors w-full">
             <AlertTriangle className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
             <UrgentProjectsNotification />
             <Button
