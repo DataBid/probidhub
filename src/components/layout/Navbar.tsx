@@ -67,7 +67,7 @@ export const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="w-64">
+          <div className="w-[300px]">
             <SearchBar />
           </div>
           
