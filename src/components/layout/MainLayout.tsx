@@ -9,9 +9,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-muted">
       <Navbar />
-      <div className="flex">
+      <div className="flex min-h-[calc(100vh-4rem)]">
         <DashboardSidebar />
-        <main className="flex-1 p-6 w-full pb-20 lg:pb-6">{children}</main>
+        <main className="flex-1 p-4 lg:p-6 w-full">{children}</main>
       </div>
     </div>
   );
