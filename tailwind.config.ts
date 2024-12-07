@@ -37,13 +37,19 @@ export default {
           900: "#0F172A",
         },
         primary: {
-          DEFAULT: "#9b87f5", // Updated to brand purple
-          hover: "#7E69AB", // Secondary purple
+          DEFAULT: "#2D6A4F", // Updated to new primary green
+          hover: "#235C44", // Darker shade for hover
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#6E59A5", // Tertiary purple
+          DEFAULT: "#1B4332", // New secondary green
+          hover: "#153728", // Darker shade for hover
           foreground: "#FFFFFF",
+        },
+        accent: {
+          DEFAULT: "#FFC300", // New accent gold
+          hover: "#E6B000", // Darker shade for hover
+          foreground: "#1A1F2C",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -52,10 +58,6 @@ export default {
         muted: {
           DEFAULT: "#F1F0FB", // Soft gray
           foreground: "#8E9196", // Neutral gray
-        },
-        accent: {
-          DEFAULT: "#D6BCFA", // Light purple
-          foreground: "#1A1F2C", // Dark purple
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

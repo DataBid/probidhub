@@ -23,23 +23,33 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      <div className="p-6 space-y-6">
-        {/* Quick Actions */}
-        <div className="flex flex-wrap gap-4">
-          <Button className="bg-primary hover:bg-primary-hover text-white">
-            <Plus className="mr-2 h-4 w-4" />
-            Create New Project
-          </Button>
-          <Button variant="secondary" className="bg-secondary hover:bg-secondary/90 text-white">
-            <Users className="mr-2 h-4 w-4" />
-            Invite Subcontractors
-          </Button>
-          <Button variant="outline" className="text-primary hover:text-primary-hover">
-            <FolderOpen className="mr-2 h-4 w-4" />
-            View All Projects
-          </Button>
+      {/* Quick Actions Top Bar */}
+      <div className="bg-white shadow-sm border-b mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-4 flex items-center justify-between gap-4 flex-wrap">
+            <Button 
+              className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 min-w-[180px]"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create New Project
+            </Button>
+            <Button 
+              className="bg-accent hover:bg-accent-hover text-accent-foreground transition-colors duration-200 min-w-[180px]"
+            >
+              <Users className="mr-2 h-4 w-4" />
+              Invite Subcontractors
+            </Button>
+            <Button 
+              className="bg-secondary hover:bg-secondary-hover text-white transition-colors duration-200 min-w-[180px]"
+            >
+              <FolderOpen className="mr-2 h-4 w-4" />
+              View All Projects
+            </Button>
+          </div>
         </div>
+      </div>
 
+      <div className="p-6 space-y-6">
         {/* Quick Metrics */}
         <QuickMetrics />
 
