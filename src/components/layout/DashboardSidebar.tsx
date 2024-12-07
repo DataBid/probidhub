@@ -29,23 +29,29 @@ export const DashboardSidebar = () => {
 
   return (
     <>
-      {/* Mobile Menu */}
-      <div className="lg:hidden">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="ml-2">
-              <Menu className="h-5 w-5" />
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t lg:hidden z-50">
+        <div className="flex justify-around items-center h-16">
+          {menuItems.map((item) => (
+            <Button
+              key={item.label}
+              variant="ghost"
+              size="sm"
+              className="flex flex-col items-center justify-center h-full w-full space-y-1 hover:bg-accent"
+              onClick={() => console.log(`Navigate to ${item.href}`)}
+            >
+              <item.icon className="h-5 w-5" />
+              <span className="text-xs">{item.label}</span>
             </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64">
-            <MenuContent />
-          </SheetContent>
-        </Sheet>
+          ))}
+        </div>
       </div>
 
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-64 bg-white border-r min-h-[calc(100vh-4rem)] p-4">
-        <MenuContent />
+      <div className="hidden lg:block w-64 bg-white border-r min-h-[calc(100vh-4rem)]">
+        <div className="p-4">
+          <MenuContent />
+        </div>
       </div>
     </>
   );
