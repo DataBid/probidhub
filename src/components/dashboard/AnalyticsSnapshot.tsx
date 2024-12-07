@@ -57,13 +57,60 @@ export const AnalyticsSnapshot = () => {
   });
 
   const renderChart = (data: any[], dataKey: string) => {
-    const ChartComponent = chartType === 'line' ? LineChart : BarChart;
-    const DataComponent = chartType === 'line' ? Line : Bar;
+    if (chartType === 'line') {
+      return (
+        <ChartContainer className="h-[250px] sm:h-[300px] w-full" config={{}}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data || []} margin={{ top: 5, right: 10, bottom: 45, left: 30 }}>
+              <XAxis 
+                dataKey="date" 
+                tick={{ fontSize: 10 }}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                height={60}
+              />
+              <YAxis 
+                unit={dataKey === 'responseRate' ? "%" : ""} 
+                tick={{ fontSize: 10 }}
+                width={30}
+              />
+              <ChartTooltip 
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className="bg-white p-2 border rounded-lg shadow-lg">
+                        <p className="font-semibold">{payload[0].payload.fullTitle}</p>
+                        <p className="text-sm text-gray-600">{label}</p>
+                        <p className="text-sm">
+                          {dataKey === 'responseRate' ? 'Response Rate' : 'Total Bids'}: 
+                          <span className="font-semibold ml-1">
+                            {payload[0].value}{dataKey === 'responseRate' ? '%' : ''}
+                          </span>
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Line 
+                type="monotone"
+                dataKey={dataKey} 
+                stroke={dataKey === 'responseRate' ? "#2563eb" : "#0891b2"}
+                strokeWidth={2}
+                dot={{ fill: dataKey === 'responseRate' ? "#2563eb" : "#0891b2" }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      );
+    }
 
     return (
       <ChartContainer className="h-[250px] sm:h-[300px] w-full" config={{}}>
         <ResponsiveContainer width="100%" height="100%">
-          <ChartComponent data={data || []} margin={{ top: 5, right: 10, bottom: 45, left: 30 }}>
+          <BarChart data={data || []} margin={{ top: 5, right: 10, bottom: 45, left: 30 }}>
             <XAxis 
               dataKey="date" 
               tick={{ fontSize: 10 }}
@@ -96,16 +143,12 @@ export const AnalyticsSnapshot = () => {
                 return null;
               }}
             />
-            <DataComponent 
-              type={chartType === 'line' ? "monotone" : undefined}
+            <Bar 
               dataKey={dataKey} 
-              stroke={dataKey === 'responseRate' ? "#2563eb" : "#0891b2"}
               fill={dataKey === 'responseRate' ? "#2563eb" : "#0891b2"}
-              strokeWidth={chartType === 'line' ? 2 : undefined}
-              dot={chartType === 'line' ? { fill: dataKey === 'responseRate' ? "#2563eb" : "#0891b2" } : undefined}
-              radius={chartType === 'bar' ? [4, 4, 0, 0] : undefined}
+              radius={[4, 4, 0, 0]}
             />
-          </ChartComponent>
+          </BarChart>
         </ResponsiveContainer>
       </ChartContainer>
     );
