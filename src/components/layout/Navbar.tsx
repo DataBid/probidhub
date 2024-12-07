@@ -3,6 +3,7 @@ import { Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { SearchBar } from "../dashboard/search/SearchBar";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -37,6 +38,11 @@ export const Navbar = () => {
           <Building2 className="h-6 w-6 text-primary" />
           <span className="text-xl font-bold text-construction-900">BidWall</span>
         </div>
+        
+        <div className="flex-1 max-w-2xl mx-8">
+          <SearchBar />
+        </div>
+        
         <Button variant="ghost" onClick={handleSignOut}>
           Sign Out
         </Button>
