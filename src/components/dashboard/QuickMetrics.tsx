@@ -44,20 +44,20 @@ export const QuickMetrics = () => {
   });
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <Card className="bg-white border-primary/20 hover:border-primary/40 transition-colors">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <Card className="bg-white border-primary/20 hover:border-primary/40 transition-colors w-full">
         <CardContent className="pt-6">
           <div className="text-2xl font-bold text-primary">{metrics?.activeProjects || 0}</div>
           <p className="text-sm text-construction-500">Active Projects</p>
         </CardContent>
       </Card>
-      <Card className="bg-white border-secondary/20 hover:border-secondary/40 transition-colors">
+      <Card className="bg-white border-secondary/20 hover:border-secondary/40 transition-colors w-full">
         <CardContent className="pt-6">
           <div className="text-2xl font-bold text-secondary">{metrics?.totalBids || 0}</div>
           <p className="text-sm text-construction-500">Total Bids Received</p>
         </CardContent>
       </Card>
-      <Card className="bg-white border-accent/20 hover:border-accent/40 transition-colors">
+      <Card className="bg-white border-accent/20 hover:border-accent/40 transition-colors w-full sm:col-span-2 lg:col-span-1">
         <CardContent className="pt-6">
           <div className="text-2xl font-bold text-accent-foreground">{metrics?.responseRate || 0}%</div>
           <p className="text-sm text-construction-500">Subcontractor Response Rate</p>

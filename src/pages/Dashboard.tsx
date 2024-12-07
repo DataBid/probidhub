@@ -66,21 +66,21 @@ const Dashboard = () => {
       {/* Quick Actions Top Bar */}
       <div className="bg-white shadow-sm border-b mb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4 flex items-center justify-between gap-4 flex-wrap">
+          <div className="py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <Button 
-              className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 min-w-[180px]"
+              className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 w-full sm:w-auto"
             >
               <Plus className="mr-2 h-4 w-4" />
               Create New Project
             </Button>
             <Button 
-              className="bg-accent hover:bg-accent-hover text-accent-foreground transition-colors duration-200 min-w-[180px]"
+              className="bg-accent hover:bg-accent-hover text-accent-foreground transition-colors duration-200 w-full sm:w-auto"
             >
               <Users className="mr-2 h-4 w-4" />
               Invite Subcontractors
             </Button>
             <Button 
-              className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 min-w-[180px]"
+              className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 w-full sm:w-auto"
             >
               <FolderOpen className="mr-2 h-4 w-4" />
               View All Projects
@@ -89,20 +89,20 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6 max-w-full overflow-hidden">
         {/* Quick Metrics */}
         <QuickMetrics />
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Notifications and Projects Requiring Attention */}
-          <div className="space-y-6">
+          <div className="space-y-6 w-full">
             <NotificationsWidget />
             <ProjectsAttention />
           </div>
 
           {/* Recent Projects */}
-          <div className="rounded-lg border bg-white shadow-sm">
-            <div className="p-6">
+          <div className="rounded-lg border bg-white shadow-sm w-full">
+            <div className="p-4 sm:p-6">
               <h2 className="text-lg font-semibold text-construction-900 mb-6">
                 Recently Posted Projects
               </h2>
@@ -112,12 +112,12 @@ const Dashboard = () => {
         </div>
 
         {/* Bid Invitations */}
-        <div className="rounded-lg border bg-white shadow-sm p-6">
+        <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6 w-full">
           <BidInvitations />
         </div>
 
         {/* Analytics Snapshot */}
-        <div className="rounded-lg border bg-white shadow-sm p-6">
+        <div className="rounded-lg border bg-white shadow-sm p-4 sm:p-6 w-full">
           <AnalyticsSnapshot />
         </div>
       </div>
