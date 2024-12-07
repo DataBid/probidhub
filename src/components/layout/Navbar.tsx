@@ -7,7 +7,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Building2 className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold text-construction-900">BuildBid</span>
+          <span className="text-xl font-bold text-construction-900">BidWall</span>
         </div>
         <Button variant="ghost" onClick={() => console.log("Sign out")}>
           Sign Out
