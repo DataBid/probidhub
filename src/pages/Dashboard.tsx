@@ -94,13 +94,13 @@ const Dashboard = () => {
         <QuickMetrics />
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Notifications and Projects Requiring Attention */}
+          {/* Left Column: Notifications and Projects Requiring Attention */}
           <div className="space-y-6 w-full">
             <NotificationsWidget />
             <ProjectsAttention />
           </div>
 
-          {/* Recent Projects */}
+          {/* Right Column: Recent Projects */}
           <div className="rounded-lg border bg-white shadow-sm w-full">
             <div className="p-4 sm:p-6">
               <h2 className="text-lg font-semibold text-construction-900 mb-6">
