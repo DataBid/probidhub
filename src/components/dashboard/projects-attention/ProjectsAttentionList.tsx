@@ -20,7 +20,11 @@ export const ProjectsAttentionList = () => {
         .from("projects")
         .select(`
           *,
-          bids:bids(count)
+          bids:bids(
+            id,
+            status,
+            response_date
+          )
         `)
         .lt("bids_due", sevenDaysFromNow)
         .gt("bids_due", new Date().toISOString())
@@ -84,16 +88,46 @@ export const ProjectsAttentionList = () => {
     return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
   };
 
-  const calculateOverallResponseRate = () => {
-    if (!projects?.length) return 0;
-    const totalResponses = projects.reduce((acc, project) => acc + (project.bids[0]?.count || 0), 0);
-    const totalInvites = projects.reduce((acc, project) => acc + ((project.bids[0]?.count || 0) + project.pendingBids), 0);
-    return totalInvites > 0 ? (totalResponses / totalInvites) * 100 : 0;
+  const calculateBidRates = () => {
+    if (!projects?.length) return {
+      viewedRate: 0,
+      respondedRate: 0,
+      pendingRate: 100,
+      totalRate: 0
+    };
+
+    let totalBids = 0;
+    let viewedBids = 0;
+    let respondedBids = 0;
+
+    projects.forEach(project => {
+      const bids = project.bids || [];
+      totalBids += bids.length;
+      
+      bids.forEach(bid => {
+        if (bid.status === 'responded') {
+          respondedBids++;
+        } else if (bid.status === 'viewed' || bid.response_date) {
+          viewedBids++;
+        }
+      });
+    });
+
+    const pendingBids = totalBids - (viewedBids + respondedBids);
+    
+    return {
+      viewedRate: totalBids ? (viewedBids / totalBids) * 100 : 0,
+      respondedRate: totalBids ? (respondedBids / totalBids) * 100 : 0,
+      pendingRate: totalBids ? (pendingBids / totalBids) * 100 : 100,
+      totalRate: totalBids ? ((viewedBids + respondedBids) / totalBids) * 100 : 0
+    };
   };
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  const bidRates = calculateBidRates();
 
   return (
     <Card className="bg-white">
@@ -114,7 +148,12 @@ export const ProjectsAttentionList = () => {
         </div>
 
         <div className="mt-8 pt-6 border-t">
-          <BidResponseRate responseRate={calculateOverallResponseRate()} />
+          <BidResponseRate 
+            responseRate={bidRates.totalRate}
+            viewedRate={bidRates.viewedRate}
+            respondedRate={bidRates.respondedRate}
+            pendingRate={bidRates.pendingRate}
+          />
         </div>
       </CardContent>
     </Card>
