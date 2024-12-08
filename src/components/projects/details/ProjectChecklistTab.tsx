@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 interface ChecklistItem {
   id: string;
@@ -12,15 +12,15 @@ interface ChecklistItem {
   progress: number;
 }
 
-interface ProjectChecklistTabProps {
+interface ProjectChecklistProps {
   project: {
     id: string;
     title: string;
   };
 }
 
-export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
-  console.log('Rendering ProjectChecklistTab with project ID:', project?.id);
+export const ProjectChecklistTab = ({ project }: ProjectChecklistProps) => {
+  console.log('Rendering ProjectChecklistTab with project:', { id: project?.id, title: project?.title });
   
   const [checklistItems] = useState<ChecklistItem[]>([
     { 
@@ -64,7 +64,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const totalTasks = checklistItems.length;
   const overallProgress = Math.floor((completedTasks / totalTasks) * 100);
 
-  const handleSectionClick = (sectionId: string) => {
+  const handleSectionClick = useCallback((sectionId: string) => {
     console.log('Attempting to scroll to section:', sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
@@ -73,7 +73,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
     } else {
       console.log('Element not found:', sectionId);
     }
-  };
+  }, []);
 
   return (
     <div className="space-y-6">
