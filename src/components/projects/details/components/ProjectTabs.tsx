@@ -5,7 +5,6 @@ import { ProjectSubcontractorsTab } from "../ProjectSubcontractorsTab";
 import { ProjectIntelligenceTab } from "../ProjectIntelligenceTab";
 import { SimilarProjects } from "../SimilarProjects";
 
-// Define only the properties we actually need
 interface ProjectBid {
   id: string;
   status: string;
@@ -38,33 +37,7 @@ interface ProjectTabsProps {
 }
 
 export const ProjectTabs = ({ project }: ProjectTabsProps) => {
-  // Create a sanitized version of the project with only the data we need
-  const sanitizedProject = {
-    id: project.id,
-    title: project.title,
-    stage: project.stage,
-    location: project.location,
-    industry: project.industry,
-    project_class: project.project_class,
-    detail_of_services: project.detail_of_services,
-    questions_contact: project.questions_contact,
-    prebid_datetime: project.prebid_datetime,
-    prebid_location: project.prebid_location,
-    prequalification: project.prequalification,
-    prequalification_info: project.prequalification_info,
-    bids: project.bids?.map(bid => ({
-      id: bid.id,
-      status: bid.status,
-      response_date: bid.response_date,
-      profiles: bid.profiles ? {
-        company_name: bid.profiles.company_name,
-        contact_email: bid.profiles.contact_email,
-        phone: bid.profiles.phone
-      } : undefined
-    }))
-  };
-
-  console.log('Sanitized project data:', JSON.stringify(sanitizedProject, null, 2));
+  console.log('Project data received in ProjectTabs:', JSON.stringify(project, null, 2));
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -78,25 +51,25 @@ export const ProjectTabs = ({ project }: ProjectTabsProps) => {
           </TabsList>
 
           <TabsContent value="details" className="m-0">
-            <ProjectDetailsTab project={sanitizedProject} />
+            <ProjectDetailsTab project={project} />
           </TabsContent>
 
           <TabsContent value="files" className="m-0">
-            <ProjectFilesTab project={sanitizedProject} />
+            <ProjectFilesTab project={project} />
           </TabsContent>
 
           <TabsContent value="subcontractors" className="m-0">
-            <ProjectSubcontractorsTab project={sanitizedProject} />
+            <ProjectSubcontractorsTab project={project} />
           </TabsContent>
 
           <TabsContent value="intelligence" className="m-0">
-            <ProjectIntelligenceTab project={sanitizedProject} />
+            <ProjectIntelligenceTab project={project} />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mt-6">
-        <SimilarProjects currentProject={sanitizedProject} />
+        <SimilarProjects currentProject={project} />
       </div>
     </div>
   );
