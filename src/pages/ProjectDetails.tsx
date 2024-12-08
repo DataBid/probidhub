@@ -8,10 +8,18 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const { data: projectData, isLoading } = useProjectData(id);
 
-  console.log('Raw project data:', projectData);
+  console.log('Raw project data in ProjectDetails:', projectData);
 
-  // Create a serializable version of the project data
-  const project = projectData ? {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!projectData) {
+    return <div>Project not found</div>;
+  }
+
+  // Create a simple serializable version of the project data
+  const project = {
     id: projectData.id,
     title: projectData.title,
     stage: projectData.stage,
@@ -20,32 +28,24 @@ const ProjectDetails = () => {
     project_class: projectData.project_class,
     detail_of_services: projectData.detail_of_services,
     questions_contact: projectData.questions_contact,
-    prebid_datetime: projectData.prebid_datetime ? new Date(projectData.prebid_datetime).toISOString() : null,
+    prebid_datetime: projectData.prebid_datetime,
     prebid_location: projectData.prebid_location,
     prequalification: projectData.prequalification,
     prequalification_info: projectData.prequalification_info,
-    bids_due: projectData.bids_due ? new Date(projectData.bids_due).toISOString() : null,
+    bids_due: projectData.bids_due,
     bids: projectData.bids?.map(bid => ({
       id: bid.id,
       status: bid.status,
-      response_date: bid.response_date ? new Date(bid.response_date).toISOString() : null,
+      response_date: bid.response_date,
       profiles: bid.profiles ? {
         company_name: bid.profiles.company_name,
         contact_email: bid.profiles.contact_email,
         phone: bid.profiles.phone
       } : null
     }))
-  } : null;
+  };
 
-  console.log('Serialized project data:', JSON.stringify(project, null, 2));
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!project) {
-    return <div>Project not found</div>;
-  }
+  console.log('Serialized project data in ProjectDetails:', JSON.stringify(project, null, 2));
 
   return (
     <MainLayout>
