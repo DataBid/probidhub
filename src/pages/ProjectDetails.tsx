@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { ProjectHeader } from "@/components/projects/details/ProjectHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProjectData } from "@/hooks/useProjectData";
@@ -9,23 +10,33 @@ const ProjectDetails = () => {
   const { data: project, isLoading } = useProjectData(id);
 
   if (isLoading) {
-    return <ProjectDetailsSkeleton />;
+    return (
+      <MainLayout>
+        <ProjectDetailsSkeleton />
+      </MainLayout>
+    );
   }
 
   if (!project) {
-    return <div className="p-4">Project not found</div>;
+    return (
+      <MainLayout>
+        <div className="p-4">Project not found</div>
+      </MainLayout>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7]">
-      <ProjectHeader project={project} />
-      <ProjectTabs project={project} />
-    </div>
+    <MainLayout>
+      <div className="min-h-screen bg-muted">
+        <ProjectHeader project={project} />
+        <ProjectTabs project={project} />
+      </div>
+    </MainLayout>
   );
 };
 
 const ProjectDetailsSkeleton = () => (
-  <div className="min-h-screen bg-[#F7F7F7]">
+  <div className="min-h-screen bg-muted">
     <div className="w-full bg-white border-b">
       <div className="container mx-auto py-6 px-4">
         <Skeleton className="h-8 w-1/3 mb-4" />

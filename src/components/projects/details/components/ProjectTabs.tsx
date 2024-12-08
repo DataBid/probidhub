@@ -33,10 +33,8 @@ interface ProjectTabsProps {
 }
 
 export const ProjectTabs = ({ project }: ProjectTabsProps) => {
-  // Add console logs to help debug the data
   console.log('Project data received in ProjectTabs:', JSON.stringify(project, null, 2));
 
-  // Create a serializable version of the project object
   const safeProject = {
     id: project.id,
     title: project.title,
@@ -64,32 +62,36 @@ export const ProjectTabs = ({ project }: ProjectTabsProps) => {
 
   return (
     <div className="container mx-auto py-6 px-4">
-      <Tabs defaultValue="details" className="space-y-6">
-        <TabsList className="bg-white w-full justify-start overflow-x-auto">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="files">Files</TabsTrigger>
-          <TabsTrigger value="subcontractors">Subcontractors</TabsTrigger>
-          <TabsTrigger value="intelligence">Market Intelligence</TabsTrigger>
-        </TabsList>
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <Tabs defaultValue="details" className="space-y-6">
+          <TabsList className="bg-muted w-full justify-start overflow-x-auto">
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="files">Files</TabsTrigger>
+            <TabsTrigger value="subcontractors">Subcontractors</TabsTrigger>
+            <TabsTrigger value="intelligence">Market Intelligence</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="details" className="m-0">
-          <ProjectDetailsTab project={safeProject} />
-        </TabsContent>
+          <TabsContent value="details" className="m-0">
+            <ProjectDetailsTab project={safeProject} />
+          </TabsContent>
 
-        <TabsContent value="files" className="m-0">
-          <ProjectFilesTab project={safeProject} />
-        </TabsContent>
+          <TabsContent value="files" className="m-0">
+            <ProjectFilesTab project={safeProject} />
+          </TabsContent>
 
-        <TabsContent value="subcontractors" className="m-0">
-          <ProjectSubcontractorsTab project={safeProject} />
-        </TabsContent>
+          <TabsContent value="subcontractors" className="m-0">
+            <ProjectSubcontractorsTab project={safeProject} />
+          </TabsContent>
 
-        <TabsContent value="intelligence" className="m-0">
-          <ProjectIntelligenceTab project={safeProject} />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="intelligence" className="m-0">
+            <ProjectIntelligenceTab project={safeProject} />
+          </TabsContent>
+        </Tabs>
+      </div>
 
-      <SimilarProjects currentProject={safeProject} />
+      <div className="mt-6">
+        <SimilarProjects currentProject={safeProject} />
+      </div>
     </div>
   );
 };

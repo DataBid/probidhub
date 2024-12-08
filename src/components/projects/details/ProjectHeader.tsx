@@ -14,12 +14,12 @@ export const ProjectHeader = ({ project }: ProjectHeaderProps) => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-4xl font-bold text-gray-900">{project.title}</h1>
+              <h1 className="text-4xl font-bold text-construction-900">{project.title}</h1>
               <ProjectStatusBadge status={project.stage} />
             </div>
             
             {project.questions_contact && (
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-construction-600">
                 <p className="font-medium">Project Contact</p>
                 <p>{project.questions_contact}</p>
               </div>
