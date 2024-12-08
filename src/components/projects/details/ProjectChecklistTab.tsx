@@ -3,15 +3,12 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface ProjectChecklistTabProps {
   project: any;
 }
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
-  const navigate = useNavigate();
-  
   const [checklistItems] = useState([
     { 
       id: 1, 
@@ -57,10 +54,8 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const handleSectionNavigation = (section: string) => {
     console.log('Attempting to navigate to section:', section);
     try {
-      const targetPath = window.location.pathname + '#' + section;
-      console.log('Target path:', targetPath);
-      navigate(targetPath, { replace: true });
-      console.log('Navigation completed');
+      window.location.hash = section;
+      console.log('Navigation completed to hash:', section);
     } catch (error) {
       console.error('Navigation error:', error);
     }
