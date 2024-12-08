@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-// Define only the properties we need
 interface SafeProject {
   id: string;
   title: string;
@@ -17,10 +16,14 @@ interface SafeProject {
   prebid_location?: string | null;
   prequalification?: boolean;
   prequalification_info?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
   bids?: Array<{
     id: string;
     status: string;
     response_date?: string | null;
+    created_at?: string | null;
+    updated_at?: string | null;
     profiles?: {
       company_name?: string | null;
       contact_email?: string | null;
@@ -29,54 +32,12 @@ interface SafeProject {
   }>;
 }
 
-// Create serializable test data
-const createTestProject = (): SafeProject => {
-  // Create a base object with all fields explicitly set to avoid undefined
-  const project: SafeProject = {
-    id: "test-id",
-    title: "New Commercial Building Construction",
-    stage: "Active",
-    bids_due: "2024-05-15T00:00:00Z",
-    questions_contact: "John Smith (john.smith@construction.com)",
-    location: "433 Penn St, Newtown, PA 18940",
-    industry: "Commercial Construction",
-    project_class: "Class A",
-    detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking.",
-    prebid_datetime: "2024-04-01T14:00:00Z",
-    prebid_location: "433 Penn St, Newtown, PA 18940",
-    prequalification: true,
-    prequalification_info: "Contractors must demonstrate experience with similar scale commercial projects.",
-    bids: [
-      {
-        id: "bid-1",
-        status: "Pending",
-        response_date: "2024-03-20T00:00:00Z",
-        profiles: {
-          company_name: "ABC Contractors Ltd",
-          contact_email: "contact@abccontractors.com",
-          phone: "555-0123"
-        }
-      }
-    ]
-  };
-
-  // Log the stringified data to verify it's serializable
-  console.log('Test project data (stringified):', JSON.stringify(project, null, 2));
-  return project;
-};
-
 export const useProjectData = (projectId?: string) => {
   return useQuery({
     queryKey: ['project', projectId],
     queryFn: async () => {
       console.log('Fetching project with ID:', projectId);
       
-      // For development, return test data
-      const testProject = createTestProject();
-      return testProject;
-
-      // The following code will be used when connecting to Supabase:
-      /*
       if (!projectId) {
         console.error('No project ID provided');
         toast.error('Project ID is required');
@@ -86,7 +47,7 @@ export const useProjectData = (projectId?: string) => {
       try {
         const { data, error } = await supabase
           .from('projects')
-          .select(\`
+          .select(`
             id,
             title,
             stage,
@@ -99,17 +60,22 @@ export const useProjectData = (projectId?: string) => {
             prebid_location,
             prequalification,
             prequalification_info,
+            created_at,
+            updated_at,
+            bids_due,
             bids (
               id,
               status,
               response_date,
+              created_at,
+              updated_at,
               profiles (
                 company_name,
                 contact_email,
                 phone
               )
             )
-          \`)
+          `)
           .eq('id', projectId)
           .single();
 
@@ -124,9 +90,13 @@ export const useProjectData = (projectId?: string) => {
           ...data,
           bids_due: data.bids_due ? new Date(data.bids_due).toISOString() : null,
           prebid_datetime: data.prebid_datetime ? new Date(data.prebid_datetime).toISOString() : null,
+          created_at: data.created_at ? new Date(data.created_at).toISOString() : null,
+          updated_at: data.updated_at ? new Date(data.updated_at).toISOString() : null,
           bids: data.bids?.map(bid => ({
             ...bid,
-            response_date: bid.response_date ? new Date(bid.response_date).toISOString() : null
+            response_date: bid.response_date ? new Date(bid.response_date).toISOString() : null,
+            created_at: bid.created_at ? new Date(bid.created_at).toISOString() : null,
+            updated_at: bid.updated_at ? new Date(bid.updated_at).toISOString() : null
           }))
         };
 
@@ -137,8 +107,7 @@ export const useProjectData = (projectId?: string) => {
         toast.error('An error occurred while fetching project details');
         throw error;
       }
-      */
     },
-    enabled: true
+    enabled: !!projectId
   });
 };
