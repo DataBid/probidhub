@@ -5,37 +5,41 @@ import { ProjectSubcontractorsTab } from "../ProjectSubcontractorsTab";
 import { ProjectIntelligenceTab } from "../ProjectIntelligenceTab";
 import { SimilarProjects } from "../SimilarProjects";
 
-interface ProjectTabsProps {
-  project: {
-    id: string;
-    title: string;
-    stage?: string;
-    location?: string;
-    industry?: string;
-    project_class?: string;
-    detail_of_services?: string;
-    questions_contact?: string;
-    prebid_datetime?: string;
-    prebid_location?: string;
-    prequalification?: boolean;
-    prequalification_info?: string;
-    bids?: Array<{
-      id: string;
-      status: string;
-      response_date?: string;
-      profiles?: {
-        company_name?: string;
-        contact_email?: string;
-        phone?: string;
-      };
-    }>;
+// Define only the properties we actually need
+interface ProjectBid {
+  id: string;
+  status: string;
+  response_date?: string;
+  profiles?: {
+    company_name?: string;
+    contact_email?: string;
+    phone?: string;
   };
 }
 
-export const ProjectTabs = ({ project }: ProjectTabsProps) => {
-  console.log('Project data received in ProjectTabs:', JSON.stringify(project, null, 2));
+interface SafeProject {
+  id: string;
+  title: string;
+  stage?: string;
+  location?: string;
+  industry?: string;
+  project_class?: string;
+  detail_of_services?: string;
+  questions_contact?: string;
+  prebid_datetime?: string;
+  prebid_location?: string;
+  prequalification?: boolean;
+  prequalification_info?: string;
+  bids?: ProjectBid[];
+}
 
-  const safeProject = {
+interface ProjectTabsProps {
+  project: SafeProject;
+}
+
+export const ProjectTabs = ({ project }: ProjectTabsProps) => {
+  // Create a sanitized version of the project with only the data we need
+  const sanitizedProject = {
     id: project.id,
     title: project.title,
     stage: project.stage,
@@ -60,6 +64,8 @@ export const ProjectTabs = ({ project }: ProjectTabsProps) => {
     }))
   };
 
+  console.log('Sanitized project data:', JSON.stringify(sanitizedProject, null, 2));
+
   return (
     <div className="container mx-auto py-6 px-4">
       <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -72,25 +78,25 @@ export const ProjectTabs = ({ project }: ProjectTabsProps) => {
           </TabsList>
 
           <TabsContent value="details" className="m-0">
-            <ProjectDetailsTab project={safeProject} />
+            <ProjectDetailsTab project={sanitizedProject} />
           </TabsContent>
 
           <TabsContent value="files" className="m-0">
-            <ProjectFilesTab project={safeProject} />
+            <ProjectFilesTab project={sanitizedProject} />
           </TabsContent>
 
           <TabsContent value="subcontractors" className="m-0">
-            <ProjectSubcontractorsTab project={safeProject} />
+            <ProjectSubcontractorsTab project={sanitizedProject} />
           </TabsContent>
 
           <TabsContent value="intelligence" className="m-0">
-            <ProjectIntelligenceTab project={safeProject} />
+            <ProjectIntelligenceTab project={sanitizedProject} />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mt-6">
-        <SimilarProjects currentProject={safeProject} />
+        <SimilarProjects currentProject={sanitizedProject} />
       </div>
     </div>
   );
