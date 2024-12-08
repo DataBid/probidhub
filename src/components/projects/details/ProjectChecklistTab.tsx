@@ -56,8 +56,10 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const overallProgress = (completedTasks / totalTasks) * 100;
 
   const navigateToSection = (section: string) => {
-    // Use React Router to navigate to the section
-    navigate({ pathname: location.pathname, hash: section });
+    console.log('Navigating to section:', section);
+    const newPath = `${location.pathname}#${section}`;
+    console.log('New path:', newPath);
+    navigate(newPath);
   };
 
   return (
