@@ -2,19 +2,46 @@ import { useParams } from "react-router-dom";
 import { useProjectData } from "@/hooks/useProjectData";
 import { ProjectHeader } from "@/components/projects/details/ProjectHeader";
 import { ProjectTabs } from "@/components/projects/details/components/ProjectTabs";
-import { ProjectMetrics } from "@/components/projects/details/components/ProjectMetrics";
 import { MainLayout } from "@/components/layout/MainLayout";
+
+// Define only the properties we need
+interface SafeProject {
+  id: string;
+  title: string;
+  stage?: string;
+  location?: string;
+  industry?: string;
+  project_class?: string;
+  detail_of_services?: string;
+  questions_contact?: string;
+  prebid_datetime?: string;
+  prebid_location?: string;
+  prequalification?: boolean;
+  prequalification_info?: string;
+  bids?: Array<{
+    id: string;
+    status: string;
+    response_date?: string;
+    profiles?: {
+      company_name?: string;
+      contact_email?: string;
+      phone?: string;
+    };
+  }>;
+}
 
 const ProjectDetails = () => {
   const { id } = useParams();
   const { data: projectData, isLoading } = useProjectData(id);
 
+  console.log('Raw project data:', JSON.stringify(projectData, null, 2));
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // Sanitize the project data at the source
-  const sanitizedProject = projectData ? {
+  // Create a sanitized version of the project data
+  const sanitizedProject: SafeProject | null = projectData ? {
     id: projectData.id,
     title: projectData.title,
     stage: projectData.stage,
@@ -39,7 +66,7 @@ const ProjectDetails = () => {
     }))
   } : null;
 
-  console.log('Sanitized project data in ProjectDetails:', JSON.stringify(sanitizedProject, null, 2));
+  console.log('Sanitized project data:', JSON.stringify(sanitizedProject, null, 2));
 
   if (!sanitizedProject) {
     return <div>Project not found</div>;
@@ -49,7 +76,6 @@ const ProjectDetails = () => {
     <MainLayout>
       <div className="min-h-screen bg-gray-50">
         <ProjectHeader project={sanitizedProject} />
-        <ProjectMetrics project={sanitizedProject} />
         <ProjectTabs project={sanitizedProject} />
       </div>
     </MainLayout>
