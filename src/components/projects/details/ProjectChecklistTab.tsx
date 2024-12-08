@@ -2,49 +2,56 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 interface ProjectChecklistTabProps {
-  project: any;
+  project: {
+    id: string;
+    title: string;
+    [key: string]: any;
+  };
 }
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
-  console.log('Rendering ProjectChecklistTab');
+  console.log('Rendering ProjectChecklistTab with project:', { 
+    id: project?.id,
+    title: project?.title 
+  });
   
   const [checklistItems] = useState([
     { 
       id: '1', 
       task: "Review Project Details", 
       completed: true,
-      section: "details",
+      sectionId: "details",
       progress: 100 
     },
     { 
       id: '2', 
       task: "Download Bid Documents", 
       completed: false,
-      section: "files",
+      sectionId: "files",
       progress: 0 
     },
     { 
       id: '3', 
       task: "Submit Questions", 
       completed: false,
-      section: "details",
+      sectionId: "details",
       progress: 30 
     },
     { 
       id: '4', 
       task: "Attend Pre-bid Meeting", 
       completed: false,
-      section: "details",
+      sectionId: "details",
       progress: 0 
     },
     { 
       id: '5', 
       task: "Upload Bid Documents", 
       completed: false,
-      section: "files",
+      sectionId: "files",
       progress: 0 
     }
   ]);
@@ -53,16 +60,20 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const totalTasks = checklistItems.length;
   const overallProgress = Math.floor((completedTasks / totalTasks) * 100);
 
-  const scrollToSection = (sectionId: string) => {
-    console.log('Scrolling to section:', sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      console.log('Found and scrolled to element');
-    } else {
-      console.log('Element not found:', sectionId);
+  const scrollToSection = useCallback((sectionId: string) => {
+    console.log('Attempting to scroll to section:', sectionId);
+    try {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        console.log('Successfully scrolled to element:', sectionId);
+      } else {
+        console.log('Element not found:', sectionId);
+      }
+    } catch (error) {
+      console.error('Error scrolling to section:', error);
     }
-  };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -101,7 +112,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
                     variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
-                    onClick={() => scrollToSection(item.section)}
+                    onClick={() => scrollToSection(item.sectionId)}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     Go to section
