@@ -30,10 +30,13 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
 
     console.log("Starting map initialization");
     
-    const mapConfig = {
+    // Explicitly type the center as [number, number]
+    const center: [number, number] = [defaultLng, defaultLat];
+    
+    const mapConfig: mapboxgl.MapboxOptions = {
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [defaultLng, defaultLat],
+      center,
       zoom: 13,
     };
 
@@ -41,20 +44,17 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
     let marker: mapboxgl.Marker | undefined;
 
     try {
-      // Initialize map
       map = new mapboxgl.Map(mapConfig);
       console.log("Map instance created");
 
-      // Add controls after map is initialized
       const onLoad = () => {
         if (!map) return;
         
         map.addControl(new mapboxgl.NavigationControl(), "top-right");
         map.addControl(new mapboxgl.FullscreenControl());
 
-        // Create and add marker
         marker = new mapboxgl.Marker()
-          .setLngLat([defaultLng, defaultLat])
+          .setLngLat(center)
           .setPopup(
             new mapboxgl.Popup({ offset: 25 }).setHTML(
               `<strong>${project.title}</strong><br>${project.location}`
@@ -65,7 +65,7 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
         console.log("Map fully initialized with controls and marker");
       };
 
-      const onError = (e: any) => {
+      const onError = (e: Error) => {
         console.error("Map error:", e);
         setMapError("Failed to load map. Please try again later.");
       };
@@ -73,14 +73,10 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
       map.once("load", onLoad);
       map.on("error", onError);
 
-      // Cleanup function
       return () => {
-        console.log("Cleaning up map resources");
-        
         if (marker) {
           marker.remove();
         }
-        
         if (map) {
           map.off("load", onLoad);
           map.off("error", onError);
@@ -90,7 +86,7 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
     } catch (error) {
       console.error("Error during map initialization:", error);
       setMapError("Failed to initialize map. Please try again later.");
-      return () => {};
+      return undefined;
     }
   }, [project.title, project.location, defaultLat, defaultLng]);
 
