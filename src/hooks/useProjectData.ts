@@ -2,16 +2,45 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-// Test data for development
-const testProject = {
+// Define only the properties we need
+interface SafeProject {
+  id: string;
+  title: string;
+  stage?: string;
+  bids_due?: string;
+  questions_contact?: string;
+  location?: string;
+  latitude?: number;
+  longitude?: number;
+  industry?: string;
+  project_class?: string;
+  detail_of_services?: string;
+  prebid_datetime?: string;
+  prebid_location?: string;
+  prequalification?: boolean;
+  prequalification_info?: string;
+  bids?: Array<{
+    id: string;
+    status: string;
+    response_date?: string;
+    profiles?: {
+      company_name?: string;
+      contact_email?: string;
+      phone?: string;
+    };
+  }>;
+}
+
+// Test data with only serializable properties
+const testProject: SafeProject = {
   id: "test-id",
   title: "New Commercial Building Construction",
   stage: "Active",
   bids_due: new Date("2024-05-15").toISOString(),
   questions_contact: "John Smith (john.smith@construction.com)",
   location: "433 Penn St, Newtown, PA 18940",
-  latitude: 40.22881,  // Actual coordinates for 433 Penn St
-  longitude: -74.93228, // Actual coordinates for 433 Penn St
+  latitude: 40.22881,
+  longitude: -74.93228,
   industry: "Commercial Construction",
   project_class: "Class A",
   detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking. The project emphasizes sustainable building practices and LEED certification requirements.",
@@ -57,8 +86,10 @@ export const useProjectData = (projectId?: string) => {
   return useQuery({
     queryKey: ['project', projectId],
     queryFn: async () => {
-      // For development, always return test data
-      console.log('Returning test data for development');
+      console.log('Fetching project with ID:', projectId);
+      
+      // For development, return test data
+      console.log('Returning serializable test data');
       return testProject;
 
       // The following code will be used when connecting to Supabase:
@@ -70,21 +101,28 @@ export const useProjectData = (projectId?: string) => {
       }
 
       try {
-        console.log('Fetching project with ID:', projectId);
-        
         const { data, error } = await supabase
           .from('projects')
           .select(`
-            *,
+            id,
+            title,
+            stage,
+            location,
+            industry,
+            project_class,
+            detail_of_services,
+            questions_contact,
+            prebid_datetime,
+            prebid_location,
+            prequalification,
+            prequalification_info,
             bids (
               id,
               status,
-              subcontractor_id,
               response_date,
               profiles (
-                id,
-                contact_email,
                 company_name,
+                contact_email,
                 phone
               )
             )
@@ -95,7 +133,7 @@ export const useProjectData = (projectId?: string) => {
         if (error) {
           console.error('Supabase error:', error);
           toast.error('Failed to fetch project details');
-          return testProject;
+          return null;
         }
 
         console.log('Project data received:', data);
@@ -103,7 +141,7 @@ export const useProjectData = (projectId?: string) => {
       } catch (error) {
         console.error('Query error:', error);
         toast.error('An error occurred while fetching project details');
-        return testProject;
+        return null;
       }
       */
     },
