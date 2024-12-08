@@ -9,55 +9,58 @@ interface ProjectChecklistTabProps {
 }
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
+  console.log('Rendering ProjectChecklistTab');
+  
   const [checklistItems] = useState([
     { 
-      id: 1, 
+      id: '1', 
       task: "Review Project Details", 
       completed: true,
       section: "details",
       progress: 100 
     },
     { 
-      id: 2, 
+      id: '2', 
       task: "Download Bid Documents", 
       completed: false,
       section: "files",
       progress: 0 
     },
     { 
-      id: 3, 
+      id: '3', 
       task: "Submit Questions", 
       completed: false,
       section: "details",
       progress: 30 
     },
     { 
-      id: 4, 
+      id: '4', 
       task: "Attend Pre-bid Meeting", 
       completed: false,
       section: "details",
       progress: 0 
     },
     { 
-      id: 5, 
+      id: '5', 
       task: "Upload Bid Documents", 
       completed: false,
       section: "files",
       progress: 0 
-    },
+    }
   ]);
 
   const completedTasks = checklistItems.filter(item => item.completed).length;
   const totalTasks = checklistItems.length;
-  const overallProgress = (completedTasks / totalTasks) * 100;
+  const overallProgress = Math.floor((completedTasks / totalTasks) * 100);
 
-  const handleSectionNavigation = (section: string) => {
-    console.log('Attempting to navigate to section:', section);
-    try {
-      window.location.hash = section;
-      console.log('Navigation completed to hash:', section);
-    } catch (error) {
-      console.error('Navigation error:', error);
+  const scrollToSection = (sectionId: string) => {
+    console.log('Scrolling to section:', sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      console.log('Found and scrolled to element');
+    } else {
+      console.log('Element not found:', sectionId);
     }
   };
 
@@ -98,7 +101,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
                     variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
-                    onClick={() => handleSectionNavigation(item.section)}
+                    onClick={() => scrollToSection(item.section)}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     Go to section
