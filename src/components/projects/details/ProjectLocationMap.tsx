@@ -19,6 +19,7 @@ interface ProjectLocationMapProps {
 export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const marker = useRef<mapboxgl.Marker | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
 
   // Default to San Francisco if no coordinates are provided
@@ -31,31 +32,38 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
     try {
       console.log("Initializing map with coordinates:", { lat: defaultLat, lng: defaultLng });
 
-      map.current = new mapboxgl.Map({
+      // Create map instance
+      const mapInstance = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/streets-v12",
         center: [defaultLng, defaultLat],
         zoom: 13,
       });
 
+      // Store map instance in ref
+      map.current = mapInstance;
+
       // Add navigation controls
-      map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+      mapInstance.addControl(new mapboxgl.NavigationControl(), "top-right");
 
       // Add fullscreen control
-      map.current.addControl(new mapboxgl.FullscreenControl());
+      mapInstance.addControl(new mapboxgl.FullscreenControl());
 
-      // Add marker
-      new mapboxgl.Marker()
+      // Create and add marker
+      const markerInstance = new mapboxgl.Marker()
         .setLngLat([defaultLng, defaultLat])
         .setPopup(
           new mapboxgl.Popup({ offset: 25 }).setHTML(
             `<strong>${project.title}</strong><br>${project.location}`
           )
         )
-        .addTo(map.current);
+        .addTo(mapInstance);
+
+      // Store marker instance in ref
+      marker.current = markerInstance;
 
       // Handle map load errors
-      map.current.on('error', (e) => {
+      mapInstance.on('error', (e) => {
         console.error('Mapbox error:', e);
         setMapError('Failed to load map. Please try again later.');
       });
@@ -65,10 +73,15 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
       setMapError('Failed to initialize map. Please try again later.');
     }
 
-    // Cleanup
+    // Cleanup function
     return () => {
+      if (marker.current) {
+        marker.current.remove();
+        marker.current = null;
+      }
       if (map.current) {
         map.current.remove();
+        map.current = null;
       }
     };
   }, [project.title, project.location, defaultLat, defaultLng]);
