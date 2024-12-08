@@ -53,7 +53,9 @@ export const useProjectData = (projectId?: string) => {
         }
 
         console.log('Raw data from Supabase:', data);
-        return serializeProject(data);
+        const serializedData = serializeProject(data);
+        console.log('Serialized project data:', serializedData);
+        return serializedData;
       } catch (error) {
         console.error('Query error:', error);
         toast.error('An error occurred while fetching project details');

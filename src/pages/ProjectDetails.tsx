@@ -9,23 +9,35 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const { data: project, isLoading } = useProjectData(id);
 
-  console.log('Project data in ProjectDetails:', 
-    CircularJSON.stringify(project, null, 2)
-  );
+  // Add detailed logging to track data flow
+  console.log('Raw project data:', project);
+  
+  // Safely serialize the project data
+  const serializedProject = project ? (() => {
+    try {
+      const serialized = CircularJSON.stringify(project);
+      const parsed = CircularJSON.parse(serialized);
+      console.log('Successfully serialized project data:', parsed);
+      return parsed;
+    } catch (error) {
+      console.error('Error serializing project data:', error);
+      return null;
+    }
+  })() : null;
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!project) {
+  if (!serializedProject) {
     return <div>Project not found</div>;
   }
 
   return (
     <MainLayout>
       <div className="min-h-screen bg-muted">
-        <ProjectHeader project={project} />
-        <ProjectTabs project={project} />
+        <ProjectHeader project={serializedProject} />
+        <ProjectTabs project={serializedProject} />
       </div>
     </MainLayout>
   );

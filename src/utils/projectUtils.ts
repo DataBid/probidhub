@@ -30,34 +30,38 @@ export interface SerializedProject {
 }
 
 export const serializeProject = (projectData: any): SerializedProject => {
-  const project = {
-    id: projectData.id,
-    title: projectData.title,
-    stage: projectData.stage,
-    location: projectData.location,
-    industry: projectData.industry,
-    project_class: projectData.project_class,
-    detail_of_services: projectData.detail_of_services,
-    questions_contact: projectData.questions_contact,
-    prebid_datetime: serializeDate(projectData.prebid_datetime),
-    prebid_location: projectData.prebid_location,
-    prequalification: projectData.prequalification,
-    prequalification_info: projectData.prequalification_info,
-    bids_due: serializeDate(projectData.bids_due),
-    bids: projectData.bids?.map((bid: any) => ({
-      id: bid.id,
-      status: bid.status,
-      response_date: serializeDate(bid.response_date),
-      profiles: bid.profiles ? {
-        company_name: bid.profiles.company_name,
-        contact_email: bid.profiles.contact_email,
-        phone: bid.profiles.phone
-      } : null
-    }))
-  };
-
   try {
-    CircularJSON.stringify(project); // Validate serialization
+    console.log('Serializing project data:', projectData);
+    
+    const project = {
+      id: projectData.id,
+      title: projectData.title,
+      stage: projectData.stage,
+      location: projectData.location,
+      industry: projectData.industry,
+      project_class: projectData.project_class,
+      detail_of_services: projectData.detail_of_services,
+      questions_contact: projectData.questions_contact,
+      prebid_datetime: serializeDate(projectData.prebid_datetime),
+      prebid_location: projectData.prebid_location,
+      prequalification: projectData.prequalification,
+      prequalification_info: projectData.prequalification_info,
+      bids_due: serializeDate(projectData.bids_due),
+      bids: projectData.bids?.map((bid: any) => ({
+        id: bid.id,
+        status: bid.status,
+        response_date: serializeDate(bid.response_date),
+        profiles: bid.profiles ? {
+          company_name: bid.profiles.company_name,
+          contact_email: bid.profiles.contact_email,
+          phone: bid.profiles.phone
+        } : null
+      }))
+    };
+
+    // Validate serialization
+    CircularJSON.stringify(project);
+    console.log('Successfully serialized project:', project);
     return project;
   } catch (error) {
     console.error('Project serialization error:', error);
