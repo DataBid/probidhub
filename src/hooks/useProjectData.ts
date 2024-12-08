@@ -9,14 +9,12 @@ const testProject = {
   stage: "Active",
   bids_due: new Date("2024-05-15").toISOString(),
   questions_contact: "John Smith (john.smith@construction.com)",
-  location: "433 Penn St, Newtown, PA 18940",
-  latitude: 40.22881,  // Actual coordinates for 433 Penn St
-  longitude: -74.93228, // Actual coordinates for 433 Penn St
+  location: "San Francisco, CA",
   industry: "Commercial Construction",
   project_class: "Class A",
   detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking. The project emphasizes sustainable building practices and LEED certification requirements.",
   prebid_datetime: new Date("2024-04-01T14:00:00").toISOString(),
-  prebid_location: "433 Penn St, Newtown, PA 18940",
+  prebid_location: "123 Construction Site Ave, San Francisco, CA",
   prequalification: true,
   prequalification_info: "Contractors must demonstrate experience with similar scale commercial projects and LEED certification.",
   bids: [
