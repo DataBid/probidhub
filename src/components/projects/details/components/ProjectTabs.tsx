@@ -5,6 +5,7 @@ import { ProjectSubcontractorsTab } from "../ProjectSubcontractorsTab";
 import { ProjectIntelligenceTab } from "../ProjectIntelligenceTab";
 import { SimilarProjects } from "../SimilarProjects";
 
+// Define a minimal interface for what we actually need
 interface ProjectBid {
   id: string;
   status: string;
@@ -16,28 +17,27 @@ interface ProjectBid {
   };
 }
 
-interface SafeProject {
-  id: string;
-  title: string;
-  stage?: string;
-  location?: string;
-  industry?: string;
-  project_class?: string;
-  detail_of_services?: string;
-  questions_contact?: string;
-  prebid_datetime?: string;
-  prebid_location?: string;
-  prequalification?: boolean;
-  prequalification_info?: string;
-  bids?: ProjectBid[];
-}
-
 interface ProjectTabsProps {
-  project: SafeProject;
+  project: {
+    id: string;
+    title: string;
+    stage?: string;
+    location?: string;
+    industry?: string;
+    project_class?: string;
+    detail_of_services?: string;
+    questions_contact?: string;
+    prebid_datetime?: string;
+    prebid_location?: string;
+    prequalification?: boolean;
+    prequalification_info?: string;
+    bids?: ProjectBid[];
+  };
 }
 
 export const ProjectTabs = ({ project }: ProjectTabsProps) => {
-  console.log('Project data received in ProjectTabs:', JSON.stringify(project, null, 2));
+  // Add logging to track the data being passed
+  console.log('Project data in ProjectTabs (stringified):', JSON.stringify(project, null, 2));
 
   return (
     <div className="container mx-auto py-6 px-4">
