@@ -1,65 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-interface SafeProject {
-  id: string;
-  title: string;
-  stage?: string | null;
-  location?: string | null;
-  industry?: string | null;
-  project_class?: string | null;
-  detail_of_services?: string | null;
-  questions_contact?: string | null;
-  prebid_datetime?: string | null;
-  prebid_location?: string | null;
-  prequalification?: boolean | null;
-  prequalification_info?: string | null;
-  bids_due?: string | null;
-  bids?: Array<{
-    id: string;
-    status: string;
-    response_date?: string | null;
-    profiles?: {
-      company_name?: string | null;
-      contact_email?: string | null;
-      phone?: string | null;
-    } | null;
-  }>;
-}
-
-const serializeProject = (data: any): SafeProject => {
-  console.log('Raw data from Supabase:', data);
-  
-  const serialized: SafeProject = {
-    id: data.id,
-    title: data.title,
-    stage: data.stage,
-    location: data.location,
-    industry: data.industry,
-    project_class: data.project_class,
-    detail_of_services: data.detail_of_services,
-    questions_contact: data.questions_contact,
-    prebid_datetime: data.prebid_datetime,
-    prebid_location: data.prebid_location,
-    prequalification: data.prequalification,
-    prequalification_info: data.prequalification_info,
-    bids_due: data.bids_due,
-    bids: data.bids?.map((bid: any) => ({
-      id: bid.id,
-      status: bid.status,
-      response_date: bid.response_date,
-      profiles: bid.profiles ? {
-        company_name: bid.profiles.company_name,
-        contact_email: bid.profiles.contact_email,
-        phone: bid.profiles.phone
-      } : null
-    }))
-  };
-
-  console.log('Serialized project data:', JSON.stringify(serialized, null, 2));
-  return serialized;
-};
+import { serializeProject, type SerializedProject } from "@/utils/projectUtils";
 
 export const useProjectData = (projectId?: string) => {
   return useQuery({
@@ -110,8 +52,8 @@ export const useProjectData = (projectId?: string) => {
           throw error;
         }
 
-        const serializedData = serializeProject(data);
-        return serializedData;
+        console.log('Raw data from Supabase:', data);
+        return serializeProject(data);
       } catch (error) {
         console.error('Query error:', error);
         toast.error('An error occurred while fetching project details');
