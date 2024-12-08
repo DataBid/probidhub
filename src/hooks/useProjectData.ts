@@ -10,8 +10,6 @@ interface SafeProject {
   bids_due?: string;
   questions_contact?: string;
   location?: string;
-  latitude?: number;
-  longitude?: number;
   industry?: string;
   project_class?: string;
   detail_of_services?: string;
@@ -31,23 +29,21 @@ interface SafeProject {
   }>;
 }
 
-// Test data with only serializable properties
-const testProject: SafeProject = {
+// Create serializable test data
+const createTestProject = (): SafeProject => ({
   id: "test-id",
   title: "New Commercial Building Construction",
   stage: "Active",
   bids_due: new Date("2024-05-15").toISOString(),
   questions_contact: "John Smith (john.smith@construction.com)",
   location: "433 Penn St, Newtown, PA 18940",
-  latitude: 40.22881,
-  longitude: -74.93228,
   industry: "Commercial Construction",
   project_class: "Class A",
-  detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking. The project emphasizes sustainable building practices and LEED certification requirements.",
+  detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking.",
   prebid_datetime: new Date("2024-04-01T14:00:00").toISOString(),
   prebid_location: "433 Penn St, Newtown, PA 18940",
   prequalification: true,
-  prequalification_info: "Contractors must demonstrate experience with similar scale commercial projects and LEED certification.",
+  prequalification_info: "Contractors must demonstrate experience with similar scale commercial projects.",
   bids: [
     {
       id: "bid-1",
@@ -58,29 +54,9 @@ const testProject: SafeProject = {
         contact_email: "contact@abccontractors.com",
         phone: "555-0123"
       }
-    },
-    {
-      id: "bid-2",
-      status: "Submitted",
-      response_date: new Date("2024-03-18").toISOString(),
-      profiles: {
-        company_name: "XYZ Construction Inc",
-        contact_email: "bids@xyzconstruction.com",
-        phone: "555-0124"
-      }
-    },
-    {
-      id: "bid-3",
-      status: "Reviewing",
-      response_date: new Date("2024-03-15").toISOString(),
-      profiles: {
-        company_name: "Best Build Solutions",
-        contact_email: "info@bestbuild.com",
-        phone: "555-0125"
-      }
     }
   ]
-};
+});
 
 export const useProjectData = (projectId?: string) => {
   return useQuery({
@@ -89,7 +65,8 @@ export const useProjectData = (projectId?: string) => {
       console.log('Fetching project with ID:', projectId);
       
       // For development, return test data
-      console.log('Returning serializable test data');
+      const testProject = createTestProject();
+      console.log('Returning serializable test data:', JSON.stringify(testProject, null, 2));
       return testProject;
 
       // The following code will be used when connecting to Supabase:
@@ -133,18 +110,29 @@ export const useProjectData = (projectId?: string) => {
         if (error) {
           console.error('Supabase error:', error);
           toast.error('Failed to fetch project details');
-          return null;
+          throw error;
         }
 
-        console.log('Project data received:', data);
-        return data || testProject;
+        // Ensure dates are serialized
+        const serializedData = {
+          ...data,
+          bids_due: data.bids_due ? new Date(data.bids_due).toISOString() : undefined,
+          prebid_datetime: data.prebid_datetime ? new Date(data.prebid_datetime).toISOString() : undefined,
+          bids: data.bids?.map(bid => ({
+            ...bid,
+            response_date: bid.response_date ? new Date(bid.response_date).toISOString() : undefined
+          }))
+        };
+
+        console.log('Serialized project data:', JSON.stringify(serializedData, null, 2));
+        return serializedData;
       } catch (error) {
         console.error('Query error:', error);
         toast.error('An error occurred while fetching project details');
-        return null;
+        throw error;
       }
       */
     },
-    enabled: true // Always enabled for development
+    enabled: true
   });
 };
