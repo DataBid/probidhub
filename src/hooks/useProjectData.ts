@@ -29,7 +29,7 @@ interface SafeProject {
 }
 
 const serializeProject = (data: any): SafeProject => {
-  console.log('Serializing project data:', data);
+  console.log('Raw data from Supabase:', data);
   
   const serialized: SafeProject = {
     id: data.id,
@@ -40,15 +40,15 @@ const serializeProject = (data: any): SafeProject => {
     project_class: data.project_class,
     detail_of_services: data.detail_of_services,
     questions_contact: data.questions_contact,
-    prebid_datetime: data.prebid_datetime ? new Date(data.prebid_datetime).toISOString() : null,
+    prebid_datetime: data.prebid_datetime,
     prebid_location: data.prebid_location,
     prequalification: data.prequalification,
     prequalification_info: data.prequalification_info,
-    bids_due: data.bids_due ? new Date(data.bids_due).toISOString() : null,
+    bids_due: data.bids_due,
     bids: data.bids?.map((bid: any) => ({
       id: bid.id,
       status: bid.status,
-      response_date: bid.response_date ? new Date(bid.response_date).toISOString() : null,
+      response_date: bid.response_date,
       profiles: bid.profiles ? {
         company_name: bid.profiles.company_name,
         contact_email: bid.profiles.contact_email,
