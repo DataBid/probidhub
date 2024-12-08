@@ -3,46 +3,50 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface ProjectChecklistTabProps {
   project: any;
 }
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [checklistItems] = useState([
     { 
       id: 1, 
       task: "Review Project Details", 
       completed: true,
-      link: "#details",
+      section: "details",
       progress: 100 
     },
     { 
       id: 2, 
       task: "Download Bid Documents", 
       completed: false,
-      link: "#files",
+      section: "files",
       progress: 0 
     },
     { 
       id: 3, 
       task: "Submit Questions", 
       completed: false,
-      link: "#",
+      section: "details",
       progress: 30 
     },
     { 
       id: 4, 
       task: "Attend Pre-bid Meeting", 
       completed: false,
-      link: "#details",
+      section: "details",
       progress: 0 
     },
     { 
       id: 5, 
       task: "Upload Bid Documents", 
       completed: false,
-      link: "#files",
+      section: "files",
       progress: 0 
     },
   ]);
@@ -51,11 +55,9 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const totalTasks = checklistItems.length;
   const overallProgress = (completedTasks / totalTasks) * 100;
 
-  const navigateToSection = (link: string) => {
-    const element = document.querySelector(link);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const navigateToSection = (section: string) => {
+    // Use React Router to navigate to the section
+    navigate({ pathname: location.pathname, hash: section });
   };
 
   return (
@@ -95,7 +97,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
                     variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
-                    onClick={() => navigateToSection(item.link)}
+                    onClick={() => navigateToSection(item.section)}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     Go to section
