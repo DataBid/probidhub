@@ -18,8 +18,6 @@ interface ProjectLocationMapProps {
 
 export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const marker = useRef<mapboxgl.Marker | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
 
   // Default to San Francisco if no coordinates are provided
@@ -29,60 +27,65 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    try {
-      console.log("Initializing map with coordinates:", { lat: defaultLat, lng: defaultLng });
+    let mapInstance: mapboxgl.Map | null = null;
+    let markerInstance: mapboxgl.Marker | null = null;
 
-      // Create map instance
-      const mapInstance = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v12",
-        center: [defaultLng, defaultLat],
-        zoom: 13,
-      });
+    const initializeMap = () => {
+      try {
+        console.log("Initializing map with coordinates:", { lat: defaultLat, lng: defaultLng });
 
-      // Store map instance in ref
-      map.current = mapInstance;
+        mapInstance = new mapboxgl.Map({
+          container: mapContainer.current!,
+          style: "mapbox://styles/mapbox/streets-v12",
+          center: [defaultLng, defaultLat],
+          zoom: 13,
+        });
 
-      // Add navigation controls
-      mapInstance.addControl(new mapboxgl.NavigationControl(), "top-right");
+        // Add navigation controls
+        const nav = new mapboxgl.NavigationControl();
+        mapInstance.addControl(nav, "top-right");
 
-      // Add fullscreen control
-      mapInstance.addControl(new mapboxgl.FullscreenControl());
+        // Add fullscreen control
+        const fullscreen = new mapboxgl.FullscreenControl();
+        mapInstance.addControl(fullscreen);
 
-      // Create and add marker
-      const markerInstance = new mapboxgl.Marker()
-        .setLngLat([defaultLng, defaultLat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setHTML(
-            `<strong>${project.title}</strong><br>${project.location}`
-          )
-        )
-        .addTo(mapInstance);
+        // Create and add marker
+        markerInstance = new mapboxgl.Marker()
+          .setLngLat([defaultLng, defaultLat])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }).setHTML(
+              `<strong>${project.title}</strong><br>${project.location}`
+            )
+          );
 
-      // Store marker instance in ref
-      marker.current = markerInstance;
+        markerInstance.addTo(mapInstance);
 
-      // Handle map load errors
-      mapInstance.on('error', (e) => {
-        console.error('Mapbox error:', e);
-        setMapError('Failed to load map. Please try again later.');
-      });
+        // Handle map load errors
+        const errorHandler = (e: any) => {
+          console.error('Mapbox error:', e);
+          setMapError('Failed to load map. Please try again later.');
+        };
 
-    } catch (error) {
-      console.error('Error initializing map:', error);
-      setMapError('Failed to initialize map. Please try again later.');
-    }
+        mapInstance.on('error', errorHandler);
+
+        // Store cleanup function
+        return () => {
+          mapInstance?.off('error', errorHandler);
+          markerInstance?.remove();
+          mapInstance?.remove();
+        };
+      } catch (error) {
+        console.error('Error initializing map:', error);
+        setMapError('Failed to initialize map. Please try again later.');
+        return () => {};
+      }
+    };
+
+    const cleanup = initializeMap();
 
     // Cleanup function
     return () => {
-      if (marker.current) {
-        marker.current.remove();
-        marker.current = null;
-      }
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
+      cleanup();
     };
   }, [project.title, project.location, defaultLat, defaultLng]);
 
