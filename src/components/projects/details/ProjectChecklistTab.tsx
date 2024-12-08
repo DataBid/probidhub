@@ -66,16 +66,12 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
 
   const handleSectionClick = (sectionId: string) => {
     console.log('Attempting to scroll to section:', sectionId);
-    try {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        console.log('Successfully scrolled to element:', sectionId);
-      } else {
-        console.log('Element not found:', sectionId);
-      }
-    } catch (error) {
-      console.error('Error scrolling to section:', error);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      console.log('Successfully scrolled to element:', sectionId);
+    } else {
+      console.log('Element not found:', sectionId);
     }
   };
 
