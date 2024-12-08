@@ -3,7 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface ProjectChecklistTabProps {
   project: any;
@@ -11,7 +11,6 @@ interface ProjectChecklistTabProps {
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   
   const [checklistItems] = useState([
     { 
@@ -55,11 +54,16 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const totalTasks = checklistItems.length;
   const overallProgress = (completedTasks / totalTasks) * 100;
 
-  const navigateToSection = (section: string) => {
-    console.log('Navigating to section:', section);
-    const newPath = `${location.pathname}#${section}`;
-    console.log('New path:', newPath);
-    navigate(newPath);
+  const handleSectionNavigation = (section: string) => {
+    console.log('Attempting to navigate to section:', section);
+    try {
+      const targetPath = window.location.pathname + '#' + section;
+      console.log('Target path:', targetPath);
+      navigate(targetPath, { replace: true });
+      console.log('Navigation completed');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   return (
@@ -99,7 +103,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
                     variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
-                    onClick={() => navigateToSection(item.section)}
+                    onClick={() => handleSectionNavigation(item.section)}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     Go to section
