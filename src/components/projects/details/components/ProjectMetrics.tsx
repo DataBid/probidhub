@@ -27,8 +27,8 @@ export const ProjectMetrics = ({ project }: ProjectMetricsProps) => {
           <Clock className="w-6 h-6 text-accent" />
         </div>
         <div>
-          <p className="text-sm text-gray-600">Responded</p>
-          <p className="text-2xl font-semibold">{respondedBids}</p>
+          <p className="text-sm text-gray-600">Invited</p>
+          <p className="text-2xl font-semibold">{totalBids}</p>
         </div>
       </div>
 
