@@ -17,12 +17,10 @@ interface ProjectLocationMapProps {
 
 export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<mapboxgl.Map | null>(null);
-  const markerInstance = useRef<mapboxgl.Marker | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
 
-  const defaultLat = project.latitude || 40.22881;
-  const defaultLng = project.longitude || -74.93228;
+  const defaultLat = project.latitude || 37.7749;
+  const defaultLng = project.longitude || -122.4194;
 
   useEffect(() => {
     if (!mapContainer.current) {
@@ -30,23 +28,24 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
       return;
     }
 
-    console.log("Starting map initialization with coordinates:", defaultLng, defaultLat);
+    console.log("Starting map initialization");
     
+    // Explicitly type the center as [number, number]
+    const center: [number, number] = [defaultLng, defaultLat];
+    
+    const mapConfig: mapboxgl.MapboxOptions = {
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center,
+      zoom: 13,
+    };
+
+    let map: mapboxgl.Map | undefined;
+    let marker: mapboxgl.Marker | undefined;
+
     try {
-      // Clean up existing map instance if it exists
-      if (mapInstance.current) {
-        mapInstance.current.remove();
-      }
-
-      // Create new map instance
-      const map = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v12",
-        center: [defaultLng, defaultLat] as [number, number],
-        zoom: 13,
-      });
-
-      mapInstance.current = map;
+      map = new mapboxgl.Map(mapConfig);
+      console.log("Map instance created");
 
       const onLoad = () => {
         if (!map) return;
@@ -54,14 +53,8 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
         map.addControl(new mapboxgl.NavigationControl(), "top-right");
         map.addControl(new mapboxgl.FullscreenControl());
 
-        // Remove existing marker if it exists
-        if (markerInstance.current) {
-          markerInstance.current.remove();
-        }
-
-        // Create new marker
-        const marker = new mapboxgl.Marker()
-          .setLngLat([defaultLng, defaultLat])
+        marker = new mapboxgl.Marker()
+          .setLngLat(center)
           .setPopup(
             new mapboxgl.Popup({ offset: 25 }).setHTML(
               `<strong>${project.title}</strong><br>${project.location}`
@@ -69,12 +62,11 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
           )
           .addTo(map);
 
-        markerInstance.current = marker;
         console.log("Map fully initialized with controls and marker");
       };
 
-      const onError = (event: mapboxgl.ErrorEvent) => {
-        console.error("Map error:", event.error);
+      const onError = (e: Error) => {
+        console.error("Map error:", e);
         setMapError("Failed to load map. Please try again later.");
       };
 
@@ -82,16 +74,14 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
       map.on("error", onError);
 
       return () => {
-        if (markerInstance.current) {
-          markerInstance.current.remove();
+        if (marker) {
+          marker.remove();
         }
-        if (mapInstance.current) {
-          mapInstance.current.off("load", onLoad);
-          mapInstance.current.off("error", onError);
-          mapInstance.current.remove();
+        if (map) {
+          map.off("load", onLoad);
+          map.off("error", onError);
+          map.remove();
         }
-        mapInstance.current = null;
-        markerInstance.current = null;
       };
     } catch (error) {
       console.error("Error during map initialization:", error);
