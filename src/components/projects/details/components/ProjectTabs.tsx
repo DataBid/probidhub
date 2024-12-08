@@ -12,38 +12,73 @@ interface ProjectTabsProps {
 
 export const ProjectTabs = ({ project }: ProjectTabsProps) => {
   return (
-    <div className="container mx-auto py-6 px-4">
-      <Tabs defaultValue="details" className="space-y-6">
-        <TabsList className="bg-white w-full justify-start overflow-x-auto">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="checklist">Checklist</TabsTrigger>
-          <TabsTrigger value="files">Files</TabsTrigger>
-          <TabsTrigger value="subcontractors">Subcontractors</TabsTrigger>
-          <TabsTrigger value="intelligence">Market Intelligence</TabsTrigger>
-        </TabsList>
+    <div className="relative">
+      {/* Sticky tabs container */}
+      <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
+        <div className="container mx-auto">
+          <Tabs defaultValue="details" className="w-full">
+            <TabsList className="h-16 w-full justify-start gap-2 bg-transparent p-0 overflow-x-auto">
+              <TabsTrigger 
+                value="details"
+                className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary"
+              >
+                Details
+              </TabsTrigger>
+              <TabsTrigger 
+                value="checklist"
+                className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary"
+              >
+                Checklist
+              </TabsTrigger>
+              <TabsTrigger 
+                value="files"
+                className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary"
+              >
+                Files
+              </TabsTrigger>
+              <TabsTrigger 
+                value="subcontractors"
+                className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary"
+              >
+                Subcontractors
+              </TabsTrigger>
+              <TabsTrigger 
+                value="intelligence"
+                className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary"
+              >
+                Market Intelligence
+              </TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="details" className="m-0">
-          <ProjectDetailsTab project={project} />
-        </TabsContent>
+            <div className="container mx-auto py-6">
+              <TabsContent value="details" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+                <ProjectDetailsTab project={project} />
+              </TabsContent>
 
-        <TabsContent value="checklist" className="m-0">
-          <ProjectChecklistTab project={project} />
-        </TabsContent>
+              <TabsContent value="checklist" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+                <ProjectChecklistTab project={project} />
+              </TabsContent>
 
-        <TabsContent value="files" className="m-0">
-          <ProjectFilesTab project={project} />
-        </TabsContent>
+              <TabsContent value="files" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+                <ProjectFilesTab project={project} />
+              </TabsContent>
 
-        <TabsContent value="subcontractors" className="m-0">
-          <ProjectSubcontractorsTab project={project} />
-        </TabsContent>
+              <TabsContent value="subcontractors" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+                <ProjectSubcontractorsTab project={project} />
+              </TabsContent>
 
-        <TabsContent value="intelligence" className="m-0">
-          <ProjectIntelligenceTab project={project} />
-        </TabsContent>
-      </Tabs>
+              <TabsContent value="intelligence" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+                <ProjectIntelligenceTab project={project} />
+              </TabsContent>
+            </div>
+          </Tabs>
+        </div>
+      </div>
 
-      <SimilarProjects currentProject={project} />
+      {/* Similar Projects section outside of tabs */}
+      <div className="container mx-auto py-6">
+        <SimilarProjects currentProject={project} />
+      </div>
     </div>
   );
 };
