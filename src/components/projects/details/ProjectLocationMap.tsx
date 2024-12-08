@@ -23,65 +23,75 @@ export const ProjectLocationMap = ({ project }: ProjectLocationMapProps) => {
   const defaultLng = project.longitude || -122.4194;
 
   useEffect(() => {
-    if (!mapContainer.current) return;
-
-    let mapInstance: mapboxgl.Map | null = null;
-    let markerInstance: mapboxgl.Marker | null = null;
-
-    const handleMapError = (e: any) => {
-      console.error("Mapbox error:", e);
-      setMapError("Failed to load map. Please try again later.");
-    };
-
-    try {
-      console.log("Initializing map with coordinates:", { lat: defaultLat, lng: defaultLng });
-
-      // Create map instance
-      mapInstance = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v12",
-        center: [defaultLng, defaultLat],
-        zoom: 13,
-      });
-
-      // Add navigation controls
-      mapInstance.addControl(new mapboxgl.NavigationControl(), "top-right");
-      mapInstance.addControl(new mapboxgl.FullscreenControl());
-
-      // Create marker
-      markerInstance = new mapboxgl.Marker()
-        .setLngLat([defaultLng, defaultLat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setHTML(
-            `<strong>${project.title}</strong><br>${project.location}`
-          )
-        )
-        .addTo(mapInstance);
-
-      // Add error handler
-      mapInstance.on("error", handleMapError);
-
-      // Handle successful load
-      mapInstance.on("load", () => {
-        console.log("Map loaded successfully");
-      });
-
-    } catch (error) {
-      console.error("Error initializing map:", error);
-      setMapError("Failed to initialize map. Please try again later.");
+    if (!mapContainer.current) {
+      console.log("Map container not found");
+      return;
     }
 
-    // Cleanup function
-    return () => {
-      console.log("Cleaning up map resources");
-      if (mapInstance) {
-        mapInstance.off("error", handleMapError);
-        mapInstance.remove();
-      }
-      if (markerInstance) {
-        markerInstance.remove();
-      }
+    console.log("Starting map initialization");
+    
+    const mapConfig = {
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [defaultLng, defaultLat],
+      zoom: 13,
     };
+
+    let map: mapboxgl.Map | undefined;
+    let marker: mapboxgl.Marker | undefined;
+
+    try {
+      // Initialize map
+      map = new mapboxgl.Map(mapConfig);
+      console.log("Map instance created");
+
+      // Add controls after map is initialized
+      const onLoad = () => {
+        if (!map) return;
+        
+        map.addControl(new mapboxgl.NavigationControl(), "top-right");
+        map.addControl(new mapboxgl.FullscreenControl());
+
+        // Create and add marker
+        marker = new mapboxgl.Marker()
+          .setLngLat([defaultLng, defaultLat])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }).setHTML(
+              `<strong>${project.title}</strong><br>${project.location}`
+            )
+          )
+          .addTo(map);
+
+        console.log("Map fully initialized with controls and marker");
+      };
+
+      const onError = (e: any) => {
+        console.error("Map error:", e);
+        setMapError("Failed to load map. Please try again later.");
+      };
+
+      map.once("load", onLoad);
+      map.on("error", onError);
+
+      // Cleanup function
+      return () => {
+        console.log("Cleaning up map resources");
+        
+        if (marker) {
+          marker.remove();
+        }
+        
+        if (map) {
+          map.off("load", onLoad);
+          map.off("error", onError);
+          map.remove();
+        }
+      };
+    } catch (error) {
+      console.error("Error during map initialization:", error);
+      setMapError("Failed to initialize map. Please try again later.");
+      return () => {};
+    }
   }, [project.title, project.location, defaultLat, defaultLng]);
 
   const handleGetDirections = () => {
