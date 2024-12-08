@@ -1,57 +1,59 @@
 import { useParams } from "react-router-dom";
-import { MainLayout } from "@/components/layout/MainLayout";
-import { ProjectHeader } from "@/components/projects/details/ProjectHeader";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useProjectData } from "@/hooks/useProjectData";
+import { ProjectHeader } from "@/components/projects/details/ProjectHeader";
 import { ProjectTabs } from "@/components/projects/details/components/ProjectTabs";
+import { ProjectMetrics } from "@/components/projects/details/components/ProjectMetrics";
+import { MainLayout } from "@/components/layout/MainLayout";
 
 const ProjectDetails = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: project, isLoading } = useProjectData(id);
+  const { id } = useParams();
+  const { data: projectData, isLoading } = useProjectData(id);
 
   if (isLoading) {
-    return (
-      <MainLayout>
-        <ProjectDetailsSkeleton />
-      </MainLayout>
-    );
+    return <div>Loading...</div>;
   }
 
-  if (!project) {
-    return (
-      <MainLayout>
-        <div className="p-4">Project not found</div>
-      </MainLayout>
-    );
+  // Sanitize the project data at the source
+  const sanitizedProject = projectData ? {
+    id: projectData.id,
+    title: projectData.title,
+    stage: projectData.stage,
+    location: projectData.location,
+    industry: projectData.industry,
+    project_class: projectData.project_class,
+    detail_of_services: projectData.detail_of_services,
+    questions_contact: projectData.questions_contact,
+    prebid_datetime: projectData.prebid_datetime,
+    prebid_location: projectData.prebid_location,
+    prequalification: projectData.prequalification,
+    prequalification_info: projectData.prequalification_info,
+    bids: projectData.bids?.map(bid => ({
+      id: bid.id,
+      status: bid.status,
+      response_date: bid.response_date,
+      profiles: bid.profiles ? {
+        company_name: bid.profiles.company_name,
+        contact_email: bid.profiles.contact_email,
+        phone: bid.profiles.phone
+      } : undefined
+    }))
+  } : null;
+
+  console.log('Sanitized project data in ProjectDetails:', JSON.stringify(sanitizedProject, null, 2));
+
+  if (!sanitizedProject) {
+    return <div>Project not found</div>;
   }
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-muted">
-        <ProjectHeader project={project} />
-        <ProjectTabs project={project} />
+      <div className="min-h-screen bg-gray-50">
+        <ProjectHeader project={sanitizedProject} />
+        <ProjectMetrics project={sanitizedProject} />
+        <ProjectTabs project={sanitizedProject} />
       </div>
     </MainLayout>
   );
 };
-
-const ProjectDetailsSkeleton = () => (
-  <div className="min-h-screen bg-muted">
-    <div className="w-full bg-white border-b">
-      <div className="container mx-auto py-6 px-4">
-        <Skeleton className="h-8 w-1/3 mb-4" />
-        <div className="flex gap-4 mb-4">
-          <Skeleton className="h-6 w-24" />
-          <Skeleton className="h-6 w-32" />
-        </div>
-        <div className="flex gap-4">
-          <Skeleton className="h-10 w-32" />
-          <Skeleton className="h-10 w-32" />
-          <Skeleton className="h-10 w-32" />
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 export default ProjectDetails;
