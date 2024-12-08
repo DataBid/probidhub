@@ -20,7 +20,10 @@ interface ProjectChecklistProps {
 }
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistProps) => {
-  console.log('Rendering ProjectChecklistTab with project:', { id: project?.id, title: project?.title });
+  console.log('Rendering ProjectChecklistTab with project:', { 
+    id: project?.id, 
+    title: project?.title 
+  });
   
   const [checklistItems] = useState<ChecklistItem[]>([
     { 
@@ -65,13 +68,17 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistProps) => {
   const overallProgress = Math.floor((completedTasks / totalTasks) * 100);
 
   const handleSectionClick = useCallback((sectionId: string) => {
-    console.log('Attempting to scroll to section:', sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      console.log('Successfully scrolled to element:', sectionId);
-    } else {
-      console.log('Element not found:', sectionId);
+    try {
+      console.log('Attempting to scroll to section:', sectionId);
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        console.log('Successfully scrolled to element:', sectionId);
+      } else {
+        console.log('Element not found:', sectionId);
+      }
+    } catch (error) {
+      console.error('Error scrolling to section:', error);
     }
   }, []);
 
