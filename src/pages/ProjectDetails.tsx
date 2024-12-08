@@ -8,18 +8,32 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const { data: projectData, isLoading } = useProjectData(id);
 
-  // Ensure we have serializable data
+  console.log('Raw project data:', projectData);
+
+  // Create a serializable version of the project data
   const project = projectData ? {
-    ...projectData,
-    bids_due: projectData.bids_due ? new Date(projectData.bids_due).toISOString() : null,
+    id: projectData.id,
+    title: projectData.title,
+    stage: projectData.stage,
+    location: projectData.location,
+    industry: projectData.industry,
+    project_class: projectData.project_class,
+    detail_of_services: projectData.detail_of_services,
+    questions_contact: projectData.questions_contact,
     prebid_datetime: projectData.prebid_datetime ? new Date(projectData.prebid_datetime).toISOString() : null,
-    created_at: projectData.created_at ? new Date(projectData.created_at).toISOString() : null,
-    updated_at: projectData.updated_at ? new Date(projectData.updated_at).toISOString() : null,
+    prebid_location: projectData.prebid_location,
+    prequalification: projectData.prequalification,
+    prequalification_info: projectData.prequalification_info,
+    bids_due: projectData.bids_due ? new Date(projectData.bids_due).toISOString() : null,
     bids: projectData.bids?.map(bid => ({
-      ...bid,
+      id: bid.id,
+      status: bid.status,
       response_date: bid.response_date ? new Date(bid.response_date).toISOString() : null,
-      created_at: bid.created_at ? new Date(bid.created_at).toISOString() : null,
-      updated_at: bid.updated_at ? new Date(bid.updated_at).toISOString() : null
+      profiles: bid.profiles ? {
+        company_name: bid.profiles.company_name,
+        contact_email: bid.profiles.contact_email,
+        phone: bid.profiles.phone
+      } : null
     }))
   } : null;
 
