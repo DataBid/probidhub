@@ -2,23 +2,27 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
-import { useState, useCallback } from "react";
+import { useState } from "react";
+
+interface ChecklistItem {
+  id: string;
+  task: string;
+  completed: boolean;
+  sectionId: string;
+  progress: number;
+}
 
 interface ProjectChecklistTabProps {
   project: {
     id: string;
     title: string;
-    [key: string]: any;
   };
 }
 
 export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
-  console.log('Rendering ProjectChecklistTab with project:', { 
-    id: project?.id,
-    title: project?.title 
-  });
+  console.log('Rendering ProjectChecklistTab with project ID:', project?.id);
   
-  const [checklistItems] = useState([
+  const [checklistItems] = useState<ChecklistItem[]>([
     { 
       id: '1', 
       task: "Review Project Details", 
@@ -60,7 +64,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
   const totalTasks = checklistItems.length;
   const overallProgress = Math.floor((completedTasks / totalTasks) * 100);
 
-  const scrollToSection = useCallback((sectionId: string) => {
+  const handleSectionClick = (sectionId: string) => {
     console.log('Attempting to scroll to section:', sectionId);
     try {
       const element = document.getElementById(sectionId);
@@ -73,7 +77,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
     } catch (error) {
       console.error('Error scrolling to section:', error);
     }
-  }, []);
+  };
 
   return (
     <div className="space-y-6">
@@ -112,7 +116,7 @@ export const ProjectChecklistTab = ({ project }: ProjectChecklistTabProps) => {
                     variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
-                    onClick={() => scrollToSection(item.sectionId)}
+                    onClick={() => handleSectionClick(item.sectionId)}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     Go to section
