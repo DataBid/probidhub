@@ -1,7 +1,6 @@
 import { MapPin, DollarSign, Building, Calendar, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ProjectLocationMap } from "./ProjectLocationMap";
 
 interface ProjectDetailsTabProps {
   project: any;
@@ -40,13 +39,6 @@ export const ProjectDetailsTab = ({ project }: ProjectDetailsTabProps) => {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Project Location</h3>
-          <ProjectLocationMap project={project} />
         </CardContent>
       </Card>
 
