@@ -7,56 +7,63 @@ interface SafeProject {
   id: string;
   title: string;
   stage?: string;
-  bids_due?: string;
-  questions_contact?: string;
-  location?: string;
-  industry?: string;
-  project_class?: string;
-  detail_of_services?: string;
-  prebid_datetime?: string;
-  prebid_location?: string;
+  bids_due?: string | null;
+  questions_contact?: string | null;
+  location?: string | null;
+  industry?: string | null;
+  project_class?: string | null;
+  detail_of_services?: string | null;
+  prebid_datetime?: string | null;
+  prebid_location?: string | null;
   prequalification?: boolean;
-  prequalification_info?: string;
+  prequalification_info?: string | null;
   bids?: Array<{
     id: string;
     status: string;
-    response_date?: string;
+    response_date?: string | null;
     profiles?: {
-      company_name?: string;
-      contact_email?: string;
-      phone?: string;
-    };
+      company_name?: string | null;
+      contact_email?: string | null;
+      phone?: string | null;
+    } | null;
   }>;
 }
 
 // Create serializable test data
-const createTestProject = (): SafeProject => ({
-  id: "test-id",
-  title: "New Commercial Building Construction",
-  stage: "Active",
-  bids_due: new Date("2024-05-15").toISOString(),
-  questions_contact: "John Smith (john.smith@construction.com)",
-  location: "433 Penn St, Newtown, PA 18940",
-  industry: "Commercial Construction",
-  project_class: "Class A",
-  detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking.",
-  prebid_datetime: new Date("2024-04-01T14:00:00").toISOString(),
-  prebid_location: "433 Penn St, Newtown, PA 18940",
-  prequalification: true,
-  prequalification_info: "Contractors must demonstrate experience with similar scale commercial projects.",
-  bids: [
-    {
-      id: "bid-1",
-      status: "Pending",
-      response_date: new Date("2024-03-20").toISOString(),
-      profiles: {
-        company_name: "ABC Contractors Ltd",
-        contact_email: "contact@abccontractors.com",
-        phone: "555-0123"
+const createTestProject = (): SafeProject => {
+  // Create a base object with all fields explicitly set to avoid undefined
+  const project: SafeProject = {
+    id: "test-id",
+    title: "New Commercial Building Construction",
+    stage: "Active",
+    bids_due: "2024-05-15T00:00:00Z",
+    questions_contact: "John Smith (john.smith@construction.com)",
+    location: "433 Penn St, Newtown, PA 18940",
+    industry: "Commercial Construction",
+    project_class: "Class A",
+    detail_of_services: "Construction of a new 10-story commercial building including office spaces, retail areas, and underground parking.",
+    prebid_datetime: "2024-04-01T14:00:00Z",
+    prebid_location: "433 Penn St, Newtown, PA 18940",
+    prequalification: true,
+    prequalification_info: "Contractors must demonstrate experience with similar scale commercial projects.",
+    bids: [
+      {
+        id: "bid-1",
+        status: "Pending",
+        response_date: "2024-03-20T00:00:00Z",
+        profiles: {
+          company_name: "ABC Contractors Ltd",
+          contact_email: "contact@abccontractors.com",
+          phone: "555-0123"
+        }
       }
-    }
-  ]
-});
+    ]
+  };
+
+  // Log the stringified data to verify it's serializable
+  console.log('Test project data (stringified):', JSON.stringify(project, null, 2));
+  return project;
+};
 
 export const useProjectData = (projectId?: string) => {
   return useQuery({
@@ -66,7 +73,6 @@ export const useProjectData = (projectId?: string) => {
       
       // For development, return test data
       const testProject = createTestProject();
-      console.log('Returning serializable test data:', JSON.stringify(testProject, null, 2));
       return testProject;
 
       // The following code will be used when connecting to Supabase:
@@ -80,7 +86,7 @@ export const useProjectData = (projectId?: string) => {
       try {
         const { data, error } = await supabase
           .from('projects')
-          .select(`
+          .select(\`
             id,
             title,
             stage,
@@ -103,7 +109,7 @@ export const useProjectData = (projectId?: string) => {
                 phone
               )
             )
-          `)
+          \`)
           .eq('id', projectId)
           .single();
 
@@ -114,13 +120,13 @@ export const useProjectData = (projectId?: string) => {
         }
 
         // Ensure dates are serialized
-        const serializedData = {
+        const serializedData: SafeProject = {
           ...data,
-          bids_due: data.bids_due ? new Date(data.bids_due).toISOString() : undefined,
-          prebid_datetime: data.prebid_datetime ? new Date(data.prebid_datetime).toISOString() : undefined,
+          bids_due: data.bids_due ? new Date(data.bids_due).toISOString() : null,
+          prebid_datetime: data.prebid_datetime ? new Date(data.prebid_datetime).toISOString() : null,
           bids: data.bids?.map(bid => ({
             ...bid,
-            response_date: bid.response_date ? new Date(bid.response_date).toISOString() : undefined
+            response_date: bid.response_date ? new Date(bid.response_date).toISOString() : null
           }))
         };
 
