@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@supabase/auth-helpers-react";
 
-// Update schema to match required fields
+// Update schema to match required fields from Supabase
 const subcontractorSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   company: z.string().min(2, "Company name must be at least 2 characters"),
@@ -62,8 +62,15 @@ export function SubcontractorForm({ open, onOpenChange, subcontractor, onSuccess
         throw new Error("User not authenticated");
       }
 
+      // Ensure all required fields are present in the submission
       const submissionData = {
-        ...data,
+        name: data.name,
+        company: data.company,
+        trade: data.trade,
+        email: data.email,
+        phone: data.phone || null,
+        location: data.location || null,
+        notes: data.notes || null,
         gc_id: user.id,
         status: 'active' as const
       };
