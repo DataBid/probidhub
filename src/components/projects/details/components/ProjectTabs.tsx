@@ -4,42 +4,43 @@ import { ProjectFilesTab } from "../ProjectFilesTab";
 import { ProjectSubcontractorsTab } from "../ProjectSubcontractorsTab";
 import { ProjectIntelligenceTab } from "../ProjectIntelligenceTab";
 import { SimilarProjects } from "../SimilarProjects";
-
-interface ProjectBid {
-  id: string;
-  status: string;
-  response_date: string | null;
-  profiles?: {
-    company_name?: string | null;
-    contact_email?: string | null;
-    phone?: string | null;
-  } | null;
-}
-
-interface SerializedProject {
-  id: string;
-  title: string;
-  stage?: string | null;
-  location?: string | null;
-  industry?: string | null;
-  project_class?: string | null;
-  detail_of_services?: string | null;
-  questions_contact?: string | null;
-  prebid_datetime?: string | null;
-  prebid_location?: string | null;
-  prequalification?: boolean | null;
-  prequalification_info?: string | null;
-  bids_due?: string | null;
-  bids?: ProjectBid[];
-}
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProjectTabsProps {
-  project: SerializedProject;
+  projectId: string;
 }
 
-export const ProjectTabs = ({ project }: ProjectTabsProps) => {
-  // Add logging to track the data being passed
-  console.log('Project data in ProjectTabs:', JSON.stringify(project, null, 2));
+export const ProjectTabs = ({ projectId }: ProjectTabsProps) => {
+  const { data: projectDetails } = useQuery({
+    queryKey: ['project-details', projectId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select(`
+          id,
+          title,
+          stage,
+          location,
+          industry,
+          project_class,
+          detail_of_services,
+          questions_contact,
+          prebid_datetime,
+          prebid_location,
+          prequalification,
+          prequalification_info,
+          bids_due
+        `)
+        .eq('id', projectId)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  console.log('Project tabs - Project ID:', projectId);
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -53,25 +54,25 @@ export const ProjectTabs = ({ project }: ProjectTabsProps) => {
           </TabsList>
 
           <TabsContent value="details" className="m-0">
-            <ProjectDetailsTab project={project} />
+            <ProjectDetailsTab project={projectDetails} />
           </TabsContent>
 
           <TabsContent value="files" className="m-0">
-            <ProjectFilesTab project={project} />
+            <ProjectFilesTab projectId={projectId} />
           </TabsContent>
 
           <TabsContent value="subcontractors" className="m-0">
-            <ProjectSubcontractorsTab project={project} />
+            <ProjectSubcontractorsTab projectId={projectId} />
           </TabsContent>
 
           <TabsContent value="intelligence" className="m-0">
-            <ProjectIntelligenceTab project={project} />
+            <ProjectIntelligenceTab projectId={projectId} />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mt-6">
-        <SimilarProjects currentProject={project} />
+        <SimilarProjects currentProjectId={projectId} />
       </div>
     </div>
   );

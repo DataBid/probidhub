@@ -8,26 +8,37 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const { data: project, isLoading } = useProjectData(id);
 
-  // Add logging to track the data flow
-  console.log('Project data received:', {
-    id: project?.id,
-    title: project?.title,
-    hasData: !!project
-  });
+  console.log('Project details page - Project ID:', id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-muted flex items-center justify-center">
+          <div>Loading...</div>
+        </div>
+      </MainLayout>
+    );
   }
 
-  if (!project) {
-    return <div>Project not found</div>;
+  if (!project?.id) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-muted flex items-center justify-center">
+          <div>Project not found</div>
+        </div>
+      </MainLayout>
+    );
   }
 
   return (
     <MainLayout>
       <div className="min-h-screen bg-muted">
-        <ProjectHeader project={project} />
-        <ProjectTabs project={project} />
+        <ProjectHeader 
+          title={project.title}
+          stage={project.stage}
+          location={project.location}
+        />
+        <ProjectTabs projectId={project.id} />
       </div>
     </MainLayout>
   );

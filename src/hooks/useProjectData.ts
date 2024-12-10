@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { serializeProject } from "@/utils/projectUtils";
 
 export const useProjectData = (projectId?: string) => {
   return useQuery({
-    queryKey: ['project', projectId],
+    queryKey: ['project-basic', projectId],
     queryFn: async () => {
       if (!projectId) {
         console.error('No project ID provided');
@@ -16,31 +15,7 @@ export const useProjectData = (projectId?: string) => {
       try {
         const { data, error } = await supabase
           .from('projects')
-          .select(`
-            id,
-            title,
-            stage,
-            location,
-            industry,
-            project_class,
-            detail_of_services,
-            questions_contact,
-            prebid_datetime,
-            prebid_location,
-            prequalification,
-            prequalification_info,
-            bids_due,
-            bids (
-              id,
-              status,
-              response_date,
-              profiles (
-                company_name,
-                contact_email,
-                phone
-              )
-            )
-          `)
+          .select('id, title, stage, location')
           .eq('id', projectId)
           .single();
 
@@ -50,14 +25,12 @@ export const useProjectData = (projectId?: string) => {
           throw error;
         }
 
-        // Log raw data for debugging
-        console.log('Raw data from Supabase:', {
+        console.log('Basic project data fetched:', {
           id: data?.id,
           title: data?.title
         });
 
-        const serializedData = serializeProject(data);
-        return serializedData;
+        return data;
       } catch (error) {
         console.error('Query error:', error);
         toast.error('An error occurred while fetching project details');
