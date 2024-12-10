@@ -10,10 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "@supabase/auth-helpers-react";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const session = useSession();
 
   // Fetch notifications
   const { data: notifications } = useQuery({
@@ -34,13 +36,21 @@ export const Navbar = () => {
       console.log("Fetched notifications:", data);
       return data || [];
     },
+    enabled: !!session, // Only fetch if there's a session
   });
 
   const handleSignOut = async () => {
     try {
       console.log("Signing out...");
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      
+      // Only attempt to sign out if we have a session
+      if (session) {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error("Error signing out:", error);
+          throw error;
+        }
+      }
       
       toast({
         title: "Signed out successfully",
@@ -48,15 +58,22 @@ export const Navbar = () => {
       });
       
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing out:", error);
+      // Even if there's an error, we'll redirect to the login page
+      navigate("/");
       toast({
-        title: "Error signing out",
-        description: "Please try again",
-        variant: "destructive",
+        title: "Session ended",
+        description: "You have been signed out",
+        duration: 2000,
       });
     }
   };
+
+  // If there's no session, don't render the navbar
+  if (!session) {
+    return null;
+  }
 
   return (
     <nav className="border-b bg-white">
