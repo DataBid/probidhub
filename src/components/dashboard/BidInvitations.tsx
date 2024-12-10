@@ -4,6 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { BidInvitationFilters } from "./bid-invitations/BidInvitationFilters";
 import { BidInvitationItem } from "./bid-invitations/BidInvitationItem";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface BidInvitationsProps {
   userRole?: string;
@@ -14,7 +17,7 @@ export const BidInvitations = ({ userRole }: BidInvitationsProps) => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
 
-  const { data: bids, isLoading } = useQuery({
+  const { data: bids, isLoading, error } = useQuery({
     queryKey: ["bid-invitations", statusFilter, dateFilter],
     queryFn: async () => {
       let query = supabase
@@ -59,6 +62,8 @@ export const BidInvitations = ({ userRole }: BidInvitationsProps) => {
       if (error) throw error;
       return data;
     },
+    gcTime: 30 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const handleReminder = async (bidId: string, email: string) => {
@@ -87,8 +92,37 @@ export const BidInvitations = ({ userRole }: BidInvitationsProps) => {
     }
   };
 
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error loading bid invitations</AlertTitle>
+        <AlertDescription>
+          There was a problem loading your bid invitations. Please try refreshing the page.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-construction-900">
+          {userRole === "gc" ? "Recent Bid Invitations" : "Your Bid Invitations"}
+        </h2>
+        <BidInvitationFilters
+          statusFilter={statusFilter}
+          dateFilter={dateFilter}
+          onStatusChange={setStatusFilter}
+          onDateChange={setDateFilter}
+        />
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

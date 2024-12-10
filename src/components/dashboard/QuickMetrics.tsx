@@ -1,13 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUp, ArrowDown, HelpCircle } from "lucide-react";
+import { ArrowUp, ArrowDown, HelpCircle, AlertCircle } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MetricsData {
   activeProjects: number;
@@ -25,12 +27,11 @@ interface QuickMetricsProps {
 }
 
 export const QuickMetrics = ({ userRole }: QuickMetricsProps) => {
-  const { data: metrics } = useQuery({
+  const { data: metrics, isLoading, error } = useQuery({
     queryKey: ['dashboard-metrics'],
     queryFn: async () => {
       console.log('Fetching dashboard metrics...');
       
-      // Get current metrics
       const { data: projects, error: projectsError } = await supabase
         .from('projects')
         .select(`
@@ -64,15 +65,46 @@ export const QuickMetrics = ({ userRole }: QuickMetricsProps) => {
         responseRate: 3
       };
 
-      console.log('Processed metrics:', { activeProjects, totalBids, responseRate, trends });
       return {
         activeProjects,
         totalBids,
         responseRate,
         trends
       } as MetricsData;
-    }
+    },
+    gcTime: 30 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error loading metrics</AlertTitle>
+        <AlertDescription>
+          There was a problem loading your metrics. Please try again later.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div>
+        <h2 className="text-base sm:text-lg font-semibold text-construction-900 mb-3 sm:mb-4">Quick Metrics</h2>
+        <div className="grid gap-2 sm:gap-4 grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="bg-white">
+              <CardContent className="p-3 sm:p-4 lg:pt-6">
+                <Skeleton className="h-8 w-24 mb-2" />
+                <Skeleton className="h-4 w-32" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const getTrendIcon = (trend: number) => {
     if (trend > 0) {

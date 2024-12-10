@@ -9,21 +9,50 @@ import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserProfile } from "./hooks/useUserProfile";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 export const DashboardLayout = () => {
   const session = useSession();
-  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const { data: userProfile, isLoading: isLoadingProfile, error: profileError } = useUserProfile();
   const isGC = userProfile?.role === "gc";
 
   if (isLoadingProfile) {
-    return <DashboardSkeleton />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (profileError) {
+    return (
+      <div className="p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            There was an error loading your profile. Please try refreshing the page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   }
 
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
       <DashboardActions userRole={userProfile?.role} />
       
-      <Suspense fallback={<Skeleton className="h-32" />}>
+      <Suspense fallback={
+        <div className="space-y-4">
+          <Skeleton className="h-32 w-full" />
+          <div className="grid grid-cols-3 gap-4">
+            <Skeleton className="h-24" />
+            <Skeleton className="h-24" />
+            <Skeleton className="h-24" />
+          </div>
+        </div>
+      }>
         <QuickMetrics userRole={userProfile?.role} />
       </Suspense>
 
@@ -40,18 +69,33 @@ export const DashboardLayout = () => {
           )}
         </div>
 
-        <Suspense fallback={<Skeleton className="h-[calc(100vh-16rem)]" />}>
+        <Suspense fallback={
+          <div className="space-y-4">
+            <Skeleton className="h-12" />
+            <Skeleton className="h-[calc(100vh-16rem)]" />
+          </div>
+        }>
           <RecentProjectsSection userRole={userProfile?.role} isGC={isGC} />
         </Suspense>
       </div>
 
       {isGC && (
-        <Suspense fallback={<Skeleton className="h-96" />}>
+        <Suspense fallback={
+          <div className="space-y-4">
+            <Skeleton className="h-12" />
+            <Skeleton className="h-96" />
+          </div>
+        }>
           <ProjectsAttentionSection userRole={userProfile?.role} />
         </Suspense>
       )}
 
-      <Suspense fallback={<Skeleton className="h-96" />}>
+      <Suspense fallback={
+        <div className="space-y-4">
+          <Skeleton className="h-12" />
+          <Skeleton className="h-96" />
+        </div>
+      }>
         <AnalyticsSnapshot userRole={userProfile?.role} />
       </Suspense>
     </div>
