@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +7,6 @@ import { Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { useSession } from "@supabase/auth-helpers-react";
 
 export const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,15 +16,6 @@ export const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const session = useSession();
-
-  useEffect(() => {
-    console.log("AuthForm - Checking session:", session ? "Session exists" : "No session");
-    if (session) {
-      console.log("AuthForm - Session exists, redirecting to dashboard");
-      navigate("/dashboard");
-    }
-  }, [session, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +25,10 @@ export const AuthForm = () => {
     try {
       if (isLogin) {
         console.log("Attempting login...");
-        const { data: { session }, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        
-        console.log("Login response:", { session, error });
         
         if (error) {
           console.error("Login error:", error);
@@ -52,14 +40,12 @@ export const AuthForm = () => {
           return;
         }
         
-        if (session) {
-          console.log("Login successful, redirecting to dashboard");
-          toast({
-            title: "Success",
-            description: "Successfully logged in",
-          });
-          navigate("/dashboard");
-        }
+        console.log("Login successful, navigating to dashboard");
+        navigate("/dashboard");
+        toast({
+          title: "Success",
+          description: "Successfully logged in",
+        });
       } else {
         if (!role) {
           toast({
@@ -80,7 +66,6 @@ export const AuthForm = () => {
             },
           },
         });
-        console.log("Signup response:", { data, signUpError });
 
         if (signUpError) {
           console.error("Signup error:", signUpError);
@@ -108,11 +93,6 @@ export const AuthForm = () => {
       setIsLoading(false);
     }
   };
-
-  // If there's already a session, don't render the form
-  if (session) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-construction-50">

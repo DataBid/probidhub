@@ -14,19 +14,13 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
-      console.log("MainLayout - Checking session:", session ? "Session exists" : "No session");
-      
-      if (!session) {
-        console.log("MainLayout - No session, redirecting to login");
-        navigate("/");
-      }
-      
-      setIsLoading(false);
-    };
-
-    checkSession();
-  }, [session, navigate]);
+    console.log("MainLayout - Session check:", session ? "Session exists" : "No session");
+    if (!session && !isLoading) {
+      console.log("MainLayout - No session, redirecting to login");
+      navigate("/");
+    }
+    setIsLoading(false);
+  }, [session, navigate, isLoading]);
 
   if (isLoading) {
     return <div>Loading...</div>;
