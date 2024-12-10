@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Link } from "react-router-dom";
 
 interface Project {
   id: string;
@@ -21,7 +22,12 @@ export const ProjectTableRow = ({ project, getStatusBadge }: ProjectTableRowProp
     <TableRow key={project.id}>
       <TableCell className="font-medium">
         <div className="flex items-center gap-2">
-          {project.title}
+          <Link 
+            to={`/projects/${project.id}`}
+            className="text-primary hover:underline"
+          >
+            {project.title}
+          </Link>
           <Badge variant="secondary" className={getStatusBadge(project.stage || "pending")}>
             {project.stage || "pending"}
           </Badge>
