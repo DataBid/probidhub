@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@supabase/auth-helpers-react";
 
 const subcontractorSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -39,6 +40,8 @@ interface SubcontractorFormProps {
 
 export function SubcontractorForm({ open, onOpenChange, subcontractor, onSuccess }: SubcontractorFormProps) {
   const { toast } = useToast();
+  const auth = useAuth();
+  
   const form = useForm<SubcontractorFormValues>({
     resolver: zodResolver(subcontractorSchema),
     defaultValues: subcontractor || {
@@ -54,10 +57,20 @@ export function SubcontractorForm({ open, onOpenChange, subcontractor, onSuccess
 
   const onSubmit = async (data: SubcontractorFormValues) => {
     try {
+      if (!auth?.user?.id) {
+        throw new Error("User not authenticated");
+      }
+
+      const submissionData = {
+        ...data,
+        gc_id: auth.user.id,
+        status: 'active'
+      };
+
       if (subcontractor?.id) {
         const { error } = await supabase
           .from("subcontractors")
-          .update(data)
+          .update(submissionData)
           .eq("id", subcontractor.id);
 
         if (error) throw error;
@@ -68,7 +81,7 @@ export function SubcontractorForm({ open, onOpenChange, subcontractor, onSuccess
       } else {
         const { error } = await supabase
           .from("subcontractors")
-          .insert([data]);
+          .insert([submissionData]);
 
         if (error) throw error;
         toast({
