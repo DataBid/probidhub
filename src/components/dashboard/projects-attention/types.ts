@@ -7,9 +7,14 @@ export interface Bid {
 export interface Project {
   id: string;
   title: string;
+  stage: string;
+  location: string;
+  industry: string | null;
+  project_class: string | null;
   bids_due: string;
-  project_document_info: string | null;
-  questions_contact: string | null;
+  prequalification: boolean | null;
+  created_at: string;
+  updated_at: string;
   bids: Bid[];
   pendingBids: number;
   issues: string[];

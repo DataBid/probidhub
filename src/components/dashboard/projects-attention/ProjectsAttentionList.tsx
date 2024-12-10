@@ -54,8 +54,8 @@ export const ProjectsAttentionList = ({ onExport }: { onExport: (projects: Proje
 
   const calculateIssues = (project: any) => {
     const issues = [];
-    if (!project.project_document_info) issues.push("Missing documents");
-    if (!project.questions_contact) issues.push("Missing contact info");
+    if (project.stage === "pending") issues.push("Project pending review");
+    if (!project.industry) issues.push("Missing industry information");
     return issues;
   };
 

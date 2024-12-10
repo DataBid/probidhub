@@ -34,7 +34,7 @@ const ProjectDetails = () => {
     );
   }
 
-  if (error || !project?.id) {
+  if (error || !project) {
     return (
       <MainLayout>
         <div className="min-h-screen bg-muted flex items-center justify-center">
