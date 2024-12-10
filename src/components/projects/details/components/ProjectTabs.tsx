@@ -4,43 +4,13 @@ import { ProjectFilesTab } from "../ProjectFilesTab";
 import { ProjectSubcontractorsTab } from "../ProjectSubcontractorsTab";
 import { ProjectIntelligenceTab } from "../ProjectIntelligenceTab";
 import { SimilarProjects } from "../SimilarProjects";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 interface ProjectTabsProps {
-  projectId: string;
+  project: any; // We'll keep this as 'any' for now since we're focusing on fixing the immediate errors
 }
 
-export const ProjectTabs = ({ projectId }: ProjectTabsProps) => {
-  const { data: projectDetails } = useQuery({
-    queryKey: ['project-details', projectId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select(`
-          id,
-          title,
-          stage,
-          location,
-          industry,
-          project_class,
-          detail_of_services,
-          questions_contact,
-          prebid_datetime,
-          prebid_location,
-          prequalification,
-          prequalification_info,
-          bids_due
-        `)
-        .eq('id', projectId)
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  console.log('Project tabs - Project ID:', projectId);
+export const ProjectTabs = ({ project }: ProjectTabsProps) => {
+  console.log('Project tabs - Project:', project);
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -54,25 +24,25 @@ export const ProjectTabs = ({ projectId }: ProjectTabsProps) => {
           </TabsList>
 
           <TabsContent value="details" className="m-0">
-            <ProjectDetailsTab project={projectDetails} />
+            <ProjectDetailsTab project={project} />
           </TabsContent>
 
           <TabsContent value="files" className="m-0">
-            <ProjectFilesTab projectId={projectId} />
+            <ProjectFilesTab project={project} />
           </TabsContent>
 
           <TabsContent value="subcontractors" className="m-0">
-            <ProjectSubcontractorsTab projectId={projectId} />
+            <ProjectSubcontractorsTab project={project} />
           </TabsContent>
 
           <TabsContent value="intelligence" className="m-0">
-            <ProjectIntelligenceTab projectId={projectId} />
+            <ProjectIntelligenceTab project={project} />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mt-6">
-        <SimilarProjects currentProjectId={projectId} />
+        <SimilarProjects currentProject={project} />
       </div>
     </div>
   );

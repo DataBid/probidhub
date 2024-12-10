@@ -12,10 +12,36 @@ export const useProjectData = (projectId?: string) => {
         throw new Error('Project ID is required');
       }
 
+      console.log('Fetching project data for ID:', projectId);
+
       try {
         const { data, error } = await supabase
           .from('projects')
-          .select('id, title, stage, location')
+          .select(`
+            id,
+            title,
+            stage,
+            location,
+            industry,
+            project_class,
+            detail_of_services,
+            questions_contact,
+            prebid_datetime,
+            prebid_location,
+            prequalification,
+            prequalification_info,
+            bids_due,
+            bids (
+              id,
+              status,
+              response_date,
+              profiles (
+                company_name,
+                contact_email,
+                phone
+              )
+            )
+          `)
           .eq('id', projectId)
           .single();
 
@@ -25,11 +51,7 @@ export const useProjectData = (projectId?: string) => {
           throw error;
         }
 
-        console.log('Basic project data fetched:', {
-          id: data?.id,
-          title: data?.title
-        });
-
+        console.log('Project data fetched:', data);
         return data;
       } catch (error) {
         console.error('Query error:', error);

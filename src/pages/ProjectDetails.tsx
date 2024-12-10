@@ -33,12 +33,8 @@ const ProjectDetails = () => {
   return (
     <MainLayout>
       <div className="min-h-screen bg-muted">
-        <ProjectHeader 
-          title={project.title}
-          stage={project.stage}
-          location={project.location}
-        />
-        <ProjectTabs projectId={project.id} />
+        <ProjectHeader project={project} />
+        <ProjectTabs project={project} />
       </div>
     </MainLayout>
   );
