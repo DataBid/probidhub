@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody } from "@/components/ui/table";
-import { subDays, startOfDay, endOfDay, addDays } from "date-fns";
 import { ProjectFilters } from "./projects/ProjectFilters";
 import { ProjectTableHeader } from "./projects/ProjectTableHeader";
 import { ProjectTableRow } from "./projects/ProjectTableRow";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 interface RecentProjectsProps {
   userRole?: string;
@@ -24,9 +25,9 @@ export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: projects, isLoading } = useQuery({
-    queryKey: ["recent-projects", sortField, sortDirection, statusFilter, deadlineFilter, searchQuery],
+    queryKey: ["recent-projects", sortField, sortDirection, statusFilter, deadlineFilter],
     queryFn: async () => {
-      console.log("Fetching projects with filters:", { statusFilter, deadlineFilter, sortField, searchQuery });
+      console.log("Fetching projects with filters:", { statusFilter, deadlineFilter, sortField });
       let query = supabase
         .from("projects")
         .select(`
@@ -73,11 +74,6 @@ export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
           break;
       }
 
-      // Apply search filter if provided
-      if (searchQuery) {
-        query = query.ilike("title", `%${searchQuery}%`);
-      }
-
       const { data, error } = await query
         .order(sortField, { ascending: sortDirection === "asc" })
         .limit(5);
@@ -114,21 +110,38 @@ export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
     return <div>Loading...</div>;
   }
 
+  // Filter projects based on search query
+  const filteredProjects = projects?.filter(project => 
+    !searchQuery || project.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="space-y-4">
-      <ProjectFilters
-        statusFilter={statusFilter}
-        deadlineFilter={deadlineFilter}
-        onStatusChange={(value) => setStatusFilter(value as StatusFilter)}
-        onDeadlineChange={(value) => setDeadlineFilter(value as DeadlineFilter)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <Input
+            type="text"
+            placeholder="Search projects..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-8 w-full text-sm py-1.5 h-8"
+            autoComplete="off"
+          />
+        </div>
+
+        <ProjectFilters
+          statusFilter={statusFilter}
+          deadlineFilter={deadlineFilter}
+          onStatusChange={(value) => setStatusFilter(value as StatusFilter)}
+          onDeadlineChange={(value) => setDeadlineFilter(value as DeadlineFilter)}
+        />
+      </div>
 
       <Table>
         <ProjectTableHeader onSort={handleSort} />
         <TableBody>
-          {projects?.map((project) => (
+          {filteredProjects?.map((project) => (
             <ProjectTableRow
               key={project.id}
               project={project}
