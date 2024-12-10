@@ -11,15 +11,22 @@ const Index = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        console.log("Index - Session check:", user ? "User found" : "No user found");
+        console.log("Checking initial session...");
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
         
-        if (user) {
-          console.log("Index - User exists, redirecting to dashboard");
+        if (error) {
+          console.error("Initial session check error:", error);
+          return;
+        }
+
+        if (currentSession) {
+          console.log("Active session found, redirecting to dashboard");
           navigate("/dashboard");
+        } else {
+          console.log("No active session found, showing login form");
         }
       } catch (error) {
-        console.error("Session check error:", error);
+        console.error("Session verification error:", error);
       }
     };
 

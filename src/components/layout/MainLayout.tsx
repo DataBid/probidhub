@@ -16,37 +16,40 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!session) {
-      console.log("MainLayout - No session, redirecting to login");
-      navigate("/");
-      return;
-    }
-
     const checkSession = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        console.log("User verification result:", user ? "User found" : "No user found");
+        console.log("Checking session state...");
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
         
-        if (error || !user) {
-          console.log("Session verification failed:", error?.message);
+        if (error) {
+          console.error("Session check error:", error);
           toast({
-            title: "Session expired",
+            title: "Session error",
             description: "Please log in again",
             variant: "destructive",
           });
-          await supabase.auth.signOut();
           navigate("/");
+          return;
         }
+
+        if (!currentSession) {
+          console.log("No active session found");
+          navigate("/");
+          return;
+        }
+
+        console.log("Valid session found");
       } catch (error) {
-        console.error("Session check error:", error);
+        console.error("Session verification error:", error);
         navigate("/");
       }
     };
 
     checkSession();
-  }, [session, navigate, supabase.auth, toast]);
+  }, [navigate, supabase.auth, toast]);
 
   if (!session) {
+    console.log("No session in context, returning null");
     return null;
   }
 
