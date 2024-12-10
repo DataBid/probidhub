@@ -1,16 +1,61 @@
-import { Home, FileText, Users, Settings } from "lucide-react";
+import { Home, FileText, Users, Settings, Search, Inbox, Award, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useSession } from "@supabase/auth-helpers-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const DashboardSidebar = () => {
   const navigate = useNavigate();
+  const session = useSession();
   
-  const menuItems = [
-    { icon: Home, label: "Dashboard", href: "/dashboard" },
-    { icon: FileText, label: "Projects", href: "/projects" },
-    { icon: Users, label: "Contractors", href: "/contractors" },
-    { icon: Settings, label: "Settings", href: "/settings" },
-  ];
+  const { data: userProfile } = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        throw error;
+      }
+
+      return data;
+    },
+    enabled: !!session?.user?.id,
+  });
+
+  const getMenuItems = () => {
+    const baseItems = [
+      { icon: Home, label: "Dashboard", href: "/dashboard" },
+      { icon: Settings, label: "Settings", href: "/settings" },
+    ];
+
+    const gcItems = [
+      { icon: FileText, label: "Projects", href: "/projects" },
+      { icon: Users, label: "Subcontractors", href: "/contractors" },
+      { icon: BarChart, label: "Analytics", href: "/analytics" },
+    ];
+
+    const subItems = [
+      { icon: Inbox, label: "Invitations", href: "/invitations" },
+      { icon: Search, label: "Find Projects", href: "/projects" },
+      { icon: Award, label: "Prequalification", href: "/prequalification" },
+    ];
+
+    return [
+      ...baseItems,
+      ...(userProfile?.role === "gc" ? gcItems : []),
+      ...(userProfile?.role === "sub" ? subItems : []),
+    ];
+  };
+
+  const menuItems = getMenuItems();
 
   const MenuContent = () => (
     <div className="space-y-2">
@@ -40,7 +85,7 @@ export const DashboardSidebar = () => {
       {/* Mobile Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t lg:hidden z-50">
         <div className="flex justify-around items-center h-16">
-          {menuItems.map((item) => (
+          {menuItems.slice(0, 4).map((item) => (
             <Button
               key={item.label}
               variant="ghost"
