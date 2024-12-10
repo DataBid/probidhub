@@ -1,7 +1,6 @@
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -61,11 +60,7 @@ const Dashboard = () => {
     return null;
   }
 
-  return (
-    <MainLayout>
-      <DashboardLayout />
-    </MainLayout>
-  );
+  return <DashboardLayout />;
 };
 
 export default Dashboard;

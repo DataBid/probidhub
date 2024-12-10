@@ -1,4 +1,3 @@
-import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProjectTableHeader } from "@/components/dashboard/projects/ProjectTableHeader";
 import { ProjectTableRow } from "@/components/dashboard/projects/ProjectTableRow";
@@ -54,50 +53,48 @@ const Projects = () => {
   };
 
   return (
-    <MainLayout>
-      <div className="container mx-auto py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Projects</h1>
-          <ProjectFilters
-            statusFilter={statusFilter}
-            deadlineFilter={deadlineFilter}
-            onStatusChange={setStatusFilter}
-            onDeadlineChange={setDeadlineFilter}
-          />
-        </div>
-
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <ProjectTableHeader onSort={handleSort} />
-              <TableBody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={5} className="text-center py-4">
-                      Loading projects...
-                    </td>
-                  </tr>
-                ) : projects && projects.length > 0 ? (
-                  projects.map((project) => (
-                    <ProjectTableRow
-                      key={project.id}
-                      project={project}
-                      getStatusBadge={getStatusBadge}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="text-center py-4">
-                      No projects found
-                    </td>
-                  </tr>
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+    <div className="container mx-auto py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Projects</h1>
+        <ProjectFilters
+          statusFilter={statusFilter}
+          deadlineFilter={deadlineFilter}
+          onStatusChange={setStatusFilter}
+          onDeadlineChange={setDeadlineFilter}
+        />
       </div>
-    </MainLayout>
+
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <ProjectTableHeader onSort={handleSort} />
+            <TableBody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-4">
+                    Loading projects...
+                  </td>
+                </tr>
+              ) : projects && projects.length > 0 ? (
+                projects.map((project) => (
+                  <ProjectTableRow
+                    key={project.id}
+                    project={project}
+                    getStatusBadge={getStatusBadge}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center py-4">
+                    No projects found
+                  </td>
+                </tr>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

@@ -1,26 +1,26 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { DashboardPage } from "@/pages/Dashboard";
-import { ProjectsPage } from "@/pages/Projects";
-import { ProjectDetailsPage } from "@/pages/ProjectDetails";
+import Dashboard from "@/pages/Dashboard";
+import Projects from "@/pages/Projects";
+import ProjectDetails from "@/pages/ProjectDetails";
 import { SubcontractorsPage } from "@/pages/Subcontractors";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: <MainLayout><Outlet /></MainLayout>,
     children: [
       {
         index: true,
-        element: <DashboardPage />,
+        element: <Dashboard />,
       },
       {
         path: "projects",
-        element: <ProjectsPage />,
+        element: <Projects />,
       },
       {
         path: "projects/:id",
-        element: <ProjectDetailsPage />,
+        element: <ProjectDetails />,
       },
       {
         path: "subcontractors",
