@@ -1,9 +1,12 @@
 import { Home, FileText, Users, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export const DashboardSidebar = () => {
+  const navigate = useNavigate();
+  
   const menuItems = [
-    { icon: Home, label: "Dashboard", href: "/" },
+    { icon: Home, label: "Dashboard", href: "/dashboard" },
     { icon: FileText, label: "Projects", href: "/projects" },
     { icon: Users, label: "Contractors", href: "/contractors" },
     { icon: Settings, label: "Settings", href: "/settings" },
@@ -16,7 +19,7 @@ export const DashboardSidebar = () => {
           key={item.label}
           variant="ghost"
           className="w-full justify-start"
-          onClick={() => console.log(`Navigate to ${item.href}`)}
+          onClick={() => navigate(item.href)}
         >
           <item.icon className="mr-2 h-4 w-4" />
           {item.label}
@@ -43,7 +46,7 @@ export const DashboardSidebar = () => {
               variant="ghost"
               size="sm"
               className="flex flex-col items-center justify-center h-full w-full space-y-1 hover:bg-accent"
-              onClick={() => console.log(`Navigate to ${item.href}`)}
+              onClick={() => navigate(item.href)}
             >
               <item.icon className="h-5 w-5" />
               <span className="text-xs">{item.label}</span>
