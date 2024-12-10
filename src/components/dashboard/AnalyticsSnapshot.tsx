@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { downloadCSV, prepareAnalyticsData } from "@/utils/exportUtils";
 import { useToast } from "@/components/ui/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface AnalyticsSnapshotProps {
   userRole?: string;
@@ -21,10 +22,10 @@ export const AnalyticsSnapshot = ({ userRole }: AnalyticsSnapshotProps) => {
   const [chartType, setChartType] = useState('line');
   const { toast } = useToast();
 
-  const { data: analyticsData } = useQuery({
+  const { data: analyticsData, isLoading } = useQuery({
     queryKey: ['dashboard-analytics', timeRange],
     queryFn: async () => {
-      console.log('Fetching analytics data for last', timeRange, 'days...');
+      console.log('AnalyticsSnapshot: Fetching analytics data for last', timeRange, 'days...');
       const startDate = subDays(new Date(), parseInt(timeRange));
       
       const { data: projects, error: projectsError } = await supabase
@@ -42,7 +43,7 @@ export const AnalyticsSnapshot = ({ userRole }: AnalyticsSnapshotProps) => {
         .gte('created_at', startDate.toISOString());
 
       if (projectsError) {
-        console.error('Error fetching projects:', projectsError);
+        console.error('AnalyticsSnapshot: Error fetching projects:', projectsError);
         throw projectsError;
       }
 
@@ -60,9 +61,12 @@ export const AnalyticsSnapshot = ({ userRole }: AnalyticsSnapshotProps) => {
         };
       }) || [];
 
-      console.log('Processed analytics data:', responseRateData);
+      console.log('AnalyticsSnapshot: Processed analytics data:', responseRateData);
       return responseRateData;
-    }
+    },
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false,
   });
 
   const handleExport = () => {
@@ -85,6 +89,10 @@ export const AnalyticsSnapshot = ({ userRole }: AnalyticsSnapshotProps) => {
   };
 
   const renderChart = (data: any[], dataKey: string) => {
+    if (isLoading) {
+      return <Skeleton className="h-[300px]" />;
+    }
+    
     if (chartType === 'line') {
       return <AnalyticsLineChart data={data} dataKey={dataKey} />;
     }
@@ -109,6 +117,7 @@ export const AnalyticsSnapshot = ({ userRole }: AnalyticsSnapshotProps) => {
             size="sm" 
             onClick={handleExport}
             className="w-full sm:w-auto"
+            disabled={isLoading || !analyticsData?.length}
           >
             <Download className="w-4 h-4 mr-2" />
             Export

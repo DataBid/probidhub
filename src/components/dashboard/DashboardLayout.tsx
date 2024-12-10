@@ -8,13 +8,16 @@ import { BidInvitationsSection } from "./bid-invitations/BidInvitationsSection";
 import { RecentProjectsSection } from "./projects/RecentProjectsSection";
 import { ProjectsAttentionSection } from "./projects-attention/ProjectsAttentionSection";
 import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const DashboardLayout = () => {
   const session = useSession();
 
-  const { data: userProfile } = useQuery({
-    queryKey: ["user-profile"],
+  const { data: userProfile, isLoading: isLoadingProfile } = useQuery({
+    queryKey: ["user-profile", session?.user?.id],
     queryFn: async () => {
+      console.log("DashboardLayout: Fetching user profile for:", session?.user?.id);
       if (!session?.user?.id) return null;
       
       const { data, error } = await supabase
@@ -24,46 +27,75 @@ export const DashboardLayout = () => {
         .single();
 
       if (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("DashboardLayout: Error fetching user profile:", error);
         throw error;
       }
 
+      console.log("DashboardLayout: User profile fetched:", data);
       return data;
     },
     enabled: !!session?.user?.id,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
   });
 
   const isGC = userProfile?.role === "gc";
 
+  if (isLoadingProfile) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
-      {/* Actions Row */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-        <DashboardActions userRole={userProfile?.role} />
-      </div>
+      <DashboardActions userRole={userProfile?.role} />
+      
+      <Suspense fallback={<Skeleton className="h-32" />}>
+        <QuickMetrics userRole={userProfile?.role} />
+      </Suspense>
 
-      {/* Quick Metrics */}
-      <QuickMetrics userRole={userProfile?.role} />
-
-      {/* Two Column Layout */}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
-        {/* Left Column */}
         <div className="space-y-4 sm:space-y-6">
-          <RecentBidNotifications userRole={userProfile?.role} />
+          <Suspense fallback={<Skeleton className="h-64" />}>
+            <RecentBidNotifications userRole={userProfile?.role} />
+          </Suspense>
           
-          {/* Bid Invitations - Only show for GCs */}
-          {isGC && <BidInvitationsSection userRole={userProfile?.role} />}
+          {isGC && (
+            <Suspense fallback={<Skeleton className="h-64" />}>
+              <BidInvitationsSection userRole={userProfile?.role} />
+            </Suspense>
+          )}
         </div>
 
-        {/* Right Column */}
-        <RecentProjectsSection userRole={userProfile?.role} isGC={isGC} />
+        <Suspense fallback={<Skeleton className="h-[calc(100vh-16rem)]" />}>
+          <RecentProjectsSection userRole={userProfile?.role} isGC={isGC} />
+        </Suspense>
       </div>
 
-      {/* Projects Requiring Attention - Only show for GCs */}
-      {isGC && <ProjectsAttentionSection userRole={userProfile?.role} />}
+      {isGC && (
+        <Suspense fallback={<Skeleton className="h-96" />}>
+          <ProjectsAttentionSection userRole={userProfile?.role} />
+        </Suspense>
+      )}
 
-      {/* Analytics Snapshot */}
-      <AnalyticsSnapshot userRole={userProfile?.role} />
+      <Suspense fallback={<Skeleton className="h-96" />}>
+        <AnalyticsSnapshot userRole={userProfile?.role} />
+      </Suspense>
     </div>
   );
 };
+
+const DashboardSkeleton = () => (
+  <div className="px-2 sm:px-6 space-y-4 sm:space-y-6">
+    <Skeleton className="h-20" />
+    <Skeleton className="h-32" />
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
+      <div className="space-y-4">
+        <Skeleton className="h-64" />
+        <Skeleton className="h-64" />
+      </div>
+      <Skeleton className="h-[calc(100vh-16rem)]" />
+    </div>
+    <Skeleton className="h-96" />
+    <Skeleton className="h-96" />
+  </div>
+);
