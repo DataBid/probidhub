@@ -9,6 +9,7 @@ import Index from "@/pages/Index";
 import Projects from "@/pages/Projects";
 import ProjectDetails from "@/pages/ProjectDetails";
 import Subcontractors from "@/pages/Subcontractors";
+import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,10 +60,29 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [initialSession, setInitialSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("App: Initial session fetch:", session?.user?.id || 'No session');
+      setInitialSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("App: Auth state changed:", session?.user?.id || 'No session');
+      setInitialSession(session);
+    });
+
+    return () => {
+      console.log("App: Cleaning up auth listener");
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <SessionContextProvider 
       supabaseClient={supabase}
-      initialSession={null}
+      initialSession={initialSession}
     >
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
