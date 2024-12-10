@@ -24,8 +24,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, currentSession) => {
-      console.log("MainLayout: Auth state changed:", event, currentSession?.user?.id || 'No session');
+    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      console.log("MainLayout: Auth state changed:", currentSession?.user?.id || 'No session');
       if (!currentSession) {
         navigate("/");
       }

@@ -63,12 +63,25 @@ function App() {
   const [initialSession, setInitialSession] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("App: Initial session fetch:", session?.user?.id || 'No session');
-      setInitialSession(session);
-    });
+    // Initialize session
+    const initSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("App: Session initialization error:", error);
+          return;
+        }
+        console.log("App: Initial session fetch:", session?.user?.id || 'No session');
+        setInitialSession(session);
+      } catch (error) {
+        console.error("App: Error initializing session:", error);
+      }
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    initSession();
+
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log("App: Auth state changed:", session?.user?.id || 'No session');
       setInitialSession(session);
     });
