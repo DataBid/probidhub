@@ -12,7 +12,6 @@ export const ProjectDetailsTab = ({ project }: ProjectDetailsTabProps) => {
       <Card>
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold mb-4">Project Overview</h3>
-          <p className="text-gray-600 mb-6">{project.detail_of_services || 'No description available'}</p>
           
           <div className="grid gap-6 md:grid-cols-3">
             <div className="flex items-start gap-3">
@@ -52,16 +51,10 @@ export const ProjectDetailsTab = ({ project }: ProjectDetailsTabProps) => {
                 <div className="flex items-start gap-3">
                   <Calendar className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium mb-2">Pre-bid Meeting</h4>
-                    {project.prebid_datetime ? (
-                      <div className="text-sm text-gray-600 space-y-1">
-                        <p>Date: {new Date(project.prebid_datetime).toLocaleDateString()}</p>
-                        <p>Time: {new Date(project.prebid_datetime).toLocaleTimeString()}</p>
-                        <p>Location: {project.prebid_location || 'TBD'}</p>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-600">No pre-bid meeting scheduled</p>
-                    )}
+                    <h4 className="font-medium mb-2">Bid Due Date</h4>
+                    <p className="text-sm text-gray-600">
+                      {project.bids_due ? new Date(project.bids_due).toLocaleDateString() : 'Not specified'}
+                    </p>
                   </div>
                 </div>
 
@@ -71,14 +64,9 @@ export const ProjectDetailsTab = ({ project }: ProjectDetailsTabProps) => {
                   <Users className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                   <div>
                     <h4 className="font-medium mb-2">Prequalification</h4>
-                    {project.prequalification ? (
-                      <div className="text-sm text-gray-600">
-                        <p className="font-medium text-primary">Required</p>
-                        <p className="mt-1">{project.prequalification_info}</p>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-600">Not required</p>
-                    )}
+                    <p className="text-sm text-gray-600">
+                      {project.prequalification ? 'Required' : 'Not required'}
+                    </p>
                   </div>
                 </div>
               </div>
