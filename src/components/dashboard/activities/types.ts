@@ -7,7 +7,7 @@ export interface Activity {
   details: unknown;
   created_at: string;
   profiles?: {
-    contact_email: string;
+    contact_email: string | null;
     company_name: string | null;
   } | null;
 }
