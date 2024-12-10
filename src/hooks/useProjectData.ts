@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { serializeProject, type SerializedProject } from "@/utils/projectUtils";
+import { serializeProject } from "@/utils/projectUtils";
 
 export const useProjectData = (projectId?: string) => {
   return useQuery({
     queryKey: ['project', projectId],
     queryFn: async () => {
-      console.log('Fetching project with ID:', projectId);
-      
       if (!projectId) {
         console.error('No project ID provided');
         toast.error('Project ID is required');
@@ -52,9 +50,13 @@ export const useProjectData = (projectId?: string) => {
           throw error;
         }
 
-        console.log('Raw data from Supabase:', data);
+        // Log raw data for debugging
+        console.log('Raw data from Supabase:', {
+          id: data?.id,
+          title: data?.title
+        });
+
         const serializedData = serializeProject(data);
-        console.log('Serialized project data:', serializedData);
         return serializedData;
       } catch (error) {
         console.error('Query error:', error);

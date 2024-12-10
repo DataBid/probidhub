@@ -1,5 +1,4 @@
 import { serializeDate } from "./dateUtils";
-import CircularJSON from "circular-json";
 
 export interface ProjectBid {
   id: string;
@@ -30,9 +29,12 @@ export interface SerializedProject {
 }
 
 export const serializeProject = (projectData: any): SerializedProject => {
+  if (!projectData) {
+    console.warn('No project data to serialize');
+    return {} as SerializedProject;
+  }
+
   try {
-    console.log('Serializing project data:', projectData);
-    
     const project = {
       id: projectData.id,
       title: projectData.title,
@@ -59,12 +61,9 @@ export const serializeProject = (projectData: any): SerializedProject => {
       }))
     };
 
-    // Validate serialization
-    CircularJSON.stringify(project);
-    console.log('Successfully serialized project:', project);
     return project;
   } catch (error) {
     console.error('Project serialization error:', error);
-    throw new Error('Failed to serialize project data');
+    return {} as SerializedProject;
   }
 };
