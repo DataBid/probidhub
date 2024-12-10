@@ -3,6 +3,7 @@ import { DashboardSidebar } from "./DashboardSidebar";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -14,15 +15,26 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
   useEffect(() => {
     const checkSession = async () => {
-      if (!session) {
-        console.log("No session in MainLayout, redirecting to login");
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        
+        if (!currentSession) {
+          console.log("No valid session found, redirecting to login");
+          navigate("/");
+          return;
+        }
+
+        console.log("Valid session found:", currentSession.user.id);
+      } catch (error) {
+        console.error("Error checking session:", error);
         navigate("/");
       }
     };
 
     checkSession();
-  }, [session, navigate]);
+  }, [navigate]);
 
+  // Only render content if we have a session
   if (!session) {
     return null;
   }
