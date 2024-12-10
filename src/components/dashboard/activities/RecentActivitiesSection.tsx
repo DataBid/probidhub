@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ActivityItem } from "./ActivityItem";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Activity } from "./types";
 
 export const RecentActivitiesSection = () => {
   const session = useSession();
@@ -33,7 +34,7 @@ export const RecentActivitiesSection = () => {
       }
 
       console.log("Fetched activities:", data);
-      return data;
+      return data as Activity[];
     },
     enabled: !!session,
   });
