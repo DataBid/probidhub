@@ -6,10 +6,11 @@ import { Table, TableBody } from "@/components/ui/table";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { StatusFilter, DeadlineFilter } from "@/components/dashboard/projects/hooks/useProjectsData";
 
 const Projects = () => {
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [deadlineFilter, setDeadlineFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
   const [sortField, setSortField] = useState("created_at");
 
   const { data: projects, isLoading } = useQuery({
