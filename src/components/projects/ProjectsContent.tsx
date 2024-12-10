@@ -4,14 +4,15 @@ import { ProjectTableRow } from "@/components/dashboard/projects/ProjectTableRow
 import { Table, TableBody } from "@/components/ui/table";
 import { getStatusBadge } from "@/components/dashboard/projects/utils/statusStyles";
 import { Loader2 } from "lucide-react";
+import { StatusFilter, DeadlineFilter } from "@/components/dashboard/projects/hooks/useProjectsData";
 
 interface ProjectsContentProps {
   projects: any[];
   isLoading: boolean;
-  statusFilter: string;
-  deadlineFilter: string;
-  onStatusChange: (value: any) => void;
-  onDeadlineChange: (value: any) => void;
+  statusFilter: StatusFilter;
+  deadlineFilter: DeadlineFilter;
+  onStatusChange: (value: StatusFilter) => void;
+  onDeadlineChange: (value: DeadlineFilter) => void;
   onSort: (field: string) => void;
 }
 
