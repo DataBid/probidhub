@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody } from "@/components/ui/table";
@@ -6,6 +6,7 @@ import { subDays, startOfDay, endOfDay, addDays } from "date-fns";
 import { ProjectFilters } from "./projects/ProjectFilters";
 import { ProjectTableHeader } from "./projects/ProjectTableHeader";
 import { ProjectTableRow } from "./projects/ProjectTableRow";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface RecentProjectsProps {
   userRole?: string;
@@ -21,12 +22,13 @@ export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 300);
 
   const { data: projects, isLoading } = useQuery({
-    queryKey: ["recent-projects", sortField, sortDirection, statusFilter, deadlineFilter, searchQuery],
+    queryKey: ["recent-projects", sortField, sortDirection, statusFilter, deadlineFilter, debouncedSearch],
     queryFn: async () => {
-      console.log("Fetching projects with filters:", { statusFilter, deadlineFilter, sortField, searchQuery });
+      console.log("Fetching projects with filters:", { statusFilter, deadlineFilter, sortField, searchQuery: debouncedSearch });
       let query = supabase
         .from("projects")
         .select(`
@@ -74,8 +76,8 @@ export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
       }
 
       // Apply search filter if provided
-      if (searchQuery) {
-        query = query.ilike("title", `%${searchQuery}%`);
+      if (debouncedSearch) {
+        query = query.ilike("title", `%${debouncedSearch}%`);
       }
 
       const { data, error } = await query
@@ -121,8 +123,8 @@ export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
         deadlineFilter={deadlineFilter}
         onStatusChange={(value) => setStatusFilter(value as StatusFilter)}
         onDeadlineChange={(value) => setDeadlineFilter(value as DeadlineFilter)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        searchQuery={searchInput}
+        onSearchChange={setSearchInput}
       />
 
       <Table>
