@@ -33,7 +33,12 @@ export const ProjectFilters = ({
           <Input
             placeholder="Search projects..."
             value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => {
+              e.preventDefault();
+              if (onSearchChange) {
+                onSearchChange(e.target.value);
+              }
+            }}
             className="pl-8 w-full"
             autoComplete="off"
           />
