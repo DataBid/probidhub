@@ -9,16 +9,27 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Dashboard: Checking auth...");
+    
     const checkAuth = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data, error } = await supabase.auth.getSession();
         
-        if (error || !session) {
-          console.log("No valid session in Dashboard, redirecting to login");
+        if (error) {
+          console.error("Dashboard: Auth check error:", error);
           navigate("/");
+          return;
         }
+        
+        if (!data.session) {
+          console.log("Dashboard: No valid session, redirecting to login");
+          navigate("/");
+          return;
+        }
+
+        console.log("Dashboard: Valid session found:", data.session.user.id);
       } catch (error) {
-        console.error("Auth check error:", error);
+        console.error("Dashboard: Error checking auth:", error);
         navigate("/");
       }
     };
@@ -27,6 +38,7 @@ const Dashboard = () => {
   }, [navigate, supabase]);
 
   if (!session) {
+    console.log("Dashboard: No session, returning null");
     return null;
   }
 

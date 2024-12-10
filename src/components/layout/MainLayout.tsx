@@ -14,45 +14,50 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("MainLayout: Checking session...");
+    
     const checkSession = async () => {
       try {
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error("Session check error:", error);
+          console.error("MainLayout: Session check error:", error);
           navigate("/");
           return;
         }
         
-        if (!currentSession) {
-          console.log("No valid session found, redirecting to login");
+        if (!data.session) {
+          console.log("MainLayout: No valid session found, redirecting to login");
           navigate("/");
           return;
         }
 
-        console.log("Valid session found:", currentSession.user.id);
+        console.log("MainLayout: Valid session found:", data.session.user.id);
       } catch (error) {
-        console.error("Error checking session:", error);
+        console.error("MainLayout: Error checking session:", error);
         navigate("/");
       }
     };
 
     checkSession();
 
-    // Set up auth state change listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("MainLayout: Auth state changed:", event, session?.user?.id);
       if (!session) {
-        console.log("Auth state changed: No session");
         navigate("/");
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("MainLayout: Cleaning up auth listener");
+      subscription.unsubscribe();
+    };
   }, [navigate, supabase]);
 
   if (!session) {
+    console.log("MainLayout: No session, returning null");
     return null;
   }
 
