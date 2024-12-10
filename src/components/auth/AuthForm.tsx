@@ -18,14 +18,20 @@ export const AuthForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log("Attempting authentication for email:", email);
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        console.log("Attempting login...");
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+        console.log("Login response:", { data, error });
+        
         if (error) throw error;
+        
+        console.log("Login successful:", data);
       } else {
         if (!role) {
           toast({
@@ -36,7 +42,8 @@ export const AuthForm = () => {
           return;
         }
 
-        const { error: signUpError } = await supabase.auth.signUp({
+        console.log("Attempting signup with role:", role);
+        const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -45,6 +52,7 @@ export const AuthForm = () => {
             },
           },
         });
+        console.log("Signup response:", { data, signUpError });
 
         if (signUpError) throw signUpError;
 
@@ -54,6 +62,7 @@ export const AuthForm = () => {
         });
       }
     } catch (error: any) {
+      console.error("Authentication error:", error);
       toast({
         title: "Error",
         description: error.message,
