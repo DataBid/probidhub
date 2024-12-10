@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "@supabase/auth-helpers-react";
@@ -6,23 +6,17 @@ import { useSession } from "@supabase/auth-helpers-react";
 const Index = () => {
   const session = useSession();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
-      console.log("Index - Initial session check:", session ? "Session exists" : "No session");
-      if (session) {
-        console.log("Index - Session found, redirecting to dashboard");
-        navigate("/dashboard");
-      }
-      setIsLoading(false);
-    };
-
-    checkSession();
+    console.log("Index - Session check:", session ? "Session exists" : "No session");
+    if (session) {
+      console.log("Index - Session exists, redirecting to dashboard");
+      navigate("/dashboard");
+    }
   }, [session, navigate]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (session) {
+    return null;
   }
 
   return <AuthForm />;
