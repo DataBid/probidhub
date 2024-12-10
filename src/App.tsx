@@ -5,6 +5,7 @@ import Projects from "@/pages/Projects";
 import ProjectDetails from "@/pages/ProjectDetails";
 import { SubcontractorsPage } from "@/pages/Subcontractors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Index from "@/pages/Index";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -19,6 +20,10 @@ const queryClient = new QueryClient({
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Index />,
+  },
+  {
+    path: "/dashboard",
     element: <MainLayout><Outlet /></MainLayout>,
     children: [
       {

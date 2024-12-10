@@ -1,11 +1,28 @@
 import { Navbar } from "./Navbar";
 import { DashboardSidebar } from "./DashboardSidebar";
+import { useSession } from "@supabase/auth-helpers-react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
+  const session = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!session) {
+      console.log("No session in MainLayout, redirecting to login");
+      navigate("/");
+    }
+  }, [session, navigate]);
+
+  if (!session) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-muted">
       <Navbar />
