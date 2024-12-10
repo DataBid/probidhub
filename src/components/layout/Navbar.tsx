@@ -41,22 +41,23 @@ export const Navbar = () => {
 
   const handleSignOut = async () => {
     try {
-      console.log("Attempting to sign out...");
+      console.log("Starting sign out process...");
       
-      // First clear all local storage
-      localStorage.clear();
-      
-      // Then sign out from Supabase
+      // First clear session from Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        console.error("Error during sign out:", error);
-        // Even if there's an error, we'll redirect to login
-        navigate("/");
-        return;
+        console.error("Supabase sign out error:", error);
       }
       
-      console.log("Successfully signed out");
+      // Clear any local storage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Force clear the session
+      await supabase.auth.setSession(null);
+      
+      console.log("Sign out completed, redirecting to login");
       navigate("/");
       
       toast({
@@ -64,9 +65,10 @@ export const Navbar = () => {
         duration: 2000,
       });
     } catch (error) {
-      console.error("Sign out error:", error);
-      // Even if there's an error, we'll clear storage and redirect
+      console.error("Sign out process error:", error);
+      // Even if there's an error, clear storage and redirect
       localStorage.clear();
+      sessionStorage.clear();
       navigate("/");
       toast({
         title: "Session ended",

@@ -51,7 +51,7 @@ export default function App() {
   return (
     <SessionContextProvider 
       supabaseClient={supabase}
-      initialSession={null} // Explicitly set initial session
+      initialSession={null}
     >
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />

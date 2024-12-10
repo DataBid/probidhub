@@ -13,10 +13,14 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!session) {
-      console.log("No session in MainLayout, redirecting to login");
-      navigate("/");
-    }
+    const checkSession = async () => {
+      if (!session) {
+        console.log("No session in MainLayout, redirecting to login");
+        navigate("/");
+      }
+    };
+
+    checkSession();
   }, [session, navigate]);
 
   if (!session) {
