@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody } from "@/components/ui/table";
+import { startOfDay, endOfDay, addDays } from "date-fns";
 import { ProjectFilters } from "./projects/ProjectFilters";
 import { ProjectTableHeader } from "./projects/ProjectTableHeader";
 import { ProjectTableRow } from "./projects/ProjectTableRow";
