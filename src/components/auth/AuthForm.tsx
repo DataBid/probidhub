@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useSession } from "@supabase/auth-helpers-react";
 
 export const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +17,15 @@ export const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const session = useSession();
+
+  useEffect(() => {
+    console.log("AuthForm - Checking session:", session ? "Session exists" : "No session");
+    if (session) {
+      console.log("AuthForm - Session exists, redirecting to dashboard");
+      navigate("/dashboard");
+    }
+  }, [session, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +108,11 @@ export const AuthForm = () => {
       setIsLoading(false);
     }
   };
+
+  // If there's already a session, don't render the form
+  if (session) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-construction-50">

@@ -1,7 +1,7 @@
 import { Navbar } from "./Navbar";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { useSession } from "@supabase/auth-helpers-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface MainLayoutProps {
@@ -11,13 +11,26 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const session = useSession();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!session) {
-      console.log("No session in MainLayout, redirecting to login");
-      navigate("/");
-    }
+    const checkSession = async () => {
+      console.log("MainLayout - Checking session:", session ? "Session exists" : "No session");
+      
+      if (!session) {
+        console.log("MainLayout - No session, redirecting to login");
+        navigate("/");
+      }
+      
+      setIsLoading(false);
+    };
+
+    checkSession();
   }, [session, navigate]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (!session) {
     return null;
