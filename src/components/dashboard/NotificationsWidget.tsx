@@ -8,7 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-export const NotificationsWidget = () => {
+interface NotificationsWidgetProps {
+  userRole?: string;
+}
+
+export const NotificationsWidget = ({ userRole }: NotificationsWidgetProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 

@@ -7,12 +7,16 @@ import { ProjectFilters } from "./projects/ProjectFilters";
 import { ProjectTableHeader } from "./projects/ProjectTableHeader";
 import { ProjectTableRow } from "./projects/ProjectTableRow";
 
+interface RecentProjectsProps {
+  userRole?: string;
+}
+
 type SortField = "created_at" | "bids_due" | "stage";
 type SortDirection = "asc" | "desc";
 type StatusFilter = "all" | "active" | "closed" | "pending";
 type DeadlineFilter = "all" | "week" | "month" | "past";
 
-export const RecentProjects = () => {
+export const RecentProjects = ({ userRole }: RecentProjectsProps) => {
   const [sortField, setSortField] = useState<SortField>("created_at");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
