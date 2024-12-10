@@ -1,7 +1,7 @@
 import { Navbar } from "./Navbar";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -14,6 +14,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
   const supabase = useSupabaseClient();
   const { toast } = useToast();
+  const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -42,14 +43,25 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       } catch (error) {
         console.error("Session verification error:", error);
         navigate("/");
+      } finally {
+        setIsVerifying(false);
       }
     };
 
-    checkSession();
-  }, [navigate, supabase.auth, toast]);
+    if (!session) {
+      checkSession();
+    } else {
+      setIsVerifying(false);
+    }
+  }, [navigate, supabase.auth, toast, session]);
 
+  // Show nothing while verifying to prevent flash
+  if (isVerifying) {
+    return null;
+  }
+
+  // Only show layout if we have a session
   if (!session) {
-    console.log("No session in context, returning null");
     return null;
   }
 
