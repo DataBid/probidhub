@@ -5,12 +5,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StatusFilter, DeadlineFilter } from "./hooks/useProjectsData";
 
 interface ProjectFiltersProps {
-  statusFilter: string;
-  deadlineFilter: string;
-  onStatusChange: (value: string) => void;
-  onDeadlineChange: (value: string) => void;
+  statusFilter: StatusFilter;
+  deadlineFilter: DeadlineFilter;
+  onStatusChange: (value: StatusFilter) => void;
+  onDeadlineChange: (value: DeadlineFilter) => void;
 }
 
 export const ProjectFilters = ({
