@@ -9,11 +9,10 @@ import Index from "@/pages/Index";
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabase } from "@/integrations/supabase/client";
 
-// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       retry: 1,
     },
   },
@@ -50,7 +49,7 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <SessionContextProvider supabaseClient={supabase} initialSession={null}>
+    <SessionContextProvider supabaseClient={supabase}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
