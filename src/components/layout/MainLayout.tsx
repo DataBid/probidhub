@@ -1,9 +1,7 @@
 import { Navbar } from "./Navbar";
 import { DashboardSidebar } from "./DashboardSidebar";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useSession } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,56 +10,11 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const session = useSession();
   const navigate = useNavigate();
-  const supabase = useSupabaseClient();
-  const { toast } = useToast();
-  const [isVerifying, setIsVerifying] = useState(true);
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        console.log("Checking session state...");
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Session check error:", error);
-          toast({
-            title: "Session error",
-            description: "Please log in again",
-            variant: "destructive",
-          });
-          navigate("/");
-          return;
-        }
-
-        if (!currentSession) {
-          console.log("No active session found");
-          navigate("/");
-          return;
-        }
-
-        console.log("Valid session found");
-      } catch (error) {
-        console.error("Session verification error:", error);
-        navigate("/");
-      } finally {
-        setIsVerifying(false);
-      }
-    };
-
-    if (!session) {
-      checkSession();
-    } else {
-      setIsVerifying(false);
-    }
-  }, [navigate, supabase.auth, toast, session]);
-
-  // Show nothing while verifying to prevent flash
-  if (isVerifying) {
-    return null;
-  }
-
-  // Only show layout if we have a session
+  // Redirect if no session
   if (!session) {
+    console.log("No session in MainLayout, redirecting to login");
+    navigate("/");
     return null;
   }
 
