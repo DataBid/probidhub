@@ -6,6 +6,7 @@ import { RoleSelect } from "./RoleSelect";
 import { Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,24 +15,41 @@ export const AuthForm = () => {
   const [role, setRole] = useState<"gc" | "sub" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log("Attempting authentication for email:", email);
+    console.log("Starting authentication process for email:", email);
 
     try {
       if (isLogin) {
         console.log("Attempting login...");
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data: { session }, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        console.log("Login response:", { data, error });
         
-        if (error) throw error;
+        console.log("Login response:", { session, error });
         
-        console.log("Login successful:", data);
+        if (error) {
+          console.error("Login error:", error);
+          toast({
+            title: "Login failed",
+            description: error.message,
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (session) {
+          console.log("Login successful, redirecting to dashboard");
+          toast({
+            title: "Success",
+            description: "Successfully logged in",
+          });
+          navigate("/dashboard");
+        }
       } else {
         if (!role) {
           toast({
@@ -54,7 +72,15 @@ export const AuthForm = () => {
         });
         console.log("Signup response:", { data, signUpError });
 
-        if (signUpError) throw signUpError;
+        if (signUpError) {
+          console.error("Signup error:", signUpError);
+          toast({
+            title: "Error",
+            description: signUpError.message,
+            variant: "destructive",
+          });
+          return;
+        }
 
         toast({
           title: "Success",
