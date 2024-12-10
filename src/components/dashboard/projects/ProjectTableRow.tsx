@@ -9,7 +9,8 @@ interface Project {
   title: string;
   stage: string;
   created_at: string;
-  bids_due: string | null;
+  bids_due: string;
+  bids?: { id: string }[];
 }
 
 interface ProjectTableRowProps {
@@ -18,6 +19,8 @@ interface ProjectTableRowProps {
 }
 
 export const ProjectTableRow = ({ project, getStatusBadge }: ProjectTableRowProps) => {
+  const inviteCount = project.bids?.length || 0;
+
   return (
     <TableRow key={project.id}>
       <TableCell className="font-medium">
@@ -28,9 +31,6 @@ export const ProjectTableRow = ({ project, getStatusBadge }: ProjectTableRowProp
           >
             {project.title}
           </Link>
-          <Badge variant="secondary" className={getStatusBadge(project.stage || "pending")}>
-            {project.stage || "pending"}
-          </Badge>
         </div>
       </TableCell>
       <TableCell>
@@ -39,17 +39,15 @@ export const ProjectTableRow = ({ project, getStatusBadge }: ProjectTableRowProp
       <TableCell>
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-gray-500" />
-          {project.bids_due
-            ? format(new Date(project.bids_due), "MMM d, yyyy")
-            : "No deadline"}
+          {format(new Date(project.bids_due), "MMM d, yyyy")}
         </div>
       </TableCell>
       <TableCell>
-        <Badge variant="outline" className={getStatusBadge(project.stage || "pending")}>
-          {project.stage || "Unknown"}
+        <Badge variant="outline" className={getStatusBadge(project.stage)}>
+          {project.stage}
         </Badge>
       </TableCell>
-      <TableCell>0</TableCell>
+      <TableCell>{inviteCount}</TableCell>
     </TableRow>
   );
 };

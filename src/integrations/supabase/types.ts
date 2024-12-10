@@ -225,84 +225,39 @@ export type Database = {
       }
       projects: {
         Row: {
-          bids_due: string | null
-          bids_due_to: string | null
+          bids_due: string
           created_at: string
-          databid_id: string | null
-          databid_reporter: string | null
-          detail_of_services: string | null
-          dows: string | null
           id: string
           industry: string | null
-          latitude: number | null
           location: string
-          longitude: number | null
-          prebid_datetime: string | null
-          prebid_location: string | null
           prequalification: boolean | null
-          prequalification_info: string | null
-          project_bid_no: string | null
           project_class: string | null
-          project_document_info: string | null
-          questions_contact: string | null
-          sector: string | null
-          stage: string | null
+          stage: string
           title: string
-          trade: string | null
           updated_at: string
         }
         Insert: {
-          bids_due?: string | null
-          bids_due_to?: string | null
+          bids_due: string
           created_at?: string
-          databid_id?: string | null
-          databid_reporter?: string | null
-          detail_of_services?: string | null
-          dows?: string | null
           id?: string
           industry?: string | null
-          latitude?: number | null
           location: string
-          longitude?: number | null
-          prebid_datetime?: string | null
-          prebid_location?: string | null
           prequalification?: boolean | null
-          prequalification_info?: string | null
-          project_bid_no?: string | null
           project_class?: string | null
-          project_document_info?: string | null
-          questions_contact?: string | null
-          sector?: string | null
-          stage?: string | null
+          stage: string
           title: string
-          trade?: string | null
           updated_at?: string
         }
         Update: {
-          bids_due?: string | null
-          bids_due_to?: string | null
+          bids_due?: string
           created_at?: string
-          databid_id?: string | null
-          databid_reporter?: string | null
-          detail_of_services?: string | null
-          dows?: string | null
           id?: string
           industry?: string | null
-          latitude?: number | null
           location?: string
-          longitude?: number | null
-          prebid_datetime?: string | null
-          prebid_location?: string | null
           prequalification?: boolean | null
-          prequalification_info?: string | null
-          project_bid_no?: string | null
           project_class?: string | null
-          project_document_info?: string | null
-          questions_contact?: string | null
-          sector?: string | null
-          stage?: string | null
+          stage?: string
           title?: string
-          trade?: string | null
           updated_at?: string
         }
         Relationships: []

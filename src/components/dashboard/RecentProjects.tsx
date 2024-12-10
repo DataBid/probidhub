@@ -9,7 +9,7 @@ import { ProjectTableRow } from "./projects/ProjectTableRow";
 
 type SortField = "created_at" | "bids_due" | "stage";
 type SortDirection = "asc" | "desc";
-type StatusFilter = "all" | "active" | "closed";
+type StatusFilter = "all" | "active" | "closed" | "pending";
 type DeadlineFilter = "all" | "week" | "month" | "past";
 
 export const RecentProjects = () => {
@@ -21,9 +21,22 @@ export const RecentProjects = () => {
   const { data: projects, isLoading } = useQuery({
     queryKey: ["recent-projects", sortField, sortDirection, statusFilter, deadlineFilter],
     queryFn: async () => {
+      console.log("Fetching projects with filters:", { statusFilter, deadlineFilter, sortField });
       let query = supabase
         .from("projects")
-        .select("*");
+        .select(`
+          id,
+          title,
+          stage,
+          location,
+          project_class,
+          industry,
+          bids_due,
+          created_at,
+          bids (
+            id
+          )
+        `);
 
       if (statusFilter !== "all") {
         query = query.eq("stage", statusFilter);
@@ -48,7 +61,11 @@ export const RecentProjects = () => {
         .order(sortField, { ascending: sortDirection === "asc" })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching projects:", error);
+        throw error;
+      }
+      
       return data;
     },
   });
