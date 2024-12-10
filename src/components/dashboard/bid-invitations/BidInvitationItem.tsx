@@ -15,9 +15,10 @@ interface BidInvitationItemProps {
   };
   onReminder: (bidId: string, email: string) => void;
   getStatusStyles: (status: string) => string;
+  userRole?: string;
 }
 
-export const BidInvitationItem = ({ bid, onReminder, getStatusStyles }: BidInvitationItemProps) => {
+export const BidInvitationItem = ({ bid, onReminder, getStatusStyles, userRole }: BidInvitationItemProps) => {
   return (
     <div
       className={`flex items-center justify-between p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow ${
@@ -39,7 +40,7 @@ export const BidInvitationItem = ({ bid, onReminder, getStatusStyles }: BidInvit
         >
           {bid.status}
         </span>
-        {bid.status !== "responded" && (
+        {bid.status !== "responded" && userRole === "gc" && (
           <Button
             variant="outline"
             size="sm"

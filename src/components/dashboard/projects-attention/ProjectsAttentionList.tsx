@@ -7,7 +7,12 @@ import { useProjectsAttention } from "./hooks/useProjectsAttention";
 import { ProjectsAttentionHeader } from "./components/ProjectsAttentionHeader";
 import { calculateBidRates } from "./utils/bidRateUtils";
 
-export const ProjectsAttentionList = ({ onExport }: { onExport: (projects: Project[]) => void }) => {
+interface ProjectsAttentionListProps {
+  onExport: (projects: Project[]) => void;
+  userRole?: string;
+}
+
+export const ProjectsAttentionList = ({ onExport, userRole }: ProjectsAttentionListProps) => {
   const [sortBy, setSortBy] = useState("deadline");
   const { data: projects, isLoading, refetch } = useProjectsAttention(sortBy);
 
