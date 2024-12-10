@@ -2,12 +2,12 @@ import { useSession } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { QuickMetrics } from "./QuickMetrics";
-import { NotificationsWidget } from "./NotificationsWidget";
-import { BidInvitations } from "./BidInvitations";
-import { RecentProjects } from "./RecentProjects";
-import { ProjectsAttention } from "./ProjectsAttention";
-import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
 import { DashboardActions } from "./DashboardActions";
+import { RecentBidNotifications } from "./notifications/RecentBidNotifications";
+import { BidInvitationsSection } from "./bid-invitations/BidInvitationsSection";
+import { RecentProjectsSection } from "./projects/RecentProjectsSection";
+import { ProjectsAttentionSection } from "./projects-attention/ProjectsAttentionSection";
+import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
 
 export const DashboardLayout = () => {
   const session = useSession();
@@ -37,48 +37,32 @@ export const DashboardLayout = () => {
 
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
-      {/* Actions Row - Stack vertically on mobile */}
+      {/* Actions Row */}
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
         <DashboardActions userRole={userProfile?.role} />
       </div>
 
-      {/* Quick Metrics - Responsive grid */}
+      {/* Quick Metrics */}
       <QuickMetrics userRole={userProfile?.role} />
 
-      {/* Two Column Layout - Stack on mobile */}
+      {/* Two Column Layout */}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
         {/* Left Column */}
         <div className="space-y-4 sm:space-y-6">
-          {/* Recent Bid Notifications */}
-          <div className="rounded-lg border bg-white shadow-sm p-3 sm:p-6">
-            <NotificationsWidget userRole={userProfile?.role} />
-          </div>
+          <RecentBidNotifications userRole={userProfile?.role} />
           
-          {/* Bid Invitations - Only show for appropriate role */}
-          {isGC && (
-            <div className="rounded-lg border bg-white shadow-sm p-3 sm:p-6">
-              <BidInvitations />
-            </div>
-          )}
+          {/* Bid Invitations - Only show for GCs */}
+          {isGC && <BidInvitationsSection userRole={userProfile?.role} />}
         </div>
 
         {/* Right Column */}
-        <div className="rounded-lg border bg-white shadow-sm p-3 sm:p-6">
-          <h2 className="text-lg font-semibold text-construction-900 mb-4 sm:mb-6">
-            {isGC ? "Recently Posted Projects" : "Available Projects"}
-          </h2>
-          <RecentProjects userRole={userProfile?.role} />
-        </div>
+        <RecentProjectsSection userRole={userProfile?.role} isGC={isGC} />
       </div>
 
       {/* Projects Requiring Attention - Only show for GCs */}
-      {isGC && (
-        <div className="rounded-lg border bg-white shadow-sm p-3 sm:p-6 w-full">
-          <ProjectsAttention />
-        </div>
-      )}
+      {isGC && <ProjectsAttentionSection userRole={userProfile?.role} />}
 
-      {/* Analytics Snapshot - Show different metrics based on role */}
+      {/* Analytics Snapshot */}
       <AnalyticsSnapshot userRole={userProfile?.role} />
     </div>
   );
