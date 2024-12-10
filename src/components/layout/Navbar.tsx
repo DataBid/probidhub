@@ -70,11 +70,6 @@ export const Navbar = () => {
     }
   };
 
-  // If there's no session, don't render the navbar
-  if (!session) {
-    return null;
-  }
-
   return (
     <nav className="border-b bg-white">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
