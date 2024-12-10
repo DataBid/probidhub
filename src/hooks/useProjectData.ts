@@ -12,6 +12,14 @@ export const useProjectData = (projectId?: string) => {
         throw new Error('Project ID is required');
       }
 
+      // Validate UUID format
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(projectId)) {
+        console.error('Invalid project ID format:', projectId);
+        toast.error('Invalid project ID format');
+        throw new Error('Invalid project ID format');
+      }
+
       console.log('Fetching project data for ID:', projectId);
 
       try {
