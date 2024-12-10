@@ -1,9 +1,8 @@
 import { Navbar } from "./Navbar";
 import { DashboardSidebar } from "./DashboardSidebar";
-import { useSession } from "@supabase/auth-helpers-react";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -11,12 +10,19 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const session = useSession();
+  const supabase = useSupabaseClient();
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Session check error:", error);
+          navigate("/");
+          return;
+        }
         
         if (!currentSession) {
           console.log("No valid session found, redirecting to login");
@@ -32,9 +38,20 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     };
 
     checkSession();
-  }, [navigate]);
 
-  // Only render content if we have a session
+    // Set up auth state change listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        console.log("Auth state changed: No session");
+        navigate("/");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, supabase]);
+
   if (!session) {
     return null;
   }

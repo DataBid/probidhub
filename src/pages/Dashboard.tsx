@@ -1,22 +1,30 @@
-import { useSession } from "@supabase/auth-helpers-react";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 
 const Dashboard = () => {
   const session = useSession();
+  const supabase = useSupabaseClient();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkSession = async () => {
-      if (!session) {
-        console.log("No session in Dashboard, redirecting to login");
+    const checkAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error || !session) {
+          console.log("No valid session in Dashboard, redirecting to login");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
         navigate("/");
       }
     };
 
-    checkSession();
-  }, [session, navigate]);
+    checkAuth();
+  }, [navigate, supabase]);
 
   if (!session) {
     return null;
