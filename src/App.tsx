@@ -50,10 +50,10 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionContextProvider supabaseClient={supabase}>
+    <SessionContextProvider supabaseClient={supabase} initialSession={null}>
+      <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-      </SessionContextProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </SessionContextProvider>
   );
 }
