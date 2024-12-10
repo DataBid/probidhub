@@ -6,6 +6,7 @@ import { BidInvitationsSection } from "./bid-invitations/BidInvitationsSection";
 import { RecentProjectsSection } from "./projects/RecentProjectsSection";
 import { ProjectsAttentionSection } from "./projects-attention/ProjectsAttentionSection";
 import { AnalyticsSnapshot } from "./AnalyticsSnapshot";
+import { RecentActivitiesSection } from "./activities/RecentActivitiesSection";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserProfile } from "./hooks/useUserProfile";
@@ -67,6 +68,10 @@ export const DashboardLayout = () => {
               <BidInvitationsSection userRole={userProfile?.role} />
             </Suspense>
           )}
+
+          <Suspense fallback={<Skeleton className="h-64" />}>
+            <RecentActivitiesSection />
+          </Suspense>
         </div>
 
         <Suspense fallback={
@@ -101,19 +106,3 @@ export const DashboardLayout = () => {
     </div>
   );
 };
-
-const DashboardSkeleton = () => (
-  <div className="px-2 sm:px-6 space-y-4 sm:space-y-6">
-    <Skeleton className="h-20" />
-    <Skeleton className="h-32" />
-    <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
-      <div className="space-y-4">
-        <Skeleton className="h-64" />
-        <Skeleton className="h-64" />
-      </div>
-      <Skeleton className="h-[calc(100vh-16rem)]" />
-    </div>
-    <Skeleton className="h-96" />
-    <Skeleton className="h-96" />
-  </div>
-);
