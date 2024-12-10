@@ -57,6 +57,39 @@ export type Database = {
           },
         ]
       }
+      categories_subcontractors: {
+        Row: {
+          category_id: string
+          created_at: string
+          subcontractor_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          subcontractor_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          subcontractor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_subcontractors_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "subcontractor_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_subcontractors_subcontractor_id_fkey"
+            columns: ["subcontractor_id"]
+            isOneToOne: false
+            referencedRelation: "subcontractors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           billing_address: string
@@ -315,6 +348,41 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      subcontractor_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          gc_id: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          gc_id: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          gc_id?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_categories_gc_id_fkey"
+            columns: ["gc_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subcontractors: {
         Row: {
