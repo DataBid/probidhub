@@ -316,6 +316,59 @@ export type Database = {
         }
         Relationships: []
       }
+      subcontractors: {
+        Row: {
+          company: string
+          created_at: string
+          email: string
+          gc_id: string
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          status: string | null
+          trade: string
+          updated_at: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          email: string
+          gc_id: string
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          trade: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          email?: string
+          gc_id?: string
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          trade?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractors_gc_id_fkey"
+            columns: ["gc_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           auto_renewal: boolean | null
