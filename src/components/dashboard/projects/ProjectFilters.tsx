@@ -29,12 +29,13 @@ export const ProjectFilters = ({
     <div className="flex flex-col sm:flex-row gap-4">
       {onSearchChange && (
         <div className="relative flex-1">
-          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
           <Input
             placeholder="Search projects..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-8"
+            className="pl-8 w-full"
+            autoComplete="off"
           />
         </div>
       )}
