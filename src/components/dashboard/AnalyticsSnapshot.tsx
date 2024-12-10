@@ -12,7 +12,11 @@ import { Download } from "lucide-react";
 import { downloadCSV, prepareAnalyticsData } from "@/utils/exportUtils";
 import { useToast } from "@/components/ui/use-toast";
 
-export const AnalyticsSnapshot = () => {
+interface AnalyticsSnapshotProps {
+  userRole?: string;
+}
+
+export const AnalyticsSnapshot = ({ userRole }: AnalyticsSnapshotProps) => {
   const [timeRange, setTimeRange] = useState('7');
   const [chartType, setChartType] = useState('line');
   const { toast } = useToast();
@@ -90,7 +94,9 @@ export const AnalyticsSnapshot = () => {
   return (
     <Card className="p-3 sm:p-6 w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-        <h2 className="text-base sm:text-lg font-semibold text-construction-900">Analytics Overview</h2>
+        <h2 className="text-base sm:text-lg font-semibold text-construction-900">
+          {userRole === "gc" ? "Analytics Overview" : "Bid Performance Analytics"}
+        </h2>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <AnalyticsControls 
             timeRange={timeRange}
@@ -112,8 +118,12 @@ export const AnalyticsSnapshot = () => {
 
       <Tabs defaultValue="response-rate" className="w-full">
         <TabsList className="w-full grid grid-cols-2 mb-4">
-          <TabsTrigger value="response-rate">Response Rate</TabsTrigger>
-          <TabsTrigger value="total-bids">Total Bids</TabsTrigger>
+          <TabsTrigger value="response-rate">
+            {userRole === "gc" ? "Response Rate" : "Acceptance Rate"}
+          </TabsTrigger>
+          <TabsTrigger value="total-bids">
+            {userRole === "gc" ? "Total Bids" : "Your Bids"}
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="response-rate">

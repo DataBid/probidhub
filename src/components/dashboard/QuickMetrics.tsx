@@ -20,7 +20,11 @@ interface MetricsData {
   };
 }
 
-export const QuickMetrics = () => {
+interface QuickMetricsProps {
+  userRole?: string;
+}
+
+export const QuickMetrics = ({ userRole }: QuickMetricsProps) => {
   const { data: metrics } = useQuery({
     queryKey: ['dashboard-metrics'],
     queryFn: async () => {
@@ -119,8 +123,11 @@ export const QuickMetrics = () => {
               {metrics?.trends && getTrendIcon(metrics.trends.activeProjects)}
             </div>
             <MetricTooltip 
-              title="Active Projects"
-              description="Number of ongoing projects that are currently accepting bids or in progress."
+              title={userRole === "gc" ? "Active Projects" : "Available Projects"}
+              description={userRole === "gc" ? 
+                "Number of ongoing projects that are currently accepting bids or in progress." :
+                "Number of projects available for bidding."
+              }
             />
           </CardContent>
         </Card>
@@ -134,8 +141,11 @@ export const QuickMetrics = () => {
               {metrics?.trends && getTrendIcon(metrics.trends.totalBids)}
             </div>
             <MetricTooltip 
-              title="Total Bids"
-              description="Total number of bid invitations sent to subcontractors across all projects."
+              title={userRole === "gc" ? "Total Bids" : "Your Bids"}
+              description={userRole === "gc" ? 
+                "Total number of bid invitations sent to subcontractors across all projects." :
+                "Total number of bids you've submitted or been invited to."
+              }
             />
           </CardContent>
         </Card>
@@ -150,7 +160,10 @@ export const QuickMetrics = () => {
             </div>
             <MetricTooltip 
               title="Response Rate"
-              description="The percentage of subcontractors who have responded to your bid invitations. Higher rates indicate better engagement."
+              description={userRole === "gc" ? 
+                "The percentage of subcontractors who have responded to your bid invitations. Higher rates indicate better engagement." :
+                "The percentage of bid invitations you've responded to. Higher rates may improve your visibility to contractors."
+              }
             />
           </CardContent>
         </Card>

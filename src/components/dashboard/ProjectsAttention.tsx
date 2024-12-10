@@ -4,7 +4,11 @@ import { Download } from "lucide-react";
 import { downloadCSV, prepareProjectsData } from "@/utils/exportUtils";
 import { useToast } from "@/components/ui/use-toast";
 
-export const ProjectsAttention = () => {
+interface ProjectsAttentionProps {
+  userRole?: string;
+}
+
+export const ProjectsAttention = ({ userRole }: ProjectsAttentionProps) => {
   const { toast } = useToast();
 
   const handleExport = (projects: any[]) => {
@@ -26,5 +30,5 @@ export const ProjectsAttention = () => {
     });
   };
 
-  return <ProjectsAttentionList onExport={handleExport} />;
+  return <ProjectsAttentionList onExport={handleExport} userRole={userRole} />;
 };

@@ -5,7 +5,11 @@ import { useState } from "react";
 import { BidInvitationFilters } from "./bid-invitations/BidInvitationFilters";
 import { BidInvitationItem } from "./bid-invitations/BidInvitationItem";
 
-export const BidInvitations = () => {
+interface BidInvitationsProps {
+  userRole?: string;
+}
+
+export const BidInvitations = ({ userRole }: BidInvitationsProps) => {
   const { toast } = useToast();
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
@@ -89,7 +93,9 @@ export const BidInvitations = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-construction-900">Recent Bid Invitations</h2>
+      <h2 className="text-lg font-semibold text-construction-900">
+        {userRole === "gc" ? "Recent Bid Invitations" : "Your Bid Invitations"}
+      </h2>
       <BidInvitationFilters
         statusFilter={statusFilter}
         dateFilter={dateFilter}
@@ -103,6 +109,7 @@ export const BidInvitations = () => {
             bid={bid}
             onReminder={handleReminder}
             getStatusStyles={getStatusStyles}
+            userRole={userRole}
           />
         ))}
       </div>
