@@ -36,18 +36,24 @@ export const Navbar = () => {
       console.log("Fetched notifications:", data);
       return data || [];
     },
-    enabled: !!session, // Only fetch if there's a session
+    enabled: !!session,
   });
 
   const handleSignOut = async () => {
     try {
       console.log("Attempting to sign out...");
-      localStorage.clear(); // Clear all local storage
+      
+      // First clear all local storage
+      localStorage.clear();
+      
+      // Then sign out from Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error("Error during sign out:", error);
-        throw error;
+        // Even if there's an error, we'll redirect to login
+        navigate("/");
+        return;
       }
       
       console.log("Successfully signed out");
@@ -59,7 +65,7 @@ export const Navbar = () => {
       });
     } catch (error) {
       console.error("Sign out error:", error);
-      // Even if there's an error, we'll clear local storage and redirect
+      // Even if there's an error, we'll clear storage and redirect
       localStorage.clear();
       navigate("/");
       toast({

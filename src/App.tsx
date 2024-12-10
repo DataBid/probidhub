@@ -49,7 +49,10 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <SessionContextProvider supabaseClient={supabase}>
+    <SessionContextProvider 
+      supabaseClient={supabase}
+      initialSession={null} // Explicitly set initial session
+    >
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>

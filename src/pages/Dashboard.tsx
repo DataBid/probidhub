@@ -8,13 +8,16 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!session) {
-      console.log("No session in Dashboard, redirecting to login");
-      navigate("/");
-    }
+    const checkSession = async () => {
+      if (!session) {
+        console.log("No session in Dashboard, redirecting to login");
+        navigate("/");
+      }
+    };
+
+    checkSession();
   }, [session, navigate]);
 
-  // Return null if no session to prevent flash
   if (!session) {
     return null;
   }
