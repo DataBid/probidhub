@@ -34,7 +34,6 @@ export const ProjectFilters = ({
             placeholder="Search projects..."
             value={searchQuery}
             onChange={(e) => {
-              e.preventDefault();
               if (onSearchChange) {
                 onSearchChange(e.target.value);
               }
