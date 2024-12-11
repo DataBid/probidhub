@@ -37,7 +37,6 @@ export const AuthForm = () => {
             description: error.message,
             variant: "destructive",
           });
-          setIsLoading(false);
           return;
         }
 
@@ -47,7 +46,6 @@ export const AuthForm = () => {
             title: "Success",
             description: "Successfully logged in",
           });
-          // Let the onAuthStateChange handler in App.tsx handle the redirect
         }
       } else {
         if (!role) {
@@ -56,7 +54,6 @@ export const AuthForm = () => {
             description: "Please select a role",
             variant: "destructive",
           });
-          setIsLoading(false);
           return;
         }
 
@@ -78,7 +75,6 @@ export const AuthForm = () => {
             description: signUpError.message,
             variant: "destructive",
           });
-          setIsLoading(false);
           return;
         }
 

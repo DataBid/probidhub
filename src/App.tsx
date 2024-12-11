@@ -61,27 +61,32 @@ const router = createBrowserRouter([
 
 function App() {
   const [initialSession, setInitialSession] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     console.log("App: Starting session initialization");
     const initSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("App: Session initialization error:", error);
-        return;
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("App: Session initialization error:", error);
+          return;
+        }
+        console.log("App: Initial session fetch:", session?.user?.id || 'No session');
+        setInitialSession(session);
+      } finally {
+        setIsLoading(false);
       }
-      console.log("App: Initial session fetch:", session?.user?.id || 'No session');
-      setInitialSession(session);
     };
 
     initSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("App: Auth state changed:", session?.user?.id || 'No session');
-      if (session) {
+      setInitialSession(session);
+      if (session && window.location.pathname === '/') {
         window.location.href = '/dashboard';
       }
-      setInitialSession(session);
     });
 
     return () => {
@@ -89,6 +94,14 @@ function App() {
       subscription.unsubscribe();
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <SessionContextProvider 
