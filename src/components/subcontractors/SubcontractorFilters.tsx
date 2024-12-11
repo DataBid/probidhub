@@ -1,31 +1,11 @@
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Search, Calendar } from "lucide-react";
-import { DateRange } from "./schema";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { trades } from "./schema";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import { DateRange } from "./schema";
+import { SearchFilter } from "./filters/SearchFilter";
+import { DateRangeFilter } from "./filters/DateRangeFilter";
+import { TradesFilter } from "./filters/TradesFilter";
+import { format } from "date-fns";
 
 interface SubcontractorFiltersProps {
   searchQuery: string;
@@ -63,98 +43,12 @@ export const SubcontractorFilters = ({
   return (
     <div className="flex flex-col gap-4 mb-6">
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search by name, company, or trade..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "justify-start text-left font-normal w-[240px]",
-                !dateRange.from && "text-muted-foreground"
-              )}
-            >
-              <Calendar className="mr-2 h-4 w-4" />
-              {dateRange.from ? (
-                dateRange.to ? (
-                  <>
-                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
-                  </>
-                ) : (
-                  format(dateRange.from, "LLL dd, y")
-                )
-              ) : (
-                "Date Added Range"
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <CalendarComponent
-              initialFocus
-              mode="range"
-              defaultMonth={dateRange.from}
-              selected={{
-                from: dateRange.from,
-                to: dateRange.to,
-              }}
-              onSelect={(range: any) => onDateRangeChange(range || { from: undefined, to: undefined })}
-              numberOfMonths={2}
-            />
-          </PopoverContent>
-        </Popover>
+        <SearchFilter searchQuery={searchQuery} onSearchChange={onSearchChange} />
+        <DateRangeFilter dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="justify-between w-full sm:w-[200px]"
-            >
-              <span className="truncate">
-                {selectedTrades.length > 0
-                  ? `${selectedTrades.length} trades selected`
-                  : "Select trades"}
-              </span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
-            <Command>
-              <CommandInput placeholder="Search trades..." />
-              <CommandEmpty>No trade found.</CommandEmpty>
-              <CommandGroup>
-                {trades.map((trade) => (
-                  <CommandItem
-                    key={trade}
-                    onSelect={() => toggleTrade(trade)}
-                    className="cursor-pointer"
-                  >
-                    <div
-                      className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        selectedTrades.includes(trade)
-                          ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible"
-                      )}
-                    >
-                      <span className="h-4 w-4 text-current">✓</span>
-                    </div>
-                    {trade}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <TradesFilter selectedTrades={selectedTrades} onTradesChange={onTradesChange} />
 
         <Select value={statusFilter} onValueChange={onStatusChange}>
           <SelectTrigger className="w-full sm:w-[180px]">
