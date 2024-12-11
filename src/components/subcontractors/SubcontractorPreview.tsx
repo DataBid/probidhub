@@ -37,6 +37,7 @@ interface SubcontractorPreviewProps {
     trade: string;
     status?: string;
     last_contact?: string;
+    company_type: string;
   };
   onEdit?: () => void;
 }
@@ -119,7 +120,7 @@ export const SubcontractorPreview = ({
               )}
             </div>
           </div>
-          <SheetDescription>Subcontractor Details</SheetDescription>
+          <SheetDescription>Company Details</SheetDescription>
         </SheetHeader>
 
         <div className="mt-6 space-y-6">
@@ -147,6 +148,7 @@ export const SubcontractorPreview = ({
                 trade={subcontractor.trade}
                 status={subcontractor.status}
                 lastContact={subcontractor.last_contact}
+                companyType={subcontractor.company_type}
               />
             </CardContent>
           </Card>

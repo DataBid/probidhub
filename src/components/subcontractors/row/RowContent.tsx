@@ -18,6 +18,7 @@ interface RowContentProps {
     notes?: string;
     phone?: string;
     area_code?: string;
+    company_type: string;
   };
   isMobile: boolean;
   onInvite: () => void;
@@ -39,7 +40,12 @@ export const RowContent = ({
   return (
     <>
       <TableCell className="sticky left-[40px] bg-background">
-        <CompanyCell id={sub.id} company={sub.company} />
+        <div className="space-y-1">
+          <CompanyCell id={sub.id} company={sub.company} />
+          <Badge variant="outline" className="capitalize text-xs">
+            {sub.company_type}
+          </Badge>
+        </div>
       </TableCell>
       {!isMobile && (
         <TableCell>
