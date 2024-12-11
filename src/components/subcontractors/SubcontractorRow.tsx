@@ -1,6 +1,7 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, Mail, Trash } from "lucide-react";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { Link } from "react-router-dom";
@@ -15,14 +16,30 @@ interface SubcontractorRowProps {
     location?: string;
     status?: string;
   };
+  selected: boolean;
+  onSelect: (id: string, checked: boolean) => void;
   onEdit: (sub: any) => void;
   onDelete: (id: string) => void;
   onInvite: (email: string) => void;
 }
 
-export const SubcontractorRow = ({ sub, onEdit, onDelete, onInvite }: SubcontractorRowProps) => {
+export const SubcontractorRow = ({ 
+  sub, 
+  selected,
+  onSelect,
+  onEdit, 
+  onDelete, 
+  onInvite 
+}: SubcontractorRowProps) => {
   return (
     <TableRow key={sub.id}>
+      <TableCell>
+        <Checkbox
+          checked={selected}
+          onCheckedChange={(checked) => onSelect(sub.id, checked as boolean)}
+          aria-label={`Select ${sub.name}`}
+        />
+      </TableCell>
       <TableCell>
         <div>
           <div className="font-medium">{sub.name}</div>
