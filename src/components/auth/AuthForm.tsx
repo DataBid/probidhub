@@ -6,7 +6,6 @@ import { RoleSelect } from "./RoleSelect";
 import { Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 export const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,7 +14,6 @@ export const AuthForm = () => {
   const [role, setRole] = useState<"gc" | "sub" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,12 +42,12 @@ export const AuthForm = () => {
         }
 
         if (data.user && data.session) {
-          console.log("AuthForm: Login successful, redirecting");
+          console.log("AuthForm: Login successful");
           toast({
             title: "Success",
             description: "Successfully logged in",
           });
-          navigate("/dashboard", { replace: true });
+          // Let the onAuthStateChange handler in App.tsx handle the redirect
         }
       } else {
         if (!role) {
