@@ -103,6 +103,13 @@ export const useSubcontractorTable = (subcontractors: any[], refetch: () => void
     });
   };
 
+  const handleBulkInvite = (ids: string[]) => {
+    toast({
+      title: "Coming Soon",
+      description: "Bulk invite functionality will be implemented soon",
+    });
+  };
+
   return {
     formOpen,
     setFormOpen,
@@ -116,7 +123,8 @@ export const useSubcontractorTable = (subcontractors: any[], refetch: () => void
     handleEdit,
     handleDelete,
     handleBulkDelete,
-    handleInvite,
+    handleBulkInvite,
     handleBulkStatusChange,
+    handleInvite,
   };
 };
