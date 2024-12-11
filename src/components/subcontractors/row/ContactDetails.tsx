@@ -5,6 +5,7 @@ interface ContactDetailsProps {
   name: string;
   email: string;
   phone?: string;
+  area_code?: string;
   location?: string;
   notes?: string;
   onEdit: (updatedData: any) => void;
@@ -14,13 +15,16 @@ export const ContactDetails = ({
   id,
   name, 
   email, 
-  phone, 
+  phone,
+  area_code,
 }: ContactDetailsProps) => {
+  const formattedPhone = area_code && phone ? `${area_code} ${phone}` : phone;
+  
   return (
     <div className="space-y-1">
       <div className="font-medium">{name}</div>
       <div className="text-sm text-muted-foreground">{email}</div>
-      {phone && <div className="text-sm text-muted-foreground">{phone}</div>}
+      {formattedPhone && <div className="text-sm text-muted-foreground">{formattedPhone}</div>}
     </div>
   );
 };

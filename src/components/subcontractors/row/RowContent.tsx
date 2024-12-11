@@ -17,6 +17,7 @@ interface RowContentProps {
     status?: string;
     notes?: string;
     phone?: string;
+    area_code?: string;
   };
   isMobile: boolean;
   onInvite: () => void;
@@ -47,6 +48,7 @@ export const RowContent = ({
             name={sub.name}
             email={sub.email}
             phone={sub.phone}
+            area_code={sub.area_code}
             location={sub.location}
             notes={sub.notes}
             onEdit={(updates) => onEdit()}
