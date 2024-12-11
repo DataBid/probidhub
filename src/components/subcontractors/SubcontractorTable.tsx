@@ -9,6 +9,7 @@ import { sortSubcontractors } from "./utils/sortUtils";
 import { SubcontractorTableProps } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PrintView } from "./print/PrintView";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -99,59 +100,62 @@ export const SubcontractorTable = ({
 
   return (
     <Card className="p-3 sm:p-6">
-      <SubcontractorBulkActions
-        selectedIds={selectedIds}
-        onDelete={handleBulkDelete}
-        onInvite={handleBulkInvite}
-        onStatusChange={handleBulkStatusChange}
-        onAssignCategories={handleAssignCategories}
-        onClearSelection={handleClearSelection}
-      />
-      <SubcontractorTableContent
-        subcontractors={paginatedSubcontractors}
-        selectedIds={selectedIds}
-        onSelectAll={(checked) => {
-          if (checked) {
-            setSelectedIds(paginatedSubcontractors.map(sub => sub.id));
-          } else {
-            setSelectedIds([]);
-          }
-        }}
-        onSelectOne={(id, checked) => {
-          if (checked) {
-            setSelectedIds(prev => [...prev, id]);
-          } else {
-            setSelectedIds(prev => prev.filter(prevId => prevId !== id));
-          }
-        }}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onInvite={handleInvite}
-        sortConfig={sortConfig}
-        onSort={(column) => setSortConfig(prev => {
-          if (!prev || prev.column !== column) {
-            return { column, direction: 'asc' };
-          }
-          if (prev.direction === 'asc') {
-            return { column, direction: 'desc' };
-          }
-          return null;
-        })}
-      />
-      <SubcontractorTablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-      <SubcontractorForm
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        subcontractor={selectedSubcontractor}
-        onSuccess={() => {
-          refetch();
-          setFormOpen(false);
-        }}
-      />
+      <PrintView subcontractors={subcontractors} />
+      <div className="print:hidden">
+        <SubcontractorBulkActions
+          selectedIds={selectedIds}
+          onDelete={handleBulkDelete}
+          onInvite={handleBulkInvite}
+          onStatusChange={handleBulkStatusChange}
+          onAssignCategories={handleAssignCategories}
+          onClearSelection={handleClearSelection}
+        />
+        <SubcontractorTableContent
+          subcontractors={paginatedSubcontractors}
+          selectedIds={selectedIds}
+          onSelectAll={(checked) => {
+            if (checked) {
+              setSelectedIds(paginatedSubcontractors.map(sub => sub.id));
+            } else {
+              setSelectedIds([]);
+            }
+          }}
+          onSelectOne={(id, checked) => {
+            if (checked) {
+              setSelectedIds(prev => [...prev, id]);
+            } else {
+              setSelectedIds(prev => prev.filter(prevId => prevId !== id));
+            }
+          }}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onInvite={handleInvite}
+          sortConfig={sortConfig}
+          onSort={(column) => setSortConfig(prev => {
+            if (!prev || prev.column !== column) {
+              return { column, direction: 'asc' };
+            }
+            if (prev.direction === 'asc') {
+              return { column, direction: 'desc' };
+            }
+            return null;
+          })}
+        />
+        <SubcontractorTablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+        <SubcontractorForm
+          open={formOpen}
+          onOpenChange={setFormOpen}
+          subcontractor={selectedSubcontractor}
+          onSuccess={() => {
+            refetch();
+            setFormOpen(false);
+          }}
+        />
+      </div>
     </Card>
   );
 };

@@ -110,7 +110,11 @@ export const SubcontractorsPage = () => {
 
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
-      <SubcontractorHeader onAdd={() => setFormOpen(true)} onExport={handleExport} />
+      <SubcontractorHeader 
+        onAdd={() => setFormOpen(true)} 
+        onExport={handleExport}
+        onImportSuccess={() => refetch()}
+      />
 
       <div className="space-y-4">
         <SubcontractorFilters
