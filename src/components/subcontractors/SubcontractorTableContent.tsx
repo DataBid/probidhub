@@ -3,7 +3,7 @@ import { SubcontractorRow } from "./SubcontractorRow";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { SortConfig } from "./SubcontractorTable";
+import { SortConfig } from "./types";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SubcontractorTableContentProps {
