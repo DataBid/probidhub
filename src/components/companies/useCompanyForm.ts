@@ -4,6 +4,7 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { companySchema, type CompanyFormValues } from "./schema";
+import { CompanyType } from "./types";
 
 interface UseCompanyFormProps {
   company?: {
@@ -16,7 +17,7 @@ interface UseCompanyFormProps {
     phone?: string;
     location?: string;
     notes?: string;
-    company_type: string;
+    company_type: CompanyType;
   };
   onSuccess: () => void;
   onOpenChange: (open: boolean) => void;
