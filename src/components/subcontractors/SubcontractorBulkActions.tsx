@@ -3,9 +3,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Trash, UserPlus, RefreshCw, Edit } from "lucide-react";
+import { Trash, UserPlus, RefreshCw, Edit, Layers } from "lucide-react";
+import { useState } from "react";
+import { CategoryAssignmentDialog } from "./bulk-actions/CategoryAssignmentDialog";
 
 interface SubcontractorBulkActionsProps {
   selectedIds: string[];
@@ -13,6 +16,7 @@ interface SubcontractorBulkActionsProps {
   onInvite: (ids: string[]) => void;
   onStatusChange: (ids: string[], status: string) => void;
   onEdit?: (id: string) => void; // Optional since it only works for single select
+  onAssignCategories?: (ids: string[], categoryIds: string[]) => void;
 }
 
 export const SubcontractorBulkActions = ({
@@ -21,48 +25,70 @@ export const SubcontractorBulkActions = ({
   onInvite,
   onStatusChange,
   onEdit,
+  onAssignCategories,
 }: SubcontractorBulkActionsProps) => {
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  
   if (selectedIds.length === 0) return null;
 
   const isSingleSelect = selectedIds.length === 1;
 
   return (
-    <div className="flex items-center gap-2 mb-4">
-      <span className="text-sm text-muted-foreground">
-        {selectedIds.length} selected
-      </span>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">Actions</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-48">
-          {isSingleSelect && onEdit && (
-            <DropdownMenuItem onClick={() => onEdit(selectedIds[0])}>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit Details
+    <>
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-sm text-muted-foreground">
+          {selectedIds.length} selected
+        </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Actions</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            {isSingleSelect && onEdit && (
+              <DropdownMenuItem onClick={() => onEdit(selectedIds[0])}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Details
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem onClick={() => onInvite(selectedIds)}>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Invite to Bid
             </DropdownMenuItem>
-          )}
-          <DropdownMenuItem onClick={() => onInvite(selectedIds)}>
-            <UserPlus className="mr-2 h-4 w-4" />
-            Invite to Bid
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onStatusChange(selectedIds, 'active')}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Set Active
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onStatusChange(selectedIds, 'archived')}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Archive
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            onClick={() => onDelete(selectedIds)}
-            className="text-red-600 focus:text-red-600"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onStatusChange(selectedIds, 'active')}>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Set Active
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onStatusChange(selectedIds, 'archived')}>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Archive
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {onAssignCategories && (
+              <DropdownMenuItem onClick={() => setCategoryDialogOpen(true)}>
+                <Layers className="mr-2 h-4 w-4" />
+                Assign Categories
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem 
+              onClick={() => onDelete(selectedIds)}
+              className="text-red-600 focus:text-red-600"
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {onAssignCategories && (
+        <CategoryAssignmentDialog
+          open={categoryDialogOpen}
+          onOpenChange={setCategoryDialogOpen}
+          selectedIds={selectedIds}
+          onAssign={onAssignCategories}
+        />
+      )}
+    </>
   );
 };

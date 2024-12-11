@@ -7,6 +7,8 @@ import { SubcontractorTablePagination } from "./SubcontractorTablePagination";
 import { useSubcontractorTable } from "./hooks/useSubcontractorTable";
 import { sortSubcontractors } from "./utils/sortUtils";
 import { SubcontractorTableProps } from "./types";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -15,6 +17,7 @@ export const SubcontractorTable = ({
   isLoading,
   refetch,
 }: SubcontractorTableProps) => {
+  const { toast } = useToast();
   const {
     formOpen,
     setFormOpen,
@@ -32,6 +35,44 @@ export const SubcontractorTable = ({
     handleBulkStatusChange,
     handleInvite,
   } = useSubcontractorTable(subcontractors, refetch);
+
+  const handleAssignCategories = async (subcontractorIds: string[], categoryIds: string[]) => {
+    try {
+      // First, delete existing assignments for these subcontractors
+      await supabase
+        .from('categories_subcontractors')
+        .delete()
+        .in('subcontractor_id', subcontractorIds);
+
+      // Create new assignments
+      const assignments = subcontractorIds.flatMap(subId =>
+        categoryIds.map(catId => ({
+          subcontractor_id: subId,
+          category_id: catId,
+        }))
+      );
+
+      const { error } = await supabase
+        .from('categories_subcontractors')
+        .insert(assignments);
+
+      if (error) throw error;
+
+      toast({
+        title: "Categories assigned",
+        description: "Successfully assigned categories to selected subcontractors",
+      });
+
+      refetch();
+    } catch (error) {
+      console.error("Error assigning categories:", error);
+      toast({
+        title: "Error",
+        description: "Failed to assign categories",
+        variant: "destructive",
+      });
+    }
+  };
 
   const sortedSubcontractors = sortSubcontractors(subcontractors, sortConfig);
 
@@ -59,6 +100,7 @@ export const SubcontractorTable = ({
         onDelete={handleBulkDelete}
         onInvite={handleBulkInvite}
         onStatusChange={handleBulkStatusChange}
+        onAssignCategories={handleAssignCategories}
       />
       <SubcontractorTableContent
         subcontractors={paginatedSubcontractors}
