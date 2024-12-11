@@ -19,7 +19,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     
     const timer = setTimeout(() => {
       setIsInitializing(false);
-    }, 1000);
+    }, 500); // Reduced timeout for faster rendering
 
     if (!session && !isInitializing) {
       console.log("MainLayout: No session found, redirecting to login");
@@ -46,7 +46,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <Navbar />
       <div className="flex min-h-[calc(100vh-4rem)]">
         <DashboardSidebar />
-        <main className="flex-1 p-4 lg:p-6 w-full">{children}</main>
+        <main className="flex-1 p-4 lg:p-6 w-full overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );

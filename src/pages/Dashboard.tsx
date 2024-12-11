@@ -14,7 +14,7 @@ const Dashboard = () => {
     
     const timer = setTimeout(() => {
       setIsInitializing(false);
-    }, 1000);
+    }, 500); // Reduced timeout for faster rendering
 
     if (!session && !isInitializing) {
       console.log("Dashboard: No session found, redirecting to login");
@@ -24,15 +24,8 @@ const Dashboard = () => {
     return () => clearTimeout(timer);
   }, [session, navigate, isInitializing]);
 
-  if (isInitializing) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!session) {
+  // Remove the loading spinner here since MainLayout already handles it
+  if (!session || isInitializing) {
     return null;
   }
 
