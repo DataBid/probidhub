@@ -22,15 +22,18 @@ export const AuthForm = () => {
     if (isLoading) return;
     
     setIsLoading(true);
+    console.log("AuthForm: Starting authentication process");
 
     try {
       if (isLogin) {
+        console.log("AuthForm: Attempting login");
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) {
+          console.error("AuthForm: Login error:", error.message);
           toast({
             title: "Login failed",
             description: error.message,
@@ -41,18 +44,12 @@ export const AuthForm = () => {
         }
 
         if (data.user && data.session) {
+          console.log("AuthForm: Login successful, redirecting");
           toast({
             title: "Success",
             description: "Successfully logged in",
           });
           navigate("/dashboard");
-        } else {
-          toast({
-            title: "Login failed",
-            description: "An unexpected error occurred",
-            variant: "destructive",
-          });
-          setIsLoading(false);
         }
       } else {
         if (!role) {
@@ -65,6 +62,7 @@ export const AuthForm = () => {
           return;
         }
 
+        console.log("AuthForm: Attempting signup");
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -76,6 +74,7 @@ export const AuthForm = () => {
         });
 
         if (signUpError) {
+          console.error("AuthForm: Signup error:", signUpError.message);
           toast({
             title: "Error",
             description: signUpError.message,
@@ -89,14 +88,15 @@ export const AuthForm = () => {
           title: "Success",
           description: "Please check your email to verify your account",
         });
-        setIsLoading(false);
       }
     } catch (error: any) {
+      console.error("AuthForm: Unexpected error:", error);
       toast({
         title: "Error",
         description: error.message,
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
     }
   };
