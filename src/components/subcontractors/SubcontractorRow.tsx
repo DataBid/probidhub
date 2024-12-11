@@ -30,20 +30,29 @@ export const SubcontractorRow = ({
       <TableCell className="w-[40px] sticky left-0 bg-background">
         <Checkbox
           checked={selected}
-          onCheckedChange={(checked) => onSelect(sub.id, checked)}
+          onCheckedChange={(checked: boolean) => onSelect(sub.id, checked)}
           aria-label="Select subcontractor"
         />
       </TableCell>
-      <CompanyCell company={sub.company} />
-      {!isMobile && <ContactDetails name={sub.name} email={sub.email} phone={sub.phone} />}
+      <CompanyCell id={sub.id} company={sub.company} />
+      {!isMobile && (
+        <ContactDetails
+          id={sub.id}
+          name={sub.name}
+          email={sub.email}
+          phone={sub.phone}
+          area_code={sub.area_code}
+          onEdit={() => onEdit(sub)}
+        />
+      )}
       <TradeCell trade={sub.trade} />
       {!isMobile && <TableCell>{sub.location}</TableCell>}
       <TableCell>{sub.status}</TableCell>
       <RowActions
         onEdit={() => onEdit(sub)}
         onDelete={() => onDelete(sub.id)}
-        onInvite={onInvite}
-        email={sub.email}
+        onInvite={() => onInvite(sub.email)}
+        isLoading={false}
       />
     </TableRow>
   );
