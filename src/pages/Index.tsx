@@ -1,27 +1,27 @@
 import { useEffect } from "react";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useNavigate } from "react-router-dom";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const session = useSession();
   const navigate = useNavigate();
-  const supabase = useSupabaseClient();
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         console.log("Index: Starting session check");
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error("Index: Session check error:", error);
           return;
         }
 
-        if (currentSession) {
+        if (session) {
           console.log("Index: Active session found, redirecting to dashboard");
-          window.location.href = "/dashboard";
+          navigate("/dashboard", { replace: true });
         } else {
           console.log("Index: No active session found, showing login form");
         }
@@ -31,19 +31,14 @@ const Index = () => {
     };
 
     checkSession();
-  }, [navigate, supabase.auth]);
+  }, [navigate]);
 
   useEffect(() => {
     if (session) {
       console.log("Index: Session detected, redirecting to dashboard");
-      window.location.href = "/dashboard";
+      navigate("/dashboard", { replace: true });
     }
   }, [session, navigate]);
-
-  if (session) {
-    console.log("Index: Session exists, returning null");
-    return null;
-  }
 
   return <AuthForm />;
 };
