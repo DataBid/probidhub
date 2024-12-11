@@ -22,12 +22,13 @@ export const SubcontractorsPage = () => {
     statusFilter: "all",
     dateRange: { from: undefined, to: undefined },
     locationFilter: "",
+    companyTypeFilter: "all",
   });
 
   const { data: subcontractors, isLoading, refetch } = useQuery({
     queryKey: ["subcontractors", filterPreferences],
     queryFn: async () => {
-      console.log("Fetching subcontractors with filters:", filterPreferences);
+      console.log("Fetching companies with filters:", filterPreferences);
 
       if (!user?.id) {
         throw new Error("User not authenticated");
@@ -37,7 +38,6 @@ export const SubcontractorsPage = () => {
         .from("companies_directory")
         .select("*")
         .eq("gc_id", user.id)
-        .eq("company_type", "subcontractor")
         .order("created_at", { ascending: false });
 
       if (filterPreferences.searchQuery) {
@@ -71,10 +71,14 @@ export const SubcontractorsPage = () => {
         query = query.ilike("location", `%${filterPreferences.locationFilter}%`);
       }
 
+      if (filterPreferences.companyTypeFilter !== "all") {
+        query = query.eq("company_type", filterPreferences.companyTypeFilter);
+      }
+
       const { data, error } = await query;
 
       if (error) {
-        console.error("Error fetching subcontractors:", error);
+        console.error("Error fetching companies:", error);
         throw error;
       }
 
@@ -138,6 +142,10 @@ export const SubcontractorsPage = () => {
           locationFilter={filterPreferences.locationFilter}
           onLocationChange={(value) =>
             setFilterPreferences((prev) => ({ ...prev, locationFilter: value }))
+          }
+          companyTypeFilter={filterPreferences.companyTypeFilter}
+          onCompanyTypeChange={(value) =>
+            setFilterPreferences((prev) => ({ ...prev, companyTypeFilter: value }))
           }
         />
 

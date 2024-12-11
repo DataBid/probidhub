@@ -18,6 +18,8 @@ interface SubcontractorFiltersProps {
   onDateRangeChange: (range: DateRange) => void;
   locationFilter: string;
   onLocationChange: (value: string) => void;
+  companyTypeFilter: string;
+  onCompanyTypeChange: (value: string) => void;
 }
 
 export const SubcontractorFilters = ({
@@ -31,6 +33,8 @@ export const SubcontractorFilters = ({
   onDateRangeChange,
   locationFilter,
   onLocationChange,
+  companyTypeFilter,
+  onCompanyTypeChange,
 }: SubcontractorFiltersProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -49,6 +53,7 @@ export const SubcontractorFilters = ({
     statusFilter !== "all" ? statusFilter : "",
     dateRange.from ? "date" : "",
     locationFilter,
+    companyTypeFilter !== "all" ? companyTypeFilter : "",
   ].filter(Boolean).length;
 
   // Clear all filters
@@ -58,6 +63,7 @@ export const SubcontractorFilters = ({
     onStatusChange("all");
     onDateRangeChange({ from: undefined, to: undefined });
     onLocationChange("");
+    onCompanyTypeChange("all");
   };
 
   return (
@@ -97,6 +103,8 @@ export const SubcontractorFilters = ({
           onDateRangeChange={onDateRangeChange}
           activeFilterCount={activeFilterCount}
           onClearFilters={handleClearFilters}
+          companyTypeFilter={companyTypeFilter}
+          onCompanyTypeChange={onCompanyTypeChange}
         />
       </div>
 
@@ -112,6 +120,8 @@ export const SubcontractorFilters = ({
           onDateRangeChange={onDateRangeChange}
           locationFilter={locationFilter}
           onLocationChange={onLocationChange}
+          companyTypeFilter={companyTypeFilter}
+          onCompanyTypeChange={onCompanyTypeChange}
         />
       </div>
     </div>

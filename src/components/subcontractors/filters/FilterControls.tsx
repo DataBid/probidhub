@@ -5,6 +5,13 @@ import { LocationFilter } from "./LocationFilter";
 import { TradesFilter } from "./TradesFilter";
 import { DateRangeFilter } from "./DateRangeFilter";
 import { DateRange } from "../schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface FilterControlsProps {
   selectedTrades: string[];
@@ -17,6 +24,8 @@ interface FilterControlsProps {
   onDateRangeChange: (range: DateRange) => void;
   activeFilterCount: number;
   onClearFilters: () => void;
+  companyTypeFilter: string;
+  onCompanyTypeChange: (value: string) => void;
 }
 
 export const FilterControls = ({
@@ -30,9 +39,25 @@ export const FilterControls = ({
   onDateRangeChange,
   activeFilterCount,
   onClearFilters,
+  companyTypeFilter,
+  onCompanyTypeChange,
 }: FilterControlsProps) => {
   return (
     <div className="flex flex-col sm:flex-row gap-4">
+      <Select value={companyTypeFilter} onValueChange={onCompanyTypeChange}>
+        <SelectTrigger className="w-full sm:w-[200px]">
+          <SelectValue placeholder="All Company Types" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Company Types</SelectItem>
+          <SelectItem value="subcontractor">Subcontractor</SelectItem>
+          <SelectItem value="supplier">Supplier</SelectItem>
+          <SelectItem value="owner">Owner</SelectItem>
+          <SelectItem value="architect">Architect</SelectItem>
+          <SelectItem value="engineer">Engineer</SelectItem>
+        </SelectContent>
+      </Select>
+
       <TradesFilter selectedTrades={selectedTrades} onTradesChange={onTradesChange} />
       <StatusFilter statusFilter={statusFilter} onStatusChange={onStatusChange} />
       <LocationFilter locationFilter={locationFilter} onLocationChange={onLocationChange} />
