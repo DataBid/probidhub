@@ -10,6 +10,8 @@ interface ActiveFilterBadgesProps {
   onDateRangeChange: (range: DateRange) => void;
   locationFilter: string;
   onLocationChange: (value: string) => void;
+  companyTypeFilter: string;
+  onCompanyTypeChange: (value: string) => void;
 }
 
 export const ActiveFilterBadges = ({
@@ -19,8 +21,10 @@ export const ActiveFilterBadges = ({
   onDateRangeChange,
   locationFilter,
   onLocationChange,
+  companyTypeFilter,
+  onCompanyTypeChange,
 }: ActiveFilterBadgesProps) => {
-  if (!selectedTrades.length && !dateRange.from && !locationFilter) {
+  if (!selectedTrades.length && !dateRange.from && !locationFilter && companyTypeFilter === 'all') {
     return null;
   }
 
@@ -53,6 +57,15 @@ export const ActiveFilterBadges = ({
           onClick={() => onLocationChange("")}
         >
           {locationFilter} <X className="h-3 w-3 ml-1" />
+        </Badge>
+      )}
+      {companyTypeFilter !== 'all' && (
+        <Badge
+          variant="secondary"
+          className="cursor-pointer"
+          onClick={() => onCompanyTypeChange("all")}
+        >
+          {companyTypeFilter} <X className="h-3 w-3 ml-1" />
         </Badge>
       )}
     </div>

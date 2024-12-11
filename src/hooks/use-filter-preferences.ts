@@ -7,6 +7,7 @@ interface FilterPreferences {
   statusFilter: string;
   dateRange: DateRange;
   locationFilter: string;
+  companyTypeFilter: string;
 }
 
 export const useFilterPreferences = (initialState: FilterPreferences) => {

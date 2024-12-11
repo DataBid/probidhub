@@ -16,6 +16,8 @@ interface SubcontractorRowProps {
     status?: string;
     notes?: string;
     phone?: string;
+    area_code?: string;
+    company_type: string;
   };
   selected: boolean;
   onSelect: (id: string, checked: boolean) => void;

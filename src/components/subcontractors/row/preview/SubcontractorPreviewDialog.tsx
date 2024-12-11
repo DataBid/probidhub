@@ -12,6 +12,7 @@ interface SubcontractorPreviewDialogProps {
     trade: string;
     status?: string;
     area_code?: string;
+    company_type: string;
   };
   previewOpen: boolean;
   setPreviewOpen: (open: boolean) => void;
