@@ -1,69 +1,27 @@
-import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Edit, Mail, Trash, UserPlus } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card } from "@/components/ui/card";
 import { SubcontractorForm } from "./SubcontractorForm";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { SubcontractorRow } from "./SubcontractorRow";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-interface Subcontractor {
-  id: string;
-  name: string;
-  company: string;
-  trade: string;
-  email: string;
-  phone?: string;
-  location?: string;
-  status: string;
-  notes?: string;
-}
-
 interface SubcontractorTableProps {
-  subcontractors: Subcontractor[];
+  subcontractors: any[];
   isLoading: boolean;
-  onDelete?: (id: string) => void;
   refetch: () => void;
 }
 
 export const SubcontractorTable = ({
   subcontractors,
   isLoading,
-  onDelete,
   refetch,
 }: SubcontractorTableProps) => {
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedSubcontractor, setSelectedSubcontractor] = useState<Subcontractor | undefined>();
+  const [selectedSubcontractor, setSelectedSubcontractor] = useState<any>();
   const { toast } = useToast();
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "invited":
-        return "bg-blue-100 text-blue-800";
-      case "archived":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const handleEdit = (subcontractor: Subcontractor) => {
+  const handleEdit = (subcontractor: any) => {
     setSelectedSubcontractor(subcontractor);
-    setFormOpen(true);
-  };
-
-  const handleAdd = () => {
-    setSelectedSubcontractor(undefined);
     setFormOpen(true);
   };
 
@@ -93,7 +51,6 @@ export const SubcontractorTable = ({
   };
 
   const handleInvite = (email: string) => {
-    // TODO: Implement invite functionality
     toast({
       title: "Coming Soon",
       description: "Invite functionality will be implemented soon",
@@ -101,17 +58,17 @@ export const SubcontractorTable = ({
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Card className="p-6">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Card>
+    );
   }
 
   return (
-    <>
-      <div className="flex justify-end mb-4">
-        <Button onClick={handleAdd}>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Add Subcontractor
-        </Button>
-      </div>
+    <Card className="p-3 sm:p-6">
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -126,68 +83,13 @@ export const SubcontractorTable = ({
           </TableHeader>
           <TableBody>
             {subcontractors.map((sub) => (
-              <TableRow key={sub.id}>
-                <TableCell>
-                  <div>
-                    <div className="font-medium">{sub.name}</div>
-                    <div className="text-sm text-muted-foreground">{sub.email}</div>
-                  </div>
-                </TableCell>
-                <TableCell>{sub.company}</TableCell>
-                <TableCell>{sub.trade}</TableCell>
-                <TableCell>{sub.location || "N/A"}</TableCell>
-                <TableCell>
-                  <Badge className={getStatusColor(sub.status)}>{sub.status}</Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2 justify-end">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => handleInvite(sub.email)}
-                      title="Invite to bid"
-                    >
-                      <Mail className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => handleEdit(sub)}
-                      title="Edit subcontractor"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          title="Delete subcontractor"
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Subcontractor</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete this subcontractor? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDelete(sub.id)}
-                            className="bg-red-500 hover:bg-red-600"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </TableCell>
-              </TableRow>
+              <SubcontractorRow
+                key={sub.id}
+                sub={sub}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onInvite={handleInvite}
+              />
             ))}
             {subcontractors.length === 0 && (
               <TableRow>
@@ -208,6 +110,6 @@ export const SubcontractorTable = ({
           setFormOpen(false);
         }}
       />
-    </>
+    </Card>
   );
 };

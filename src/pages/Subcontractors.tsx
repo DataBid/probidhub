@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SubcontractorTable } from "@/components/subcontractors/SubcontractorTable";
 import { SubcontractorFilters } from "@/components/subcontractors/SubcontractorFilters";
+import { SubcontractorHeader } from "@/components/subcontractors/SubcontractorHeader";
 import { useUser } from "@supabase/auth-helpers-react";
 
 export const SubcontractorsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [tradeFilter, setTradeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [formOpen, setFormOpen] = useState(false);
   const user = useUser();
 
   const { data: subcontractors, isLoading, refetch } = useQuery({
@@ -57,25 +59,25 @@ export const SubcontractorsPage = () => {
   });
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Subcontractors</h1>
+    <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
+      <SubcontractorHeader onAdd={() => setFormOpen(true)} />
+
+      <div className="space-y-4">
+        <SubcontractorFilters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          tradeFilter={tradeFilter}
+          onTradeChange={setTradeFilter}
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+        />
+
+        <SubcontractorTable
+          subcontractors={subcontractors || []}
+          isLoading={isLoading}
+          refetch={refetch}
+        />
       </div>
-
-      <SubcontractorFilters
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        tradeFilter={tradeFilter}
-        onTradeChange={setTradeFilter}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-      />
-
-      <SubcontractorTable
-        subcontractors={subcontractors || []}
-        isLoading={isLoading}
-        refetch={refetch}
-      />
     </div>
   );
 };
