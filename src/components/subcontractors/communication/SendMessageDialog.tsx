@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@supabase/auth-helpers-react";
@@ -31,7 +31,6 @@ export const SendMessageDialog = ({
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const { toast } = useToast();
   const user = useUser();
 
   const handleSend = async () => {
@@ -39,7 +38,7 @@ export const SendMessageDialog = ({
     
     setIsSending(true);
     try {
-      console.log('Sending message to subcontractor:', subcontractorId);
+      console.log('Sending test email to:', subcontractorEmail);
       
       // Store in communication_logs
       const { error: logError } = await supabase
@@ -54,8 +53,8 @@ export const SendMessageDialog = ({
 
       if (logError) throw logError;
 
-      // Call edge function to send email (you'll implement this later)
-      const { error: emailError } = await supabase.functions.invoke('send-email', {
+      // Call edge function to send email
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-email', {
         body: {
           to: [subcontractorEmail],
           subject,
@@ -63,24 +62,18 @@ export const SendMessageDialog = ({
         },
       });
 
+      console.log('Email response:', emailResponse);
+
       if (emailError) throw emailError;
 
-      toast({
-        title: "Message sent successfully",
-        description: "Your message has been sent and logged.",
-      });
-
+      toast.success("Message sent successfully");
       onSuccess?.();
       onOpenChange(false);
       setSubject("");
       setMessage("");
     } catch (error) {
       console.error('Error sending message:', error);
-      toast({
-        title: "Failed to send message",
-        description: "There was an error sending your message. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to send message. Please try again.");
     } finally {
       setIsSending(false);
     }
