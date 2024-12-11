@@ -19,7 +19,8 @@ export const AuthForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLoading) return; // Prevent multiple submissions
+    if (isLoading) return;
+    
     setIsLoading(true);
     console.log("Starting authentication process for email:", email);
 
@@ -30,7 +31,7 @@ export const AuthForm = () => {
           email,
           password,
         });
-        
+
         if (error) {
           console.error("Login error:", error);
           toast({
@@ -41,14 +42,22 @@ export const AuthForm = () => {
           setIsLoading(false);
           return;
         }
-        
-        if (data.session) {
+
+        if (data.user && data.session) {
           console.log("Login successful, navigating to dashboard");
           toast({
             title: "Success",
             description: "Successfully logged in",
           });
           navigate("/dashboard");
+        } else {
+          console.error("Login response missing user or session");
+          toast({
+            title: "Login failed",
+            description: "An unexpected error occurred",
+            variant: "destructive",
+          });
+          setIsLoading(false);
         }
       } else {
         if (!role) {
@@ -96,7 +105,6 @@ export const AuthForm = () => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
