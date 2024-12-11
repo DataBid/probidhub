@@ -128,6 +128,61 @@ export type Database = {
           },
         ]
       }
+      communication_logs: {
+        Row: {
+          content: string | null
+          created_at: string
+          gc_id: string
+          id: string
+          status: string | null
+          subcontractor_id: string
+          subject: string | null
+          type: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          gc_id: string
+          id?: string
+          status?: string | null
+          subcontractor_id: string
+          subject?: string | null
+          type: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          gc_id?: string
+          id?: string
+          status?: string | null
+          subcontractor_id?: string
+          subject?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_logs_gc_id_fkey"
+            columns: ["gc_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_logs_subcontractor_id_fkey"
+            columns: ["subcontractor_id"]
+            isOneToOne: false
+            referencedRelation: "subcontractors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_gc_id"
+            columns: ["gc_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           billing_address: string

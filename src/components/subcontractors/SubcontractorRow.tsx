@@ -7,6 +7,10 @@ import { TradeCell } from "./row/TradeCell";
 import { getStatusColor } from "./utils/tradeUtils";
 import { useState } from "react";
 import { SubcontractorPreview } from "./SubcontractorPreview";
+import { Button } from "@/components/ui/button";
+import { Mail, MessageSquare } from "lucide-react";
+import { SendMessageDialog } from "./communication/SendMessageDialog";
+import { CommunicationHistory } from "./communication/CommunicationHistory";
 
 interface SubcontractorRowProps {
   sub: {
@@ -38,11 +42,13 @@ export const SubcontractorRow = ({
   isMobile
 }: SubcontractorRowProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const statusColor = getStatusColor(sub.status);
 
   const handleRowClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (target.closest('[role="checkbox"]')) {
+    if (target.closest('[role="checkbox"]') || target.closest('button')) {
       return;
     }
     setPreviewOpen(true);
@@ -82,18 +88,54 @@ export const SubcontractorRow = ({
         </TableCell>
         {!isMobile && <TableCell>{sub.location || "N/A"}</TableCell>}
         <TableCell>
-          <Badge 
-            variant="outline" 
-            className={`${statusColor} whitespace-nowrap`}
-          >
-            {sub.status}
-          </Badge>
+          <div className="flex items-center justify-between">
+            <Badge 
+              variant="outline" 
+              className={`${statusColor} whitespace-nowrap`}
+            >
+              {sub.status}
+            </Badge>
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMessageOpen(true)}
+                title="Send message"
+              >
+                <Mail className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setHistoryOpen(true)}
+                title="View communication history"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </TableCell>
       </TableRow>
+      
       <SubcontractorPreview
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         subcontractor={sub}
+      />
+
+      <SendMessageDialog
+        open={messageOpen}
+        onOpenChange={setMessageOpen}
+        subcontractorId={sub.id}
+        subcontractorEmail={sub.email}
+        onSuccess={() => setHistoryOpen(true)}
+      />
+
+      <CommunicationHistory
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
+        subcontractorId={sub.id}
+        subcontractorName={sub.name}
       />
     </>
   );
