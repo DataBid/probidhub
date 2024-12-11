@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Trash, UserPlus, RefreshCw, Edit, Layers } from "lucide-react";
+import { Trash, UserPlus, RefreshCw, Edit, Layers, X } from "lucide-react";
 import { useState } from "react";
 import { CategoryAssignmentDialog } from "./bulk-actions/CategoryAssignmentDialog";
 
@@ -15,8 +15,9 @@ interface SubcontractorBulkActionsProps {
   onDelete: (ids: string[]) => void;
   onInvite: (ids: string[]) => void;
   onStatusChange: (ids: string[], status: string) => void;
-  onEdit?: (id: string) => void; // Optional since it only works for single select
+  onEdit?: (id: string) => void;
   onAssignCategories?: (ids: string[], categoryIds: string[]) => void;
+  onClearSelection: () => void;
 }
 
 export const SubcontractorBulkActions = ({
@@ -26,6 +27,7 @@ export const SubcontractorBulkActions = ({
   onStatusChange,
   onEdit,
   onAssignCategories,
+  onClearSelection,
 }: SubcontractorBulkActionsProps) => {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   
@@ -79,6 +81,15 @@ export const SubcontractorBulkActions = ({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onClearSelection}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <X className="h-4 w-4 mr-1" />
+          Clear Selection
+        </Button>
       </div>
 
       {onAssignCategories && (

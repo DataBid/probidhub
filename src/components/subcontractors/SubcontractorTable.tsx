@@ -74,6 +74,10 @@ export const SubcontractorTable = ({
     }
   };
 
+  const handleClearSelection = () => {
+    setSelectedIds([]);
+  };
+
   const sortedSubcontractors = sortSubcontractors(subcontractors, sortConfig);
 
   // Calculate pagination
@@ -101,6 +105,7 @@ export const SubcontractorTable = ({
         onInvite={handleBulkInvite}
         onStatusChange={handleBulkStatusChange}
         onAssignCategories={handleAssignCategories}
+        onClearSelection={handleClearSelection}
       />
       <SubcontractorTableContent
         subcontractors={paginatedSubcontractors}
