@@ -10,17 +10,26 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserProfile } from "./hooks/useUserProfile";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 export const DashboardLayout = () => {
   const session = useSession();
   const { data: userProfile, isLoading: isLoadingProfile, error: profileError } = useUserProfile();
   const isGC = userProfile?.role === "gc";
 
+  if (!session) {
+    return null;
+  }
+
   if (isLoadingProfile) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-4">
+        <Skeleton className="h-32 w-full" />
+        <div className="grid grid-cols-3 gap-4">
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+        </div>
       </div>
     );
   }
