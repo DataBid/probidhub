@@ -3,8 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Mail, Trash } from "lucide-react";
+import { Edit, Eye, Mail, Trash } from "lucide-react";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getTradeIcon, getTradeColor, getStatusColor } from "./utils/tradeUtils";
 
@@ -17,6 +21,8 @@ interface SubcontractorRowProps {
     email: string;
     location?: string;
     status?: string;
+    notes?: string;
+    phone?: string;
   };
   selected: boolean;
   onSelect: (id: string, checked: boolean) => void;
@@ -36,6 +42,13 @@ export const SubcontractorRow = ({
   const TradeIcon = getTradeIcon(sub.trade);
   const tradeColor = getTradeColor(sub.trade);
   const statusColor = getStatusColor(sub.status);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState(sub.name);
+
+  const handleEditSave = () => {
+    onEdit({ ...sub, name: editedName });
+    setIsEditing(false);
+  };
 
   return (
     <TableRow key={sub.id} className="group hover:bg-gray-50">
@@ -61,10 +74,57 @@ export const SubcontractorRow = ({
         </div>
       </TableCell>
       <TableCell>
-        <div>
-          <div className="font-medium">{sub.name}</div>
-          <div className="text-sm text-muted-foreground">{sub.email}</div>
-        </div>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <div className="cursor-pointer">
+              {isEditing ? (
+                <div className="flex items-center space-x-2">
+                  <Input
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    className="h-8 w-[200px]"
+                  />
+                  <Button size="sm" onClick={handleEditSave}>Save</Button>
+                </div>
+              ) : (
+                <div>
+                  <div className="font-medium">{sub.name}</div>
+                  <div className="text-sm text-muted-foreground">{sub.email}</div>
+                </div>
+              )}
+            </div>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-80">
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold">{sub.name}</h4>
+              <div className="text-sm">
+                <p className="text-muted-foreground">Contact Details</p>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <span className="font-medium">Email:</span>
+                  <span>{sub.email}</span>
+                  {sub.phone && (
+                    <>
+                      <span className="font-medium">Phone:</span>
+                      <span>{sub.phone}</span>
+                    </>
+                  )}
+                  {sub.location && (
+                    <>
+                      <span className="font-medium">Location:</span>
+                      <span>{sub.location}</span>
+                    </>
+                  )}
+                </div>
+                {sub.notes && (
+                  <div className="mt-2">
+                    <p className="font-medium">Notes:</p>
+                    <p className="text-sm text-muted-foreground">{sub.notes}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
       </TableCell>
       <TableCell>
         <div className="flex items-center space-x-2">
@@ -94,7 +154,7 @@ export const SubcontractorRow = ({
           <Button 
             variant="ghost" 
             size="icon"
-            onClick={() => onEdit(sub)}
+            onClick={() => setIsEditing(true)}
             title="Edit subcontractor"
           >
             <Edit className="h-4 w-4" />
