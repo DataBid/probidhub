@@ -44,7 +44,7 @@ export const SendMessageDialog = ({
       const { error: logError } = await supabase
         .from('communication_logs')
         .insert({
-          subcontractor_id: subcontractorId,
+          company_id: subcontractorId,
           gc_id: user.id,
           type: 'email',
           subject,

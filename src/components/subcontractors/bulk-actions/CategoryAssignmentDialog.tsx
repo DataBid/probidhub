@@ -34,12 +34,12 @@ export const CategoryAssignmentDialog = ({
   const { toast } = useToast();
 
   const { data: categories, isLoading } = useQuery({
-    queryKey: ["subcontractor-categories"],
+    queryKey: ["company-categories"],
     queryFn: async () => {
       if (!user?.id) return [];
       
       const { data, error } = await supabase
-        .from("subcontractor_categories")
+        .from("company_categories")
         .select("*")
         .eq("gc_id", user.id);
 
@@ -55,7 +55,7 @@ export const CategoryAssignmentDialog = ({
       await onAssign(selectedIds, selectedCategories);
       toast({
         title: "Categories assigned",
-        description: `Successfully assigned categories to ${selectedIds.length} subcontractors`,
+        description: `Successfully assigned categories to ${selectedIds.length} companies`,
       });
       onOpenChange(false);
     } catch (error) {

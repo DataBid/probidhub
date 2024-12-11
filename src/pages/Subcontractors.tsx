@@ -34,9 +34,10 @@ export const SubcontractorsPage = () => {
       }
 
       let query = supabase
-        .from("subcontractors")
+        .from("companies_directory")
         .select("*")
         .eq("gc_id", user.id)
+        .eq("company_type", "subcontractor")
         .order("created_at", { ascending: false });
 
       if (filterPreferences.searchQuery) {

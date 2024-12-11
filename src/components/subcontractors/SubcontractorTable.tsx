@@ -41,20 +41,20 @@ export const SubcontractorTable = ({
     try {
       // First, delete existing assignments for these subcontractors
       await supabase
-        .from('categories_subcontractors')
+        .from('categories_companies')
         .delete()
-        .in('subcontractor_id', subcontractorIds);
+        .in('company_id', subcontractorIds);
 
       // Create new assignments
       const assignments = subcontractorIds.flatMap(subId =>
         categoryIds.map(catId => ({
-          subcontractor_id: subId,
+          company_id: subId,
           category_id: catId,
         }))
       );
 
       const { error } = await supabase
-        .from('categories_subcontractors')
+        .from('categories_companies')
         .insert(assignments);
 
       if (error) throw error;

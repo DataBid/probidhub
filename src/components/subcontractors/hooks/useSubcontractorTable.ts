@@ -22,7 +22,7 @@ export const useSubcontractorTable = (subcontractors: any[], refetch: () => void
   const handleDelete = async (id: string) => {
     try {
       const { error } = await supabase
-        .from("subcontractors")
+        .from("companies_directory")
         .delete()
         .eq("id", id);
 
@@ -47,7 +47,7 @@ export const useSubcontractorTable = (subcontractors: any[], refetch: () => void
   const handleBulkDelete = async (ids: string[]) => {
     try {
       const { error } = await supabase
-        .from("subcontractors")
+        .from("companies_directory")
         .delete()
         .in("id", ids);
 
@@ -70,17 +70,10 @@ export const useSubcontractorTable = (subcontractors: any[], refetch: () => void
     }
   };
 
-  const handleBulkInvite = (ids: string[]) => {
-    toast({
-      title: "Coming Soon",
-      description: `Bulk invite functionality will be implemented soon`,
-    });
-  };
-
   const handleBulkStatusChange = async (ids: string[], status: string) => {
     try {
       const { error } = await supabase
-        .from("subcontractors")
+        .from("companies_directory")
         .update({ status })
         .in("id", ids);
 

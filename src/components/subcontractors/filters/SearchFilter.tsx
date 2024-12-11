@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Search, Clock, X } from "lucide-react";
+import { Search, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -37,9 +37,10 @@ export const SearchFilter = ({ searchQuery, onSearchChange }: SearchFilterProps)
       console.log("Fetching suggestions for query:", debouncedSearch);
       
       const { data, error } = await supabase
-        .from("subcontractors")
+        .from("companies_directory")
         .select("name, company, trade, email")
         .eq("gc_id", user.id)
+        .eq("company_type", "subcontractor")
         .or(`name.ilike.%${debouncedSearch}%,company.ilike.%${debouncedSearch}%,trade.ilike.%${debouncedSearch}%,email.ilike.%${debouncedSearch}%`)
         .limit(MAX_SUGGESTIONS);
 
