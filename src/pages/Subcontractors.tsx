@@ -9,27 +9,27 @@ import { downloadCSV, prepareSubcontractorsData } from "@/utils/exportUtils";
 import { useToast } from "@/hooks/use-toast";
 import { DateRange } from "@/components/subcontractors/schema";
 import { startOfDay, endOfDay } from "date-fns";
+import { useFilterPreferences } from "@/hooks/use-filter-preferences";
+import { useSubcontractorShortcuts } from "@/hooks/use-subcontractor-shortcuts";
 
 export const SubcontractorsPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTrades, setSelectedTrades] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
-  const [locationFilter, setLocationFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const user = useUser();
   const { toast } = useToast();
 
+  // Initialize filter preferences with default values
+  const [filterPreferences, setFilterPreferences] = useFilterPreferences({
+    searchQuery: "",
+    selectedTrades: [],
+    statusFilter: "all",
+    dateRange: { from: undefined, to: undefined },
+    locationFilter: "",
+  });
+
   const { data: subcontractors, isLoading, refetch } = useQuery({
-    queryKey: ["subcontractors", searchQuery, selectedTrades, statusFilter, dateRange, locationFilter],
+    queryKey: ["subcontractors", filterPreferences],
     queryFn: async () => {
-      console.log("Fetching subcontractors with filters:", {
-        searchQuery,
-        selectedTrades,
-        statusFilter,
-        dateRange,
-        locationFilter,
-      });
+      console.log("Fetching subcontractors with filters:", filterPreferences);
 
       if (!user?.id) {
         throw new Error("User not authenticated");
@@ -41,29 +41,29 @@ export const SubcontractorsPage = () => {
         .eq("gc_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (searchQuery) {
+      if (filterPreferences.searchQuery) {
         query = query.or(
-          `name.ilike.%${searchQuery}%,company.ilike.%${searchQuery}%,trade.ilike.%${searchQuery}%`
+          `name.ilike.%${filterPreferences.searchQuery}%,company.ilike.%${filterPreferences.searchQuery}%,trade.ilike.%${filterPreferences.searchQuery}%`
         );
       }
 
-      if (selectedTrades.length > 0) {
-        query = query.in("trade", selectedTrades);
+      if (filterPreferences.selectedTrades.length > 0) {
+        query = query.in("trade", filterPreferences.selectedTrades);
       }
 
-      if (statusFilter !== "all") {
-        query = query.eq("status", statusFilter);
+      if (filterPreferences.statusFilter !== "all") {
+        query = query.eq("status", filterPreferences.statusFilter);
       }
 
-      if (dateRange.from) {
-        query = query.gte("created_at", startOfDay(dateRange.from).toISOString());
-        if (dateRange.to) {
-          query = query.lte("created_at", endOfDay(dateRange.to).toISOString());
+      if (filterPreferences.dateRange.from) {
+        query = query.gte("created_at", startOfDay(filterPreferences.dateRange.from).toISOString());
+        if (filterPreferences.dateRange.to) {
+          query = query.lte("created_at", endOfDay(filterPreferences.dateRange.to).toISOString());
         }
       }
 
-      if (locationFilter) {
-        query = query.ilike("location", `%${locationFilter}%`);
+      if (filterPreferences.locationFilter) {
+        query = query.ilike("location", `%${filterPreferences.locationFilter}%`);
       }
 
       const { data, error } = await query;
@@ -97,22 +97,29 @@ export const SubcontractorsPage = () => {
     });
   };
 
+  // Initialize keyboard shortcuts
+  useSubcontractorShortcuts({
+    onAdd: () => setFormOpen(true),
+    onRefresh: () => refetch(),
+    onExport: handleExport,
+  });
+
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
       <SubcontractorHeader onAdd={() => setFormOpen(true)} onExport={handleExport} />
 
       <div className="space-y-4">
         <SubcontractorFilters
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedTrades={selectedTrades}
-          onTradesChange={setSelectedTrades}
-          statusFilter={statusFilter}
-          onStatusChange={setStatusFilter}
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          locationFilter={locationFilter}
-          onLocationChange={setLocationFilter}
+          searchQuery={filterPreferences.searchQuery}
+          onSearchChange={(value) => setFilterPreferences(prev => ({ ...prev, searchQuery: value }))}
+          selectedTrades={filterPreferences.selectedTrades}
+          onTradesChange={(value) => setFilterPreferences(prev => ({ ...prev, selectedTrades: value }))}
+          statusFilter={filterPreferences.statusFilter}
+          onStatusChange={(value) => setFilterPreferences(prev => ({ ...prev, statusFilter: value }))}
+          dateRange={filterPreferences.dateRange}
+          onDateRangeChange={(range) => setFilterPreferences(prev => ({ ...prev, dateRange: range }))}
+          locationFilter={filterPreferences.locationFilter}
+          onLocationChange={(value) => setFilterPreferences(prev => ({ ...prev, locationFilter: value }))}
         />
 
         <SubcontractorTable
