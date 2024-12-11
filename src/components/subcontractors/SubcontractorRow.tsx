@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, Mail, Trash } from "lucide-react";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { Link } from "react-router-dom";
 
 interface SubcontractorRowProps {
   sub: {
@@ -28,7 +29,14 @@ export const SubcontractorRow = ({ sub, onEdit, onDelete, onInvite }: Subcontrac
           <div className="text-sm text-muted-foreground">{sub.email}</div>
         </div>
       </TableCell>
-      <TableCell>{sub.company}</TableCell>
+      <TableCell>
+        <Link 
+          to={`/companies/${sub.id}`} 
+          className="text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          {sub.company}
+        </Link>
+      </TableCell>
       <TableCell>{sub.trade}</TableCell>
       <TableCell>{sub.location || "N/A"}</TableCell>
       <TableCell>
