@@ -22,42 +22,38 @@ export const AuthForm = () => {
     if (isLoading) return;
     
     setIsLoading(true);
-    console.log("Starting authentication process for email:", email);
 
     try {
       if (isLogin) {
-        console.log("Attempting login...");
-        const { data: { user, session }, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) {
-          console.error("Login error:", error);
           toast({
             title: "Login failed",
             description: error.message,
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
 
-        if (!user || !session) {
-          console.error("Login response missing user or session");
+        if (data.user && data.session) {
+          toast({
+            title: "Success",
+            description: "Successfully logged in",
+          });
+          navigate("/dashboard");
+        } else {
           toast({
             title: "Login failed",
             description: "An unexpected error occurred",
             variant: "destructive",
           });
-          return;
+          setIsLoading(false);
         }
-
-        console.log("Login successful, navigating to dashboard");
-        toast({
-          title: "Success",
-          description: "Successfully logged in",
-        });
-        navigate("/dashboard");
       } else {
         if (!role) {
           toast({
@@ -65,11 +61,11 @@ export const AuthForm = () => {
             description: "Please select a role",
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
 
-        console.log("Attempting signup with role:", role);
-        const { data, error: signUpError } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -80,12 +76,12 @@ export const AuthForm = () => {
         });
 
         if (signUpError) {
-          console.error("Signup error:", signUpError);
           toast({
             title: "Error",
             description: signUpError.message,
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
 
@@ -93,15 +89,14 @@ export const AuthForm = () => {
           title: "Success",
           description: "Please check your email to verify your account",
         });
+        setIsLoading(false);
       }
     } catch (error: any) {
-      console.error("Authentication error:", error);
       toast({
         title: "Error",
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
