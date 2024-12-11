@@ -7,22 +7,28 @@ import { SubcontractorHeader } from "@/components/subcontractors/SubcontractorHe
 import { useUser } from "@supabase/auth-helpers-react";
 import { downloadCSV, prepareSubcontractorsData } from "@/utils/exportUtils";
 import { useToast } from "@/hooks/use-toast";
+import { DateRange } from "@/components/subcontractors/schema";
+import { startOfDay, endOfDay } from "date-fns";
 
 export const SubcontractorsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [tradeFilter, setTradeFilter] = useState("all");
+  const [selectedTrades, setSelectedTrades] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
+  const [locationFilter, setLocationFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const user = useUser();
   const { toast } = useToast();
 
   const { data: subcontractors, isLoading, refetch } = useQuery({
-    queryKey: ["subcontractors", searchQuery, tradeFilter, statusFilter],
+    queryKey: ["subcontractors", searchQuery, selectedTrades, statusFilter, dateRange, locationFilter],
     queryFn: async () => {
       console.log("Fetching subcontractors with filters:", {
         searchQuery,
-        tradeFilter,
+        selectedTrades,
         statusFilter,
+        dateRange,
+        locationFilter,
       });
 
       if (!user?.id) {
@@ -41,12 +47,23 @@ export const SubcontractorsPage = () => {
         );
       }
 
-      if (tradeFilter !== "all") {
-        query = query.eq("trade", tradeFilter);
+      if (selectedTrades.length > 0) {
+        query = query.in("trade", selectedTrades);
       }
 
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
+      }
+
+      if (dateRange.from) {
+        query = query.gte("created_at", startOfDay(dateRange.from).toISOString());
+        if (dateRange.to) {
+          query = query.lte("created_at", endOfDay(dateRange.to).toISOString());
+        }
+      }
+
+      if (locationFilter) {
+        query = query.ilike("location", `%${locationFilter}%`);
       }
 
       const { data, error } = await query;
@@ -88,10 +105,14 @@ export const SubcontractorsPage = () => {
         <SubcontractorFilters
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          tradeFilter={tradeFilter}
-          onTradeChange={setTradeFilter}
+          selectedTrades={selectedTrades}
+          onTradesChange={setSelectedTrades}
           statusFilter={statusFilter}
           onStatusChange={setStatusFilter}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+          locationFilter={locationFilter}
+          onLocationChange={setLocationFilter}
         />
 
         <SubcontractorTable

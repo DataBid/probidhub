@@ -11,3 +11,19 @@ export const subcontractorSchema = z.object({
 });
 
 export type SubcontractorFormValues = z.infer<typeof subcontractorSchema>;
+
+export type DateRange = {
+  from: Date | undefined;
+  to: Date | undefined;
+};
+
+export const trades = [
+  "Electrical",
+  "Plumbing",
+  "HVAC",
+  "Carpentry",
+  "Masonry",
+  "Painting",
+  "Roofing",
+  "Landscaping",
+] as const;
