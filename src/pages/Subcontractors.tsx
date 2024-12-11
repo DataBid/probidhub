@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { SubcontractorTable } from "@/components/subcontractors/SubcontractorTable";
 import { SubcontractorFilters } from "@/components/subcontractors/SubcontractorFilters";
 import { SubcontractorHeader } from "@/components/subcontractors/SubcontractorHeader";
-import { SubcontractorMetrics } from "@/components/subcontractors/metrics/SubcontractorMetrics";
 import { useUser } from "@supabase/auth-helpers-react";
 import { downloadCSV, prepareSubcontractorsData } from "@/utils/exportUtils";
 import { useToast } from "@/hooks/use-toast";
@@ -112,10 +111,6 @@ export const SubcontractorsPage = () => {
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
       <SubcontractorHeader onAdd={() => setFormOpen(true)} onExport={handleExport} />
-
-      {!isLoading && subcontractors && (
-        <SubcontractorMetrics subcontractors={subcontractors} />
-      )}
 
       <div className="space-y-4">
         <SubcontractorFilters
