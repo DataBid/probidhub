@@ -1,6 +1,4 @@
 import { SubcontractorPreview } from "../../SubcontractorPreview";
-import { SendMessageDialog } from "../../communication/SendMessageDialog";
-import { CommunicationHistory } from "../../communication/CommunicationHistory";
 
 interface SubcontractorPreviewDialogProps {
   sub: {
@@ -13,23 +11,25 @@ interface SubcontractorPreviewDialogProps {
     notes?: string;
     trade: string;
     status?: string;
+    area_code?: string;
   };
   previewOpen: boolean;
   setPreviewOpen: (open: boolean) => void;
+  onEdit?: () => void;
 }
 
 export const SubcontractorPreviewDialog = ({
   sub,
   previewOpen,
   setPreviewOpen,
+  onEdit,
 }: SubcontractorPreviewDialogProps) => {
   return (
-    <>
-      <SubcontractorPreview
-        open={previewOpen}
-        onOpenChange={setPreviewOpen}
-        subcontractor={sub}
-      />
-    </>
+    <SubcontractorPreview
+      open={previewOpen}
+      onOpenChange={setPreviewOpen}
+      subcontractor={sub}
+      onEdit={onEdit}
+    />
   );
 };
