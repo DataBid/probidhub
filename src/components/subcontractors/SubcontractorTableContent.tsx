@@ -66,8 +66,8 @@ export const SubcontractorTableContent = ({
                 aria-label="Select all"
               />
             </TableHead>
-            <SortableHeader column="name" label="Name" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="company" label="Company" sortConfig={sortConfig} onSort={onSort} />
+            <SortableHeader column="name" label="Contact Name" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="trade" label="Trade" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="location" label="Location" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="status" label="Status" sortConfig={sortConfig} onSort={onSort} />
