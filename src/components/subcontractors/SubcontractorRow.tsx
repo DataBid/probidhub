@@ -74,6 +74,7 @@ export const SubcontractorRow = ({
         {!isMobile && (
           <TableCell>
             <ContactDetails
+              id={sub.id}
               name={sub.name}
               email={sub.email}
               phone={sub.phone}
