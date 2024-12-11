@@ -14,7 +14,7 @@ const Projects = () => {
   } = useProjectsPageData();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
       <ProjectsHeader />
       <ProjectsContent
         projects={projects || []}
