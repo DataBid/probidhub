@@ -21,6 +21,8 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const emailRequest: EmailRequest = await req.json();
+    console.log('Attempting to send email:', emailRequest);
+    
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -28,22 +30,24 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Acme <onboarding@resend.dev>",
+        from: "DataBid <jim@databid.com>", // Updated to use your domain
         to: emailRequest.to,
         subject: emailRequest.subject,
         html: emailRequest.html,
       }),
     });
 
+    const responseData = await res.text();
+    console.log('Resend API response:', responseData);
+
     if (res.ok) {
-      const data = await res.json();
+      const data = JSON.parse(responseData);
       return new Response(JSON.stringify(data), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     } else {
-      const error = await res.text();
-      return new Response(JSON.stringify({ error }), {
+      return new Response(JSON.stringify({ error: responseData }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
