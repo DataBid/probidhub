@@ -28,7 +28,11 @@ export const SubcontractorTable = ({
 }: SubcontractorTableProps) => {
   const [formOpen, setFormOpen] = useState(false);
   const [selectedSubcontractor, setSelectedSubcontractor] = useState<any>();
-  const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+  // Set default sort configuration to company name ascending
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ 
+    column: 'company', 
+    direction: 'asc' 
+  });
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
@@ -133,8 +137,8 @@ export const SubcontractorTable = ({
     if (!sortConfig) return 0;
 
     const { column, direction } = sortConfig;
-    const aValue = a[column];
-    const bValue = b[column];
+    const aValue = a[column]?.toLowerCase() || '';  // Add toLowerCase() for case-insensitive sorting
+    const bValue = b[column]?.toLowerCase() || '';
 
     if (aValue < bValue) return direction === 'asc' ? -1 : 1;
     if (aValue > bValue) return direction === 'asc' ? 1 : -1;
