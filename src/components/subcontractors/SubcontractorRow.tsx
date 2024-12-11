@@ -29,6 +29,7 @@ interface SubcontractorRowProps {
   onEdit: (sub: any) => void;
   onDelete: (id: string) => void;
   onInvite: (email: string) => void;
+  isMobile: boolean;
 }
 
 export const SubcontractorRow = ({ 
@@ -37,7 +38,8 @@ export const SubcontractorRow = ({
   onSelect,
   onEdit, 
   onDelete, 
-  onInvite 
+  onInvite,
+  isMobile
 }: SubcontractorRowProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [specialties, setSpecialties] = useState<string[]>([]);
@@ -101,21 +103,23 @@ export const SubcontractorRow = ({
         <TableCell onClick={(e) => e.stopPropagation()}>
           <CompanyCell id={sub.id} company={sub.company} />
         </TableCell>
-        <TableCell>
-          <ContactDetails
-            name={sub.name}
-            email={sub.email}
-            phone={sub.phone}
-            location={sub.location}
-            notes={sub.notes}
-            onEdit={(updates) => onEdit({ ...sub, ...updates })}
-          />
-        </TableCell>
+        {!isMobile && (
+          <TableCell>
+            <ContactDetails
+              name={sub.name}
+              email={sub.email}
+              phone={sub.phone}
+              location={sub.location}
+              notes={sub.notes}
+              onEdit={(updates) => onEdit({ ...sub, ...updates })}
+            />
+          </TableCell>
+        )}
         <TableCell>
           <TradeCell trade={sub.trade} />
         </TableCell>
-        <TableCell>{sub.location || "N/A"}</TableCell>
-        <TableCell>
+        {!isMobile && <TableCell>{sub.location || "N/A"}</TableCell>}
+        <TableCell className="whitespace-nowrap">
           {sub.last_contact ? (
             format(new Date(sub.last_contact), 'MMM d, yyyy')
           ) : (
@@ -125,25 +129,34 @@ export const SubcontractorRow = ({
         <TableCell>
           <Badge 
             variant="outline" 
-            className={`${statusColor}`}
+            className={`${statusColor} whitespace-nowrap`}
           >
             {sub.status}
           </Badge>
         </TableCell>
-        <TableCell>
-          <div className="flex gap-1 flex-wrap">
-            {specialties.map((specialty, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                {specialty}
+        {!isMobile && (
+          <>
+            <TableCell>
+              <div className="flex gap-1 flex-wrap max-w-[150px]">
+                {specialties.slice(0, 2).map((specialty, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs whitespace-nowrap">
+                    {specialty}
+                  </Badge>
+                ))}
+                {specialties.length > 2 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{specialties.length - 2}
+                  </Badge>
+                )}
+              </div>
+            </TableCell>
+            <TableCell>
+              <Badge variant="secondary" className="font-mono">
+                {activeBidsCount}
               </Badge>
-            ))}
-          </div>
-        </TableCell>
-        <TableCell>
-          <Badge variant="secondary" className="font-mono">
-            {activeBidsCount}
-          </Badge>
-        </TableCell>
+            </TableCell>
+          </>
+        )}
         <TableCell onClick={(e) => e.stopPropagation()}>
           <RowActions
             onInvite={() => onInvite(sub.email)}

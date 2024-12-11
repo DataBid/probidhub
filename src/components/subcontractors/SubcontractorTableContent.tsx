@@ -4,6 +4,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SortConfig } from "./SubcontractorTable";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SubcontractorTableContentProps {
   subcontractors: any[];
@@ -22,11 +23,12 @@ interface SortableHeaderProps {
   label: string;
   sortConfig: SortConfig;
   onSort: (column: string) => void;
+  className?: string;
 }
 
-const SortableHeader = ({ column, label, sortConfig, onSort }: SortableHeaderProps) => {
+const SortableHeader = ({ column, label, sortConfig, onSort, className }: SortableHeaderProps) => {
   return (
-    <TableHead>
+    <TableHead className={className}>
       <Button
         variant="ghost"
         onClick={() => onSort(column)}
@@ -52,13 +54,14 @@ export const SubcontractorTableContent = ({
 }: SubcontractorTableContentProps) => {
   const allSelected = subcontractors.length > 0 && selectedIds.length === subcontractors.length;
   const someSelected = selectedIds.length > 0 && selectedIds.length < subcontractors.length;
+  const isMobile = useIsMobile();
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px]">
+            <TableHead className="w-[40px]">
               <Checkbox
                 checked={allSelected}
                 indeterminate={someSelected}
@@ -66,15 +69,53 @@ export const SubcontractorTableContent = ({
                 aria-label="Select all"
               />
             </TableHead>
-            <SortableHeader column="company" label="Company" sortConfig={sortConfig} onSort={onSort} />
-            <SortableHeader column="name" label="Contact Name" sortConfig={sortConfig} onSort={onSort} />
-            <SortableHeader column="trade" label="Trade" sortConfig={sortConfig} onSort={onSort} />
-            <SortableHeader column="location" label="Location" sortConfig={sortConfig} onSort={onSort} />
-            <SortableHeader column="last_contact" label="Last Contact" sortConfig={sortConfig} onSort={onSort} />
-            <SortableHeader column="status" label="Status" sortConfig={sortConfig} onSort={onSort} />
-            <TableHead>Specialties</TableHead>
-            <TableHead>Active Bids</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <SortableHeader 
+              column="company" 
+              label="Company" 
+              sortConfig={sortConfig} 
+              onSort={onSort}
+              className="min-w-[180px]"
+            />
+            {!isMobile && (
+              <SortableHeader 
+                column="name" 
+                label="Contact" 
+                sortConfig={sortConfig} 
+                onSort={onSort}
+                className="min-w-[150px]"
+              />
+            )}
+            <SortableHeader 
+              column="trade" 
+              label="Trade" 
+              sortConfig={sortConfig} 
+              onSort={onSort}
+              className="min-w-[120px]"
+            />
+            {!isMobile && (
+              <SortableHeader 
+                column="location" 
+                label="Location" 
+                sortConfig={sortConfig} 
+                onSort={onSort}
+                className="min-w-[120px]"
+              />
+            )}
+            <SortableHeader 
+              column="last_contact" 
+              label="Last Contact" 
+              sortConfig={sortConfig} 
+              onSort={onSort}
+              className="min-w-[120px]"
+            />
+            <TableHead className="min-w-[100px]">Status</TableHead>
+            {!isMobile && (
+              <>
+                <TableHead className="min-w-[150px]">Specialties</TableHead>
+                <TableHead className="w-[80px]">Bids</TableHead>
+              </>
+            )}
+            <TableHead className="w-[100px] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,11 +128,15 @@ export const SubcontractorTableContent = ({
               onEdit={onEdit}
               onDelete={onDelete}
               onInvite={onInvite}
+              isMobile={isMobile}
             />
           ))}
           {subcontractors.length === 0 && (
             <TableRow>
-              <TableCell colSpan={10} className="text-center text-muted-foreground">
+              <TableCell 
+                colSpan={isMobile ? 6 : 10} 
+                className="text-center text-muted-foreground h-32"
+              >
                 No subcontractors found
               </TableCell>
             </TableRow>
