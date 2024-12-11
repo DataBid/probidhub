@@ -4,11 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { SubcontractorTable } from "@/components/subcontractors/SubcontractorTable";
 import { SubcontractorFilters } from "@/components/subcontractors/SubcontractorFilters";
 import { SubcontractorHeader } from "@/components/subcontractors/SubcontractorHeader";
+import { SubcontractorMetrics } from "@/components/subcontractors/metrics/SubcontractorMetrics";
 import { useUser } from "@supabase/auth-helpers-react";
 import { downloadCSV, prepareSubcontractorsData } from "@/utils/exportUtils";
 import { useToast } from "@/hooks/use-toast";
-import { DateRange } from "@/components/subcontractors/schema";
-import { startOfDay, endOfDay } from "date-fns";
 import { useFilterPreferences } from "@/hooks/use-filter-preferences";
 import { useSubcontractorShortcuts } from "@/hooks/use-subcontractor-shortcuts";
 
@@ -56,9 +55,15 @@ export const SubcontractorsPage = () => {
       }
 
       if (filterPreferences.dateRange.from) {
-        query = query.gte("created_at", startOfDay(filterPreferences.dateRange.from).toISOString());
+        query = query.gte(
+          "created_at",
+          filterPreferences.dateRange.from.toISOString()
+        );
         if (filterPreferences.dateRange.to) {
-          query = query.lte("created_at", endOfDay(filterPreferences.dateRange.to).toISOString());
+          query = query.lte(
+            "created_at",
+            filterPreferences.dateRange.to.toISOString()
+          );
         }
       }
 
@@ -108,18 +113,32 @@ export const SubcontractorsPage = () => {
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
       <SubcontractorHeader onAdd={() => setFormOpen(true)} onExport={handleExport} />
 
+      {!isLoading && subcontractors && (
+        <SubcontractorMetrics subcontractors={subcontractors} />
+      )}
+
       <div className="space-y-4">
         <SubcontractorFilters
           searchQuery={filterPreferences.searchQuery}
-          onSearchChange={(value) => setFilterPreferences(prev => ({ ...prev, searchQuery: value }))}
+          onSearchChange={(value) =>
+            setFilterPreferences((prev) => ({ ...prev, searchQuery: value }))
+          }
           selectedTrades={filterPreferences.selectedTrades}
-          onTradesChange={(value) => setFilterPreferences(prev => ({ ...prev, selectedTrades: value }))}
+          onTradesChange={(value) =>
+            setFilterPreferences((prev) => ({ ...prev, selectedTrades: value }))
+          }
           statusFilter={filterPreferences.statusFilter}
-          onStatusChange={(value) => setFilterPreferences(prev => ({ ...prev, statusFilter: value }))}
+          onStatusChange={(value) =>
+            setFilterPreferences((prev) => ({ ...prev, statusFilter: value }))
+          }
           dateRange={filterPreferences.dateRange}
-          onDateRangeChange={(range) => setFilterPreferences(prev => ({ ...prev, dateRange: range }))}
+          onDateRangeChange={(range) =>
+            setFilterPreferences((prev) => ({ ...prev, dateRange: range }))
+          }
           locationFilter={filterPreferences.locationFilter}
-          onLocationChange={(value) => setFilterPreferences(prev => ({ ...prev, locationFilter: value }))}
+          onLocationChange={(value) =>
+            setFilterPreferences((prev) => ({ ...prev, locationFilter: value }))
+          }
         />
 
         <SubcontractorTable
