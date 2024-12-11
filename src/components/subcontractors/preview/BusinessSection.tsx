@@ -15,10 +15,9 @@ export const BusinessSection = ({ trade, status, lastContact, companyType }: Bus
   const specialties = trade.split(',').map(t => t.trim());
 
   return (
-    <div>
-      <div className="flex items-center space-x-2 mb-4">
-        <Briefcase className="h-4 w-4 text-primary" />
-        <h4 className="text-sm font-semibold">Business Details</h4>
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Business Details</h3>
       </div>
       
       <div className="space-y-4">
@@ -33,29 +32,31 @@ export const BusinessSection = ({ trade, status, lastContact, companyType }: Bus
         <div className="flex flex-wrap gap-2">
           {specialties.map((specialty, index) => (
             <Badge 
-              key={index}
-              variant="outline" 
-              className="hover:bg-primary/5 transition-colors cursor-default"
+              key={index} 
+              variant="secondary"
+              className="capitalize"
             >
               {specialty}
             </Badge>
           ))}
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Clock className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">Status:</span>
-          <Badge variant="outline" className={`${statusColor} transition-colors`}>
-            {status}
-          </Badge>
-        </div>
+        {status && (
+          <div className="flex items-center space-x-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Status:</span>
+            <Badge variant="outline" className={statusColor}>
+              {status}
+            </Badge>
+          </div>
+        )}
 
         {lastContact && (
           <div className="flex items-center space-x-2">
             <History className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Last Contact:</span>
-            <span className="text-sm font-medium">
-              {format(new Date(lastContact), 'MMM d, yyyy')}
+            <span className="text-sm">
+              {format(new Date(lastContact), "MMM d, yyyy")}
             </span>
           </div>
         )}

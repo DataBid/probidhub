@@ -1,19 +1,8 @@
 import { SubcontractorPreview } from "../../SubcontractorPreview";
+import { CompanyData } from "../../types/filterTypes";
 
 interface SubcontractorPreviewDialogProps {
-  sub: {
-    id: string;
-    name: string;
-    company: string;
-    email: string;
-    phone?: string;
-    location?: string;
-    notes?: string;
-    trade: string;
-    status?: string;
-    area_code?: string;
-    company_type: string;
-  };
+  sub: CompanyData;
   previewOpen: boolean;
   setPreviewOpen: (open: boolean) => void;
   onEdit?: () => void;
