@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ContactDetailsProps {
+  id: string;
   name: string;
   email: string;
   phone?: string;
@@ -10,6 +11,7 @@ interface ContactDetailsProps {
 }
 
 export const ContactDetails = ({ 
+  id,
   name, 
   email, 
   phone, 

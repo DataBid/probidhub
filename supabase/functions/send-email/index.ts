@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "DataBid <jim@databid.com>", // Updated to use your domain
+        from: "onboarding@resend.dev", // Using Resend testing email
         to: emailRequest.to,
         subject: emailRequest.subject,
         html: emailRequest.html,
