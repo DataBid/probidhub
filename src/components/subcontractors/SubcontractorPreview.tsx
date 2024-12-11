@@ -20,6 +20,7 @@ import { ContactSection } from "./preview/ContactSection";
 import { BusinessSection } from "./preview/BusinessSection";
 import { CommunicationSection } from "./preview/CommunicationSection";
 import { BidsSection } from "./preview/BidsSection";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SubcontractorPreviewProps {
   open: boolean;
@@ -62,10 +63,24 @@ export const SubcontractorPreview = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader className="space-y-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Building2 className="h-5 w-5 text-muted-foreground" />
-              <SheetTitle>{subcontractor.company}</SheetTitle>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4">
+              <Avatar className="h-16 w-16 transition-transform hover:scale-105">
+                <AvatarImage 
+                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${subcontractor.company}`} 
+                  alt={subcontractor.company} 
+                />
+                <AvatarFallback className="text-lg">
+                  {subcontractor.company.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <SheetTitle>{subcontractor.company}</SheetTitle>
+                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                  <Building2 className="h-4 w-4" />
+                  <span>{subcontractor.trade}</span>
+                </div>
+              </div>
             </div>
             <div className="flex items-center gap-4 mr-8">
               <Button
@@ -73,6 +88,7 @@ export const SubcontractorPreview = ({
                 size="icon"
                 onClick={handleEmail}
                 title="Send email"
+                className="hover:bg-primary/10 transition-colors"
               >
                 <Mail className="h-4 w-4" />
               </Button>
@@ -82,6 +98,7 @@ export const SubcontractorPreview = ({
                   size="icon"
                   onClick={handleCall}
                   title="Call"
+                  className="hover:bg-primary/10 transition-colors"
                 >
                   <PhoneCall className="h-4 w-4" />
                 </Button>
@@ -95,6 +112,7 @@ export const SubcontractorPreview = ({
                     onOpenChange(false);
                   }}
                   title="Edit"
+                  className="hover:bg-primary/10 transition-colors"
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -106,7 +124,7 @@ export const SubcontractorPreview = ({
 
         <div className="mt-6 space-y-6">
           {/* Contact Information Section */}
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <ContactSection
                 name={subcontractor.name}
@@ -123,7 +141,7 @@ export const SubcontractorPreview = ({
           <Separator className="my-4" />
 
           {/* Business Details Section */}
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <BusinessSection
                 trade={subcontractor.trade}
@@ -136,7 +154,7 @@ export const SubcontractorPreview = ({
           <Separator className="my-4" />
 
           {/* Communication History Section */}
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <CommunicationSection subcontractorId={subcontractor.id} />
             </CardContent>
@@ -145,7 +163,7 @@ export const SubcontractorPreview = ({
           <Separator className="my-4" />
 
           {/* Bids Section */}
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <BidsSection subcontractorId={subcontractor.id} />
             </CardContent>
@@ -155,7 +173,7 @@ export const SubcontractorPreview = ({
           <div className="flex justify-end pt-4">
             <Button
               variant="link"
-              className="text-sm"
+              className="text-sm group"
               onClick={() => {
                 toast({
                   title: "Coming Soon",
@@ -163,7 +181,7 @@ export const SubcontractorPreview = ({
                 });
               }}
             >
-              <ExternalLink className="h-4 w-4 mr-1" />
+              <ExternalLink className="h-4 w-4 mr-1 group-hover:scale-110 transition-transform" />
               View full profile
             </Button>
           </div>
