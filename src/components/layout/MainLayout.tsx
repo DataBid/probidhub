@@ -1,6 +1,6 @@
 import { Navbar } from "./Navbar";
 import { DashboardSidebar } from "./DashboardSidebar";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -10,32 +10,15 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const session = useSession();
-  const supabase = useSupabaseClient();
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("MainLayout: Checking session state:", session?.user?.id || 'No session');
-    
     if (!session) {
       console.log("MainLayout: No session found, redirecting to login");
       navigate("/");
       return;
     }
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-      console.log("MainLayout: Auth state changed:", currentSession?.user?.id || 'No session');
-      if (!currentSession) {
-        navigate("/");
-      }
-    });
-
-    return () => {
-      console.log("MainLayout: Cleaning up auth listener");
-      subscription.unsubscribe();
-    };
-  }, [session, navigate, supabase.auth]);
+  }, [session, navigate]);
 
   if (!session) {
     console.log("MainLayout: No session, returning null");

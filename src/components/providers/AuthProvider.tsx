@@ -14,33 +14,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     console.log("AuthProvider: Starting session initialization");
     
-    const initializeSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log("AuthProvider: Initial session fetch:", session?.user?.id || 'No session');
-        
-        if (session) {
-          setInitialSession(session);
-        } else {
-          // Clear any stale session data
-          localStorage.removeItem('supabase.auth.token');
-        }
-      } catch (error) {
-        console.error("AuthProvider: Error fetching session:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeSession();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("AuthProvider: Initial session fetch:", session?.user?.id || 'No session');
+      setInitialSession(session);
+      setIsLoading(false);
+    });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("AuthProvider: Auth state changed:", session?.user?.id || 'No session');
       setInitialSession(session);
-      
-      if (!session) {
-        localStorage.removeItem('supabase.auth.token');
-      }
     });
 
     return () => {
@@ -49,7 +31,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  // Only show loading spinner for a maximum of 2 seconds
+  // Fallback timeout to prevent infinite loading
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (isLoading) {
@@ -62,7 +44,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [isLoading]);
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
