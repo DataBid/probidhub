@@ -1,13 +1,9 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { DateRange } from "./schema";
 import { SearchFilter } from "./filters/SearchFilter";
-import { DateRangeFilter } from "./filters/DateRangeFilter";
-import { TradesFilter } from "./filters/TradesFilter";
-import { format } from "date-fns";
+import { FilterControls } from "./filters/FilterControls";
+import { ActiveFilterBadges } from "./filters/ActiveFilterBadges";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -90,83 +86,34 @@ export const SubcontractorFilters = ({
         "flex flex-col gap-4 transition-all duration-200",
         !isExpanded && "hidden sm:flex"
       )}>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <TradesFilter selectedTrades={selectedTrades} onTradesChange={onTradesChange} />
-
-          <Select value={statusFilter} onValueChange={onStatusChange}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Filter by Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="invited">Invited</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Input
-            placeholder="Filter by location..."
-            value={locationFilter}
-            onChange={(e) => onLocationChange(e.target.value)}
-            className="w-full sm:w-[200px]"
-          />
-
-          <DateRangeFilter dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
-
-          {activeFilterCount > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleClearFilters}
-              className="whitespace-nowrap"
-            >
-              Clear All Filters
-              <Badge variant="secondary" className="ml-2">
-                {activeFilterCount}
-              </Badge>
-            </Button>
-          )}
-        </div>
+        <FilterControls
+          selectedTrades={selectedTrades}
+          onTradesChange={onTradesChange}
+          statusFilter={statusFilter}
+          onStatusChange={onStatusChange}
+          locationFilter={locationFilter}
+          onLocationChange={onLocationChange}
+          dateRange={dateRange}
+          onDateRangeChange={onDateRangeChange}
+          activeFilterCount={activeFilterCount}
+          onClearFilters={handleClearFilters}
+        />
       </div>
 
       {/* Active filters badges */}
-      {(selectedTrades.length > 0 || dateRange.from || locationFilter) && (
-        <div className={cn(
-          "flex flex-wrap gap-2",
-          !isExpanded && "hidden sm:flex"
-        )}>
-          {selectedTrades.map((trade) => (
-            <Badge
-              key={trade}
-              variant="secondary"
-              className="cursor-pointer"
-              onClick={() => toggleTrade(trade)}
-            >
-              {trade} <X className="h-3 w-3 ml-1" />
-            </Badge>
-          ))}
-          {dateRange.from && (
-            <Badge
-              variant="secondary"
-              className="cursor-pointer"
-              onClick={() => onDateRangeChange({ from: undefined, to: undefined })}
-            >
-              {format(dateRange.from, "LLL dd, y")} -{" "}
-              {dateRange.to ? format(dateRange.to, "LLL dd, y") : "..."} <X className="h-3 w-3 ml-1" />
-            </Badge>
-          )}
-          {locationFilter && (
-            <Badge
-              variant="secondary"
-              className="cursor-pointer"
-              onClick={() => onLocationChange("")}
-            >
-              {locationFilter} <X className="h-3 w-3 ml-1" />
-            </Badge>
-          )}
-        </div>
-      )}
+      <div className={cn(
+        "flex flex-wrap gap-2",
+        !isExpanded && "hidden sm:flex"
+      )}>
+        <ActiveFilterBadges
+          selectedTrades={selectedTrades}
+          toggleTrade={toggleTrade}
+          dateRange={dateRange}
+          onDateRangeChange={onDateRangeChange}
+          locationFilter={locationFilter}
+          onLocationChange={onLocationChange}
+        />
+      </div>
     </div>
   );
 };
