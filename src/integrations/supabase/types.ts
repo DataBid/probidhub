@@ -95,67 +95,67 @@ export type Database = {
           },
         ]
       }
-      categories_subcontractors: {
+      categories_companies: {
         Row: {
           category_id: string
+          company_id: string
           created_at: string
-          subcontractor_id: string
         }
         Insert: {
           category_id: string
+          company_id: string
           created_at?: string
-          subcontractor_id: string
         }
         Update: {
           category_id?: string
+          company_id?: string
           created_at?: string
-          subcontractor_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "categories_subcontractors_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "subcontractor_categories"
+            referencedRelation: "company_categories"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "categories_subcontractors_subcontractor_id_fkey"
-            columns: ["subcontractor_id"]
+            columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "subcontractors"
+            referencedRelation: "companies_directory"
             referencedColumns: ["id"]
           },
         ]
       }
       communication_logs: {
         Row: {
+          company_id: string
           content: string | null
           created_at: string
           gc_id: string
           id: string
           status: string | null
-          subcontractor_id: string
           subject: string | null
           type: string
         }
         Insert: {
+          company_id: string
           content?: string | null
           created_at?: string
           gc_id: string
           id?: string
           status?: string | null
-          subcontractor_id: string
           subject?: string | null
           type: string
         }
         Update: {
+          company_id?: string
           content?: string | null
           created_at?: string
           gc_id?: string
           id?: string
           status?: string | null
-          subcontractor_id?: string
           subject?: string | null
           type?: string
         }
@@ -169,9 +169,9 @@ export type Database = {
           },
           {
             foreignKeyName: "communication_logs_subcontractor_id_fkey"
-            columns: ["subcontractor_id"]
+            columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "subcontractors"
+            referencedRelation: "companies_directory"
             referencedColumns: ["id"]
           },
           {
@@ -206,6 +206,132 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      companies_directory: {
+        Row: {
+          area_code: string | null
+          company: string
+          company_type: string
+          created_at: string
+          email: string
+          gc_id: string
+          id: string
+          last_contact: string | null
+          location: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          status: string | null
+          trade: string
+          updated_at: string
+        }
+        Insert: {
+          area_code?: string | null
+          company: string
+          company_type?: string
+          created_at?: string
+          email: string
+          gc_id: string
+          id?: string
+          last_contact?: string | null
+          location?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          trade: string
+          updated_at?: string
+        }
+        Update: {
+          area_code?: string | null
+          company?: string
+          company_type?: string
+          created_at?: string
+          email?: string
+          gc_id?: string
+          id?: string
+          last_contact?: string | null
+          location?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          trade?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractors_gc_id_fkey"
+            columns: ["gc_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          gc_id: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          gc_id: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          gc_id?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_categories_gc_id_fkey"
+            columns: ["gc_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_specialties: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          specialty: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          specialty: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          specialty?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_specialties_subcontractor_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_directory"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       locations: {
         Row: {
@@ -444,129 +570,6 @@ export type Database = {
           name?: string
         }
         Relationships: []
-      }
-      subcontractor_categories: {
-        Row: {
-          created_at: string
-          description: string | null
-          gc_id: string
-          id: string
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          gc_id: string
-          id?: string
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          gc_id?: string
-          id?: string
-          name?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subcontractor_categories_gc_id_fkey"
-            columns: ["gc_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      subcontractor_specialties: {
-        Row: {
-          created_at: string
-          id: string
-          specialty: string
-          subcontractor_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          specialty: string
-          subcontractor_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          specialty?: string
-          subcontractor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subcontractor_specialties_subcontractor_id_fkey"
-            columns: ["subcontractor_id"]
-            isOneToOne: false
-            referencedRelation: "subcontractors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      subcontractors: {
-        Row: {
-          area_code: string | null
-          company: string
-          created_at: string
-          email: string
-          gc_id: string
-          id: string
-          last_contact: string | null
-          location: string | null
-          name: string
-          notes: string | null
-          phone: string | null
-          status: string | null
-          trade: string
-          updated_at: string
-        }
-        Insert: {
-          area_code?: string | null
-          company: string
-          created_at?: string
-          email: string
-          gc_id: string
-          id?: string
-          last_contact?: string | null
-          location?: string | null
-          name: string
-          notes?: string | null
-          phone?: string | null
-          status?: string | null
-          trade: string
-          updated_at?: string
-        }
-        Update: {
-          area_code?: string | null
-          company?: string
-          created_at?: string
-          email?: string
-          gc_id?: string
-          id?: string
-          last_contact?: string | null
-          location?: string | null
-          name?: string
-          notes?: string | null
-          phone?: string | null
-          status?: string | null
-          trade?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subcontractors_gc_id_fkey"
-            columns: ["gc_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       subscriptions: {
         Row: {
