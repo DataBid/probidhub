@@ -38,7 +38,7 @@ export const DashboardSidebar = () => {
 
     const gcItems = [
       { icon: FileText, label: "Projects", href: "/projects" },
-      { icon: Users, label: "Subcontractors", href: "/contractors" },
+      { icon: Users, label: "Subcontractors", href: "/subcontractors" }, // Updated href to match route
       { icon: BarChart, label: "Analytics", href: "/analytics" },
     ];
 
