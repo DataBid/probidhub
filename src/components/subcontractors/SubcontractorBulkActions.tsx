@@ -1,14 +1,7 @@
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Trash, UserPlus, RefreshCw, Edit, Layers, X } from "lucide-react";
 import { useState } from "react";
 import { CategoryAssignmentDialog } from "./bulk-actions/CategoryAssignmentDialog";
+import { BulkActionsMenu } from "./bulk-actions/BulkActionsMenu";
+import { SelectionInfo } from "./bulk-actions/SelectionInfo";
 
 interface SubcontractorBulkActionsProps {
   selectedIds: string[];
@@ -38,58 +31,20 @@ export const SubcontractorBulkActions = ({
   return (
     <>
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm text-muted-foreground">
-          {selectedIds.length} selected
-        </span>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">Actions</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48">
-            {isSingleSelect && onEdit && (
-              <DropdownMenuItem onClick={() => onEdit(selectedIds[0])}>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit Details
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem onClick={() => onInvite(selectedIds)}>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Invite to Bid
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onStatusChange(selectedIds, 'active')}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Set Active
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onStatusChange(selectedIds, 'archived')}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Archive
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {onAssignCategories && (
-              <DropdownMenuItem onClick={() => setCategoryDialogOpen(true)}>
-                <Layers className="mr-2 h-4 w-4" />
-                Assign Categories
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem 
-              onClick={() => onDelete(selectedIds)}
-              className="text-red-600 focus:text-red-600"
-            >
-              <Trash className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={onClearSelection}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <X className="h-4 w-4 mr-1" />
-          Clear Selection
-        </Button>
+        <SelectionInfo 
+          selectedCount={selectedIds.length}
+          onClearSelection={onClearSelection}
+        />
+        <BulkActionsMenu
+          isSingleSelect={isSingleSelect}
+          onEdit={onEdit}
+          selectedIds={selectedIds}
+          onInvite={onInvite}
+          onStatusChange={onStatusChange}
+          onDelete={onDelete}
+          onOpenCategoryDialog={() => setCategoryDialogOpen(true)}
+          onAssignCategories={onAssignCategories}
+        />
       </div>
 
       {onAssignCategories && (
