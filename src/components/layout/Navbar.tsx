@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Building2, Bell } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -81,9 +81,15 @@ export const Navbar = () => {
   return (
     <nav className="border-b bg-white">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Building2 className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold text-construction-900">BidWall</span>
+        <div className="flex items-center space-x-3">
+          {/* Updated Logo and Branding */}
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <span className="text-xl font-bold text-white">P</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold text-construction-900">ProBidHub</span>
+            <span className="text-xs text-construction-500 -mt-1">Construction Bidding</span>
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
