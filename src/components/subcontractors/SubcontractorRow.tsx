@@ -4,7 +4,9 @@ import { CompanyCell } from "./row/CompanyCell";
 import { ContactDetails } from "./row/ContactDetails";
 import { TradeCell } from "./row/TradeCell";
 import { RowActions } from "./row/RowActions";
+import { Badge } from "@/components/ui/badge";
 import { CompanyData } from "./types/filterTypes";
+import { getStatusColor } from "./utils/tradeUtils";
 
 interface SubcontractorRowProps {
   sub: CompanyData;
@@ -25,6 +27,8 @@ export const SubcontractorRow = ({
   onInvite,
   isMobile,
 }: SubcontractorRowProps) => {
+  const statusColor = getStatusColor(sub.status || '');
+  
   return (
     <TableRow>
       <TableCell className="w-[40px] sticky left-0 bg-background">
@@ -35,7 +39,12 @@ export const SubcontractorRow = ({
         />
       </TableCell>
       <TableCell className="sticky left-[40px] bg-background">
-        <CompanyCell id={sub.id} company={sub.company} />
+        <div className="space-y-1">
+          <CompanyCell id={sub.id} company={sub.company} />
+          <Badge variant="outline" className="capitalize text-xs">
+            {sub.company_type}
+          </Badge>
+        </div>
       </TableCell>
       {!isMobile && (
         <TableCell>
@@ -53,7 +62,14 @@ export const SubcontractorRow = ({
         <TradeCell trade={sub.trade} />
       </TableCell>
       {!isMobile && <TableCell>{sub.location}</TableCell>}
-      <TableCell>{sub.status}</TableCell>
+      <TableCell>
+        <Badge 
+          variant="outline" 
+          className={`${statusColor} whitespace-nowrap`}
+        >
+          {sub.status}
+        </Badge>
+      </TableCell>
       <TableCell>
         <RowActions
           onEdit={() => onEdit(sub)}
