@@ -88,6 +88,7 @@ export const SubcontractorRow = ({
         sub={sub}
         previewOpen={previewOpen}
         setPreviewOpen={setPreviewOpen}
+        onEdit={() => onEdit(sub)}
       />
     </>
   );
