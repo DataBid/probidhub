@@ -12,10 +12,23 @@ interface ImportDialogProps {
   onSuccess: () => void;
 }
 
+const COMPANY_TYPES = [
+  'subcontractor',
+  'supplier',
+  'owner',
+  'architect',
+  'engineer'
+] as const;
+
 export function ImportDialog({ open, onOpenChange, onSuccess }: ImportDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const user = useUser();
+
+  const getRandomCompanyType = () => {
+    const randomIndex = Math.floor(Math.random() * COMPANY_TYPES.length);
+    return COMPANY_TYPES[randomIndex];
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -30,33 +43,33 @@ export function ImportDialog({ open, onOpenChange, onSuccess }: ImportDialogProp
         const rows = text.split('\n');
         const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
         
-        const subcontractors = rows.slice(1)
+        const companies = rows.slice(1)
           .filter(row => row.trim())
           .map(row => {
             const values = row.split(',').map(v => v.trim());
-            const sub: any = {};
+            const company: any = {};
             headers.forEach((header, index) => {
               if (values[index]) {
-                sub[header] = values[index].replace(/^"(.*)"$/, '$1');
+                company[header] = values[index].replace(/^"(.*)"$/, '$1');
               }
             });
             return {
-              ...sub,
+              ...company,
               gc_id: user.id,
               status: 'active',
-              company_type: 'subcontractor'
+              company_type: getRandomCompanyType()
             };
           });
 
         const { error } = await supabase
           .from('companies_directory')
-          .insert(subcontractors);
+          .insert(companies);
 
         if (error) throw error;
 
         toast({
           title: "Import successful",
-          description: `${subcontractors.length} subcontractors imported successfully.`,
+          description: `${companies.length} companies imported successfully.`,
         });
         
         onSuccess();
@@ -80,7 +93,7 @@ export function ImportDialog({ open, onOpenChange, onSuccess }: ImportDialogProp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Import Subcontractors</DialogTitle>
+          <DialogTitle>Import Companies</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
@@ -120,7 +133,7 @@ export function ImportDialog({ open, onOpenChange, onSuccess }: ImportDialogProp
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
-              a.download = 'subcontractors_template.csv';
+              a.download = 'companies_template.csv';
               a.click();
             }}
           >
