@@ -27,7 +27,7 @@ export const AuthForm = () => {
     try {
       if (isLogin) {
         console.log("Attempting login...");
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data: { user, session }, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
@@ -39,26 +39,25 @@ export const AuthForm = () => {
             description: error.message,
             variant: "destructive",
           });
-          setIsLoading(false);
           return;
         }
 
-        if (data.user && data.session) {
-          console.log("Login successful, navigating to dashboard");
-          toast({
-            title: "Success",
-            description: "Successfully logged in",
-          });
-          navigate("/dashboard");
-        } else {
+        if (!user || !session) {
           console.error("Login response missing user or session");
           toast({
             title: "Login failed",
             description: "An unexpected error occurred",
             variant: "destructive",
           });
-          setIsLoading(false);
+          return;
         }
+
+        console.log("Login successful, navigating to dashboard");
+        toast({
+          title: "Success",
+          description: "Successfully logged in",
+        });
+        navigate("/dashboard");
       } else {
         if (!role) {
           toast({
@@ -66,7 +65,6 @@ export const AuthForm = () => {
             description: "Please select a role",
             variant: "destructive",
           });
-          setIsLoading(false);
           return;
         }
 
@@ -88,7 +86,6 @@ export const AuthForm = () => {
             description: signUpError.message,
             variant: "destructive",
           });
-          setIsLoading(false);
           return;
         }
 
@@ -96,7 +93,6 @@ export const AuthForm = () => {
           title: "Success",
           description: "Please check your email to verify your account",
         });
-        setIsLoading(false);
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
@@ -105,6 +101,7 @@ export const AuthForm = () => {
         description: error.message,
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
     }
   };
