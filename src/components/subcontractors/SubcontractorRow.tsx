@@ -34,26 +34,34 @@ export const SubcontractorRow = ({
           aria-label="Select subcontractor"
         />
       </TableCell>
-      <CompanyCell id={sub.id} company={sub.company} />
+      <TableCell className="sticky left-[40px] bg-background">
+        <CompanyCell id={sub.id} company={sub.company} />
+      </TableCell>
       {!isMobile && (
-        <ContactDetails
-          id={sub.id}
-          name={sub.name}
-          email={sub.email}
-          phone={sub.phone}
-          area_code={sub.area_code}
-          onEdit={() => onEdit(sub)}
-        />
+        <TableCell>
+          <ContactDetails
+            id={sub.id}
+            name={sub.name}
+            email={sub.email}
+            phone={sub.phone}
+            area_code={sub.area_code}
+            onEdit={() => onEdit(sub)}
+          />
+        </TableCell>
       )}
-      <TradeCell trade={sub.trade} />
+      <TableCell>
+        <TradeCell trade={sub.trade} />
+      </TableCell>
       {!isMobile && <TableCell>{sub.location}</TableCell>}
       <TableCell>{sub.status}</TableCell>
-      <RowActions
-        onEdit={() => onEdit(sub)}
-        onDelete={() => onDelete(sub.id)}
-        onInvite={() => onInvite(sub.email)}
-        isLoading={false}
-      />
+      <TableCell>
+        <RowActions
+          onEdit={() => onEdit(sub)}
+          onDelete={() => onDelete(sub.id)}
+          onInvite={() => onInvite(sub.email)}
+          isLoading={false}
+        />
+      </TableCell>
     </TableRow>
   );
 };
