@@ -1,12 +1,13 @@
 import { Home, FileText, Users, Settings, Search, Inbox, Award, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export const DashboardSidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const session = useSession();
   
   const { data: userProfile } = useQuery({
@@ -38,7 +39,7 @@ export const DashboardSidebar = () => {
 
     const gcItems = [
       { icon: FileText, label: "Projects", href: "/projects" },
-      { icon: Users, label: "Subcontractors", href: "/subcontractors" }, // Updated href to match route
+      { icon: Users, label: "Saved Companies", href: "/subcontractors" }, // Updated label here
       { icon: BarChart, label: "Analytics", href: "/analytics" },
     ];
 
@@ -57,13 +58,19 @@ export const DashboardSidebar = () => {
 
   const menuItems = getMenuItems();
 
+  const isActive = (href: string) => location.pathname === href;
+
   const MenuContent = () => (
     <div className="space-y-2">
       {menuItems.map((item) => (
         <Button
           key={item.label}
           variant="ghost"
-          className="w-full justify-start"
+          className={`w-full justify-start ${
+            isActive(item.href)
+              ? "bg-primary/10 text-primary hover:bg-primary/20"
+              : "hover:bg-accent"
+          }`}
           onClick={() => navigate(item.href)}
         >
           <item.icon className="mr-2 h-4 w-4" />
@@ -90,7 +97,11 @@ export const DashboardSidebar = () => {
               key={item.label}
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-full w-full space-y-1 hover:bg-accent"
+              className={`flex flex-col items-center justify-center h-full w-full space-y-1 ${
+                isActive(item.href)
+                  ? "text-primary bg-primary/10 hover:bg-primary/20"
+                  : "hover:bg-accent"
+              }`}
               onClick={() => navigate(item.href)}
             >
               <item.icon className="h-5 w-5" />
