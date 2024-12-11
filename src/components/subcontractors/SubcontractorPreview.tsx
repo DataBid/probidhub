@@ -5,30 +5,27 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { getStatusColor } from "./utils/tradeUtils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
   Building2,
-  Contact,
-  Briefcase,
-  MapPin,
-  Mail,
-  Phone,
-  ClipboardList,
-  Copy,
   ExternalLink,
-  Edit,
+  Mail,
   PhoneCall,
+  Edit,
 } from "lucide-react";
+import { ContactSection } from "./preview/ContactSection";
+import { BusinessSection } from "./preview/BusinessSection";
+import { CommunicationSection } from "./preview/CommunicationSection";
+import { BidsSection } from "./preview/BidsSection";
 
 interface SubcontractorPreviewProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   subcontractor: {
+    id: string;
     name: string;
     company: string;
     email: string;
@@ -38,6 +35,7 @@ interface SubcontractorPreviewProps {
     notes?: string;
     trade: string;
     status?: string;
+    last_contact?: string;
   };
   onEdit?: () => void;
 }
@@ -48,26 +46,11 @@ export const SubcontractorPreview = ({
   subcontractor,
   onEdit,
 }: SubcontractorPreviewProps) => {
-  const statusColor = getStatusColor(subcontractor.status);
   const { toast } = useToast();
 
-  const formatPhoneNumber = (areaCode?: string, phone?: string) => {
-    if (!phone) return "N/A";
-    return `${areaCode || ''} ${phone}`;
-  };
-
-  const handleCopyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied!",
-      description: `${label} copied to clipboard`,
-    });
-  };
-
   const handleCall = () => {
-    const phoneNumber = formatPhoneNumber(subcontractor.area_code, subcontractor.phone);
-    if (phoneNumber !== "N/A") {
-      window.location.href = `tel:${phoneNumber.replace(/\D/g, '')}`;
+    if (subcontractor.phone) {
+      window.location.href = `tel:${(subcontractor.area_code || '') + subcontractor.phone}`;
     }
   };
 
@@ -125,100 +108,15 @@ export const SubcontractorPreview = ({
           {/* Contact Information Section */}
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
-                  <Contact className="h-4 w-4 text-primary" />
-                  <h4 className="text-sm font-semibold">Contact Information</h4>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => {
-                    const contactInfo = `
-                      Name: ${subcontractor.name}
-                      Email: ${subcontractor.email}
-                      Phone: ${formatPhoneNumber(subcontractor.area_code, subcontractor.phone)}
-                      Location: ${subcontractor.location || 'N/A'}
-                    `.trim();
-                    handleCopyToClipboard(contactInfo, "Contact information");
-                  }}
-                >
-                  <Copy className="h-3 w-3 mr-1" />
-                  Copy all
-                </Button>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] gap-y-3">
-                <span className="text-sm text-muted-foreground">Name:</span>
-                <div className="text-sm font-medium flex items-center justify-between">
-                  <span>{subcontractor.name}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => handleCopyToClipboard(subcontractor.name, "Name")}
-                  >
-                    <Copy className="h-3 w-3" />
-                  </Button>
-                </div>
-
-                <span className="text-sm text-muted-foreground flex items-center">
-                  <Mail className="h-3 w-3 mr-1" />
-                  Email:
-                </span>
-                <div className="text-sm font-medium flex items-center justify-between">
-                  <span>{subcontractor.email}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => handleCopyToClipboard(subcontractor.email, "Email")}
-                  >
-                    <Copy className="h-3 w-3" />
-                  </Button>
-                </div>
-
-                <span className="text-sm text-muted-foreground flex items-center">
-                  <Phone className="h-3 w-3 mr-1" />
-                  Phone:
-                </span>
-                <div className="text-sm font-medium flex items-center justify-between">
-                  <span>{formatPhoneNumber(subcontractor.area_code, subcontractor.phone)}</span>
-                  {subcontractor.phone && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={() => handleCopyToClipboard(
-                        formatPhoneNumber(subcontractor.area_code, subcontractor.phone) || "",
-                        "Phone"
-                      )}
-                    >
-                      <Copy className="h-3 w-3" />
-                    </Button>
-                  )}
-                </div>
-
-                {subcontractor.location && (
-                  <>
-                    <span className="text-sm text-muted-foreground flex items-center">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      Location:
-                    </span>
-                    <div className="text-sm font-medium flex items-center justify-between">
-                      <span>{subcontractor.location}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => handleCopyToClipboard(subcontractor.location || "", "Location")}
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </div>
+              <ContactSection
+                name={subcontractor.name}
+                email={subcontractor.email}
+                phone={subcontractor.phone}
+                area_code={subcontractor.area_code}
+                location={subcontractor.location}
+                onEmail={handleEmail}
+                onCall={handleCall}
+              />
             </CardContent>
           </Card>
 
@@ -227,39 +125,31 @@ export const SubcontractorPreview = ({
           {/* Business Details Section */}
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Briefcase className="h-4 w-4 text-primary" />
-                <h4 className="text-sm font-semibold">Business Details</h4>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] gap-y-3">
-                <span className="text-sm text-muted-foreground">Trade:</span>
-                <span className="text-sm font-medium">{subcontractor.trade}</span>
-
-                <span className="text-sm text-muted-foreground">Status:</span>
-                <Badge variant="outline" className={statusColor}>
-                  {subcontractor.status}
-                </Badge>
-              </div>
+              <BusinessSection
+                trade={subcontractor.trade}
+                status={subcontractor.status}
+                lastContact={subcontractor.last_contact}
+              />
             </CardContent>
           </Card>
 
-          {/* Notes Section */}
-          {subcontractor.notes && (
-            <>
-              <Separator className="my-4" />
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <ClipboardList className="h-4 w-4 text-primary" />
-                    <h4 className="text-sm font-semibold">Notes</h4>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {subcontractor.notes}
-                  </p>
-                </CardContent>
-              </Card>
-            </>
-          )}
+          <Separator className="my-4" />
+
+          {/* Communication History Section */}
+          <Card>
+            <CardContent className="pt-6">
+              <CommunicationSection subcontractorId={subcontractor.id} />
+            </CardContent>
+          </Card>
+
+          <Separator className="my-4" />
+
+          {/* Bids Section */}
+          <Card>
+            <CardContent className="pt-6">
+              <BidsSection subcontractorId={subcontractor.id} />
+            </CardContent>
+          </Card>
 
           {/* View Full Profile Link */}
           <div className="flex justify-end pt-4">
@@ -267,7 +157,6 @@ export const SubcontractorPreview = ({
               variant="link"
               className="text-sm"
               onClick={() => {
-                // This is a placeholder - implement full profile view later
                 toast({
                   title: "Coming Soon",
                   description: "Full profile view will be available soon",
