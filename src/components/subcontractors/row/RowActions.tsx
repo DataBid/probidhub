@@ -8,7 +8,8 @@ import {
   AlertDialogTitle, 
   AlertDialogDescription, 
   AlertDialogFooter, 
-  AlertDialogAction 
+  AlertDialogAction,
+  AlertDialogCancel
 } from "@/components/ui/alert-dialog";
 import {
   Tooltip,
@@ -81,6 +82,7 @@ export const RowActions = ({ onInvite, onEdit, onDelete }: RowActionsProps) => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={onDelete} className="bg-red-500 hover:bg-red-600">
                 Delete
               </AlertDialogAction>
