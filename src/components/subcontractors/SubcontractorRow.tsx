@@ -39,12 +39,11 @@ export const SubcontractorRow = ({
         />
       </TableCell>
       <TableCell className="sticky left-[40px] bg-background">
-        <div className="space-y-1">
-          <CompanyCell id={sub.id} company={sub.company} />
-          <Badge variant="outline" className="capitalize text-xs">
-            {sub.company_type}
-          </Badge>
-        </div>
+        <CompanyCell 
+          id={sub.id} 
+          company={sub.company} 
+          company_type={sub.company_type}
+        />
       </TableCell>
       {!isMobile && (
         <TableCell>
