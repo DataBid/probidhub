@@ -45,6 +45,7 @@ export const SubcontractorRow = ({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const statusColor = getStatusColor(sub.status);
 
   const handleRowClick = (e: React.MouseEvent) => {
@@ -55,11 +56,20 @@ export const SubcontractorRow = ({
     setPreviewOpen(true);
   };
 
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      await onDelete(sub.id);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <TableRow 
         key={sub.id} 
-        className="group hover:bg-gray-50 cursor-pointer"
+        className={`group hover:bg-gray-50 cursor-pointer ${isLoading ? 'opacity-50' : ''}`}
         onClick={handleRowClick}
       >
         <TableCell onClick={(e) => e.stopPropagation()}>
@@ -67,6 +77,7 @@ export const SubcontractorRow = ({
             checked={selected}
             onCheckedChange={(checked) => onSelect(sub.id, checked as boolean)}
             aria-label={`Select ${sub.name}`}
+            disabled={isLoading}
           />
         </TableCell>
         <TableCell>
@@ -100,7 +111,8 @@ export const SubcontractorRow = ({
             <RowActions
               onInvite={() => onInvite(sub.email)}
               onEdit={() => onEdit(sub)}
-              onDelete={() => onDelete(sub.id)}
+              onDelete={handleDelete}
+              isLoading={isLoading}
             />
           </div>
         </TableCell>

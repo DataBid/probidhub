@@ -6,14 +6,15 @@ interface RowActionsProps {
   onInvite: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  isLoading?: boolean;
 }
 
-export const RowActions = ({ onInvite, onEdit, onDelete }: RowActionsProps) => {
+export const RowActions = ({ onInvite, onEdit, onDelete, isLoading }: RowActionsProps) => {
   return (
     <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-      <InviteAction onInvite={onInvite} />
-      <EditAction onEdit={onEdit} />
-      <DeleteAction onDelete={onDelete} />
+      <InviteAction onInvite={onInvite} disabled={isLoading} />
+      <EditAction onEdit={onEdit} disabled={isLoading} />
+      <DeleteAction onDelete={onDelete} disabled={isLoading} />
     </div>
   );
 };

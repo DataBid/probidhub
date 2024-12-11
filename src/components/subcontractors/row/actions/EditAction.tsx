@@ -9,9 +9,10 @@ import {
 
 interface EditActionProps {
   onEdit: () => void;
+  disabled?: boolean;
 }
 
-export const EditAction = ({ onEdit }: EditActionProps) => {
+export const EditAction = ({ onEdit, disabled }: EditActionProps) => {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -19,7 +20,11 @@ export const EditAction = ({ onEdit }: EditActionProps) => {
           <Button 
             variant="ghost" 
             size="icon"
-            onClick={onEdit}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            disabled={disabled}
           >
             <Edit className="h-4 w-4" />
           </Button>

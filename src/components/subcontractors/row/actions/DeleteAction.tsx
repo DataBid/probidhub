@@ -1,15 +1,15 @@
-import { Trash } from "lucide-react";
+import { Trash, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
   Tooltip,
@@ -17,20 +17,38 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
 
 interface DeleteActionProps {
   onDelete: () => void;
+  disabled?: boolean;
 }
 
-export const DeleteAction = ({ onDelete }: DeleteActionProps) => {
+export const DeleteAction = ({ onDelete, disabled }: DeleteActionProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async () => {
+    await onDelete();
+    setIsOpen(false);
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Trash className="h-4 w-4" />
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                disabled={disabled}
+              >
+                {disabled ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash className="h-4 w-4" />
+                )}
               </Button>
             </AlertDialogTrigger>
           </TooltipTrigger>
@@ -39,16 +57,21 @@ export const DeleteAction = ({ onDelete }: DeleteActionProps) => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
+
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Subcontractor</AlertDialogTitle>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this subcontractor? This action cannot be undone.
+            This action cannot be undone. This will permanently delete the
+            subcontractor and remove their data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete} className="bg-red-500 hover:bg-red-600">
+          <AlertDialogAction
+            onClick={handleDelete}
+            className="bg-red-500 hover:bg-red-600"
+          >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

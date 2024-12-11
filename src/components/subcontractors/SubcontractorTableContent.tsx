@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SortConfig } from "./types";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface SubcontractorTableContentProps {
   subcontractors: any[];
@@ -27,15 +28,25 @@ interface SortableHeaderProps {
 }
 
 const SortableHeader = ({ column, label, sortConfig, onSort, className }: SortableHeaderProps) => {
+  const isActive = sortConfig?.column === column;
+  const direction = sortConfig?.direction;
+
   return (
     <TableHead className={className}>
       <Button
         variant="ghost"
         onClick={() => onSort(column)}
-        className="h-8 flex items-center gap-1 font-medium"
+        className={cn(
+          "h-8 flex items-center gap-1 font-medium hover:text-primary",
+          isActive && "text-primary"
+        )}
       >
         {label}
-        <ArrowUpDown className="h-4 w-4" />
+        <ArrowUpDown className={cn(
+          "h-4 w-4",
+          isActive && "text-primary",
+          isActive && direction === 'desc' && "rotate-180 transform"
+        )} />
       </Button>
     </TableHead>
   );
