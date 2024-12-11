@@ -101,13 +101,6 @@ export const SubcontractorTableContent = ({
                 className="min-w-[120px]"
               />
             )}
-            <SortableHeader 
-              column="last_contact" 
-              label="Last Contact" 
-              sortConfig={sortConfig} 
-              onSort={onSort}
-              className="min-w-[120px]"
-            />
             <TableHead className="min-w-[100px]">Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -127,7 +120,7 @@ export const SubcontractorTableContent = ({
           {subcontractors.length === 0 && (
             <TableRow>
               <TableCell 
-                colSpan={isMobile ? 4 : 6} 
+                colSpan={isMobile ? 4 : 5} 
                 className="text-center text-muted-foreground h-32"
               >
                 No subcontractors found

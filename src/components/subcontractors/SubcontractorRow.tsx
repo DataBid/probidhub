@@ -7,7 +7,6 @@ import { TradeCell } from "./row/TradeCell";
 import { getStatusColor } from "./utils/tradeUtils";
 import { useState } from "react";
 import { SubcontractorPreview } from "./SubcontractorPreview";
-import { format } from "date-fns";
 
 interface SubcontractorRowProps {
   sub: {
@@ -20,7 +19,6 @@ interface SubcontractorRowProps {
     status?: string;
     notes?: string;
     phone?: string;
-    last_contact?: string;
   };
   selected: boolean;
   onSelect: (id: string, checked: boolean) => void;
@@ -83,13 +81,6 @@ export const SubcontractorRow = ({
           <TradeCell trade={sub.trade} />
         </TableCell>
         {!isMobile && <TableCell>{sub.location || "N/A"}</TableCell>}
-        <TableCell className="whitespace-nowrap">
-          {sub.last_contact ? (
-            format(new Date(sub.last_contact), 'MMM d, yyyy')
-          ) : (
-            "Never"
-          )}
-        </TableCell>
         <TableCell>
           <Badge 
             variant="outline" 
