@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, MessageSquare } from "lucide-react";
 import { SendMessageDialog } from "./communication/SendMessageDialog";
 import { CommunicationHistory } from "./communication/CommunicationHistory";
+import { cn } from "@/lib/utils";
 
 interface SubcontractorRowProps {
   sub: {
