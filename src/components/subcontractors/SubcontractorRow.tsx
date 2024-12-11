@@ -47,23 +47,23 @@ export const SubcontractorRow = ({
         />
       </TableCell>
       <TableCell>
-        <Link 
-          to={`/companies/${sub.id}`} 
-          className="text-blue-600 hover:text-blue-800 hover:underline"
-        >
-          {sub.company}
-        </Link>
-      </TableCell>
-      <TableCell>
         <div className="flex items-center space-x-4">
           <Avatar className="h-10 w-10">
             <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${sub.company}`} />
             <AvatarFallback>{sub.company.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div>
-            <div className="font-medium">{sub.name}</div>
-            <div className="text-sm text-muted-foreground">{sub.email}</div>
-          </div>
+          <Link 
+            to={`/companies/${sub.id}`} 
+            className="text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            {sub.company}
+          </Link>
+        </div>
+      </TableCell>
+      <TableCell>
+        <div>
+          <div className="font-medium">{sub.name}</div>
+          <div className="text-sm text-muted-foreground">{sub.email}</div>
         </div>
       </TableCell>
       <TableCell>
