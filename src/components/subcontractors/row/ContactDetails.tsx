@@ -18,7 +18,7 @@ export const ContactDetails = ({
   phone,
   area_code,
 }: ContactDetailsProps) => {
-  const formattedPhone = area_code && phone ? `${area_code} ${phone}` : phone;
+  const formattedPhone = phone ? `${area_code || ''} ${phone}` : undefined;
   
   return (
     <div className="space-y-1">
