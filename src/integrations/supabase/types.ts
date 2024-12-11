@@ -295,6 +295,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          area_code: string | null
           company_id: string | null
           company_name: string | null
           contact_email: string
@@ -310,6 +311,7 @@ export type Database = {
           user_status: string | null
         }
         Insert: {
+          area_code?: string | null
           company_id?: string | null
           company_name?: string | null
           contact_email: string
@@ -325,6 +327,7 @@ export type Database = {
           user_status?: string | null
         }
         Update: {
+          area_code?: string | null
           company_id?: string | null
           company_name?: string | null
           contact_email?: string
@@ -508,6 +511,7 @@ export type Database = {
       }
       subcontractors: {
         Row: {
+          area_code: string | null
           company: string
           created_at: string
           email: string
@@ -523,6 +527,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          area_code?: string | null
           company: string
           created_at?: string
           email: string
@@ -538,6 +543,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          area_code?: string | null
           company?: string
           created_at?: string
           email?: string

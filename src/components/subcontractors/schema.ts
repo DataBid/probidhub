@@ -5,6 +5,7 @@ export const subcontractorSchema = z.object({
   company: z.string().min(2, "Company name must be at least 2 characters"),
   trade: z.string().min(2, "Trade must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+  area_code: z.string().optional(),
   phone: z.string().optional(),
   location: z.string().optional(),
   notes: z.string().optional(),

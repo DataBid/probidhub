@@ -63,19 +63,34 @@ export function SubcontractorFormFields({ form }: SubcontractorFormFieldsProps) 
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="phone"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone (Optional)</FormLabel>
-            <FormControl>
-              <Input placeholder="+1 (555) 000-0000" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="area_code"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Area Code</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., +1" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone (Optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="(555) 000-0000" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <FormField
         control={form.control}
         name="location"

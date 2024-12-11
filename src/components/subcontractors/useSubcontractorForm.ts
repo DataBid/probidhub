@@ -12,6 +12,7 @@ interface UseSubcontractorFormProps {
     company: string;
     trade: string;
     email: string;
+    area_code?: string;
     phone?: string;
     location?: string;
     notes?: string;
@@ -31,6 +32,7 @@ export function useSubcontractorForm({ subcontractor, onSuccess, onOpenChange }:
       company: "",
       trade: "",
       email: "",
+      area_code: "",
       phone: "",
       location: "",
       notes: "",
@@ -48,6 +50,7 @@ export function useSubcontractorForm({ subcontractor, onSuccess, onOpenChange }:
         company: data.company,
         trade: data.trade,
         email: data.email,
+        area_code: data.area_code || null,
         phone: data.phone || null,
         location: data.location || null,
         notes: data.notes || null,

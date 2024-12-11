@@ -26,6 +26,7 @@ interface SubcontractorPreviewProps {
     name: string;
     company: string;
     email: string;
+    area_code?: string;
     phone?: string;
     location?: string;
     notes?: string;
@@ -40,6 +41,11 @@ export const SubcontractorPreview = ({
   subcontractor,
 }: SubcontractorPreviewProps) => {
   const statusColor = getStatusColor(subcontractor.status);
+
+  const formatPhoneNumber = (areaCode?: string, phone?: string) => {
+    if (!phone) return "N/A";
+    return `${areaCode || ''} ${phone}`;
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -70,17 +76,13 @@ export const SubcontractorPreview = ({
                 </span>
                 <span className="text-sm font-medium">{subcontractor.email}</span>
 
-                {subcontractor.phone && (
-                  <>
-                    <span className="text-sm text-muted-foreground flex items-center">
-                      <Phone className="h-3 w-3 mr-1" />
-                      Phone:
-                    </span>
-                    <span className="text-sm font-medium">
-                      {subcontractor.phone}
-                    </span>
-                  </>
-                )}
+                <span className="text-sm text-muted-foreground flex items-center">
+                  <Phone className="h-3 w-3 mr-1" />
+                  Phone:
+                </span>
+                <span className="text-sm font-medium">
+                  {formatPhoneNumber(subcontractor.area_code, subcontractor.phone)}
+                </span>
 
                 {subcontractor.location && (
                   <>
