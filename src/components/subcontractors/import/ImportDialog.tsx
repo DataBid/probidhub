@@ -37,18 +37,19 @@ export function ImportDialog({ open, onOpenChange, onSuccess }: ImportDialogProp
             const sub: any = {};
             headers.forEach((header, index) => {
               if (values[index]) {
-                sub[header] = values[index].replace(/^"(.*)"$/, '$1'); // Remove quotes
+                sub[header] = values[index].replace(/^"(.*)"$/, '$1');
               }
             });
             return {
               ...sub,
               gc_id: user.id,
-              status: 'active'
+              status: 'active',
+              company_type: 'subcontractor'
             };
           });
 
         const { error } = await supabase
-          .from('subcontractors')
+          .from('companies_directory')
           .insert(subcontractors);
 
         if (error) throw error;

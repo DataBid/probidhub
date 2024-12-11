@@ -116,8 +116,7 @@ export const useSubcontractorTable = (subcontractors: any[], refetch: () => void
     handleEdit,
     handleDelete,
     handleBulkDelete,
-    handleBulkInvite,
-    handleBulkStatusChange,
     handleInvite,
+    handleBulkStatusChange,
   };
 };

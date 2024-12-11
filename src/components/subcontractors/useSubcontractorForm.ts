@@ -55,12 +55,13 @@ export function useSubcontractorForm({ subcontractor, onSuccess, onOpenChange }:
         location: data.location || null,
         notes: data.notes || null,
         gc_id: user.id,
-        status: 'active' as const
+        status: 'active' as const,
+        company_type: 'subcontractor' as const
       };
 
       if (subcontractor?.id) {
         const { error } = await supabase
-          .from("subcontractors")
+          .from("companies_directory")
           .update(submissionData)
           .eq("id", subcontractor.id);
 
@@ -71,7 +72,7 @@ export function useSubcontractorForm({ subcontractor, onSuccess, onOpenChange }:
         });
       } else {
         const { error } = await supabase
-          .from("subcontractors")
+          .from("companies_directory")
           .insert(submissionData);
 
         if (error) throw error;
