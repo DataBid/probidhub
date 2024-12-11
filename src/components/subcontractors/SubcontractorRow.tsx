@@ -30,15 +30,15 @@ export const SubcontractorRow = ({
   const statusColor = getStatusColor(sub.status || '');
   
   return (
-    <TableRow className="group hover:bg-muted">
-      <TableCell className="w-[40px] sticky left-0 bg-background group-hover:bg-muted">
+    <TableRow className="group hover:bg-muted transition-colors duration-200">
+      <TableCell className="w-[40px] sticky left-0 bg-background transition-colors duration-200 group-hover:bg-muted">
         <Checkbox
           checked={selected}
           onCheckedChange={(checked: boolean) => onSelect(sub.id, checked)}
           aria-label="Select subcontractor"
         />
       </TableCell>
-      <TableCell className="sticky left-[40px] bg-background group-hover:bg-muted">
+      <TableCell className="sticky left-[40px] bg-background transition-colors duration-200 group-hover:bg-muted">
         <CompanyCell 
           id={sub.id} 
           company={sub.company} 
