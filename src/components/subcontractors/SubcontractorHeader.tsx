@@ -36,7 +36,10 @@ export const SubcontractorHeader = ({ onAdd, onExport, onImportSuccess }: Subcon
             <Upload className="mr-2 h-4 w-4" />
             Import
           </Button>
-          <Button onClick={onAdd}>
+          <Button 
+            onClick={onAdd}
+            className="bg-accent hover:bg-accent-hover text-accent-foreground transition-colors duration-200"
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add Company
           </Button>
