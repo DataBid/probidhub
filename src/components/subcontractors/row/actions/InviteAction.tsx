@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -9,9 +9,10 @@ import {
 
 interface InviteActionProps {
   onInvite: () => void;
+  disabled?: boolean;
 }
 
-export const InviteAction = ({ onInvite }: InviteActionProps) => {
+export const InviteAction = ({ onInvite, disabled }: InviteActionProps) => {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -19,9 +20,17 @@ export const InviteAction = ({ onInvite }: InviteActionProps) => {
           <Button 
             variant="ghost" 
             size="icon"
-            onClick={onInvite}
+            onClick={(e) => {
+              e.stopPropagation();
+              onInvite();
+            }}
+            disabled={disabled}
           >
-            <Mail className="h-4 w-4" />
+            {disabled ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Mail className="h-4 w-4" />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent>
