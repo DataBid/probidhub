@@ -109,13 +109,6 @@ export const SubcontractorTableContent = ({
               className="min-w-[120px]"
             />
             <TableHead className="min-w-[100px]">Status</TableHead>
-            {!isMobile && (
-              <>
-                <TableHead className="min-w-[150px]">Specialties</TableHead>
-                <TableHead className="w-[80px]">Bids</TableHead>
-              </>
-            )}
-            <TableHead className="w-[100px] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -134,7 +127,7 @@ export const SubcontractorTableContent = ({
           {subcontractors.length === 0 && (
             <TableRow>
               <TableCell 
-                colSpan={isMobile ? 6 : 10} 
+                colSpan={isMobile ? 4 : 6} 
                 className="text-center text-muted-foreground h-32"
               >
                 No subcontractors found

@@ -4,12 +4,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CompanyCell } from "./row/CompanyCell";
 import { ContactDetails } from "./row/ContactDetails";
 import { TradeCell } from "./row/TradeCell";
-import { RowActions } from "./row/RowActions";
 import { getStatusColor } from "./utils/tradeUtils";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SubcontractorPreview } from "./SubcontractorPreview";
 import { format } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
 
 interface SubcontractorRowProps {
   sub: {
@@ -42,45 +40,11 @@ export const SubcontractorRow = ({
   isMobile
 }: SubcontractorRowProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [specialties, setSpecialties] = useState<string[]>([]);
-  const [activeBidsCount, setActiveBidsCount] = useState(0);
   const statusColor = getStatusColor(sub.status);
-
-  useEffect(() => {
-    const fetchSpecialties = async () => {
-      const { data, error } = await supabase
-        .from('subcontractor_specialties')
-        .select('specialty')
-        .eq('subcontractor_id', sub.id);
-      
-      if (!error && data) {
-        setSpecialties(data.map(s => s.specialty));
-      }
-    };
-
-    const fetchActiveBids = async () => {
-      const { count, error } = await supabase
-        .from('bids')
-        .select('*', { count: 'exact', head: true })
-        .eq('subcontractor_id', sub.id)
-        .eq('status', 'pending');
-      
-      if (!error && count !== null) {
-        setActiveBidsCount(count);
-      }
-    };
-
-    fetchSpecialties();
-    fetchActiveBids();
-  }, [sub.id]);
 
   const handleRowClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (
-      target.closest('a') || 
-      target.closest('button') || 
-      target.closest('[role="checkbox"]')
-    ) {
+    if (target.closest('[role="checkbox"]')) {
       return;
     }
     setPreviewOpen(true);
@@ -100,7 +64,7 @@ export const SubcontractorRow = ({
             aria-label={`Select ${sub.name}`}
           />
         </TableCell>
-        <TableCell onClick={(e) => e.stopPropagation()}>
+        <TableCell>
           <CompanyCell id={sub.id} company={sub.company} />
         </TableCell>
         {!isMobile && (
@@ -133,36 +97,6 @@ export const SubcontractorRow = ({
           >
             {sub.status}
           </Badge>
-        </TableCell>
-        {!isMobile && (
-          <>
-            <TableCell>
-              <div className="flex gap-1 flex-wrap max-w-[150px]">
-                {specialties.slice(0, 2).map((specialty, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs whitespace-nowrap">
-                    {specialty}
-                  </Badge>
-                ))}
-                {specialties.length > 2 && (
-                  <Badge variant="secondary" className="text-xs">
-                    +{specialties.length - 2}
-                  </Badge>
-                )}
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="secondary" className="font-mono">
-                {activeBidsCount}
-              </Badge>
-            </TableCell>
-          </>
-        )}
-        <TableCell onClick={(e) => e.stopPropagation()}>
-          <RowActions
-            onInvite={() => onInvite(sub.email)}
-            onEdit={() => onEdit(sub)}
-            onDelete={() => onDelete(sub.id)}
-          />
         </TableCell>
       </TableRow>
       <SubcontractorPreview
