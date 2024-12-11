@@ -91,10 +91,6 @@ export const SubcontractorFilters = ({
         !isExpanded && "hidden sm:flex"
       )}>
         <div className="flex flex-col sm:flex-row gap-4">
-          <DateRangeFilter dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
           <TradesFilter selectedTrades={selectedTrades} onTradesChange={onTradesChange} />
 
           <Select value={statusFilter} onValueChange={onStatusChange}>
@@ -115,6 +111,8 @@ export const SubcontractorFilters = ({
             onChange={(e) => onLocationChange(e.target.value)}
             className="w-full sm:w-[200px]"
           />
+
+          <DateRangeFilter dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
 
           {activeFilterCount > 0 && (
             <Button
