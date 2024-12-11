@@ -16,15 +16,10 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   useEffect(() => {
     console.log("MainLayout: Checking session state:", session?.user?.id || 'No session');
     
-    // Try to get session from localStorage if no active session
     if (!session) {
-      const savedSession = localStorage.getItem('supabase.auth.token');
-      if (!savedSession) {
-        console.log("MainLayout: No session found, redirecting to login");
-        navigate("/");
-        return;
-      }
-      console.log("MainLayout: Found saved session, attempting to restore");
+      console.log("MainLayout: No session found, redirecting to login");
+      navigate("/");
+      return;
     }
 
     const {
@@ -32,7 +27,6 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     } = supabase.auth.onAuthStateChange((_event, currentSession) => {
       console.log("MainLayout: Auth state changed:", currentSession?.user?.id || 'No session');
       if (!currentSession) {
-        localStorage.removeItem('supabase.auth.token');
         navigate("/");
       }
     });
@@ -44,11 +38,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   }, [session, navigate, supabase.auth]);
 
   if (!session) {
-    const savedSession = localStorage.getItem('supabase.auth.token');
-    if (!savedSession) {
-      console.log("MainLayout: No session, returning null");
-      return null;
-    }
+    console.log("MainLayout: No session, returning null");
+    return null;
   }
 
   return (

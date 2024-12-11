@@ -14,32 +14,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     console.log("AuthProvider: Starting session initialization");
     
-    // First try to get the session from localStorage
-    const savedSession = localStorage.getItem('supabase.auth.token');
-    if (savedSession) {
-      console.log("AuthProvider: Found saved session");
-    }
-    
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("AuthProvider: Initial session fetch:", session?.user?.id || 'No session');
-      setInitialSession(session);
-      
-      // Store session in localStorage if it exists
-      if (session) {
-        localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+    const initializeSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log("AuthProvider: Initial session fetch:", session?.user?.id || 'No session');
+        
+        if (session) {
+          setInitialSession(session);
+        } else {
+          // Clear any stale session data
+          localStorage.removeItem('supabase.auth.token');
+        }
+      } catch (error) {
+        console.error("AuthProvider: Error fetching session:", error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
-    });
+    };
+
+    initializeSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("AuthProvider: Auth state changed:", session?.user?.id || 'No session');
       setInitialSession(session);
       
-      // Update localStorage when session changes
-      if (session) {
-        localStorage.setItem('supabase.auth.token', JSON.stringify(session));
-      } else {
+      if (!session) {
         localStorage.removeItem('supabase.auth.token');
       }
     });
@@ -50,12 +49,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
+  // Only show loading spinner for a maximum of 2 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isLoading) {
+        console.log("AuthProvider: Force ending loading state after timeout");
+        setIsLoading(false);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
+
   if (isLoading) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
