@@ -19,13 +19,14 @@ export const AuthForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return; // Prevent multiple submissions
     setIsLoading(true);
     console.log("Starting authentication process for email:", email);
 
     try {
       if (isLogin) {
         console.log("Attempting login...");
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
@@ -37,15 +38,18 @@ export const AuthForm = () => {
             description: error.message,
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
         
-        console.log("Login successful, navigating to dashboard");
-        navigate("/dashboard");
-        toast({
-          title: "Success",
-          description: "Successfully logged in",
-        });
+        if (data.session) {
+          console.log("Login successful, navigating to dashboard");
+          toast({
+            title: "Success",
+            description: "Successfully logged in",
+          });
+          navigate("/dashboard");
+        }
       } else {
         if (!role) {
           toast({
@@ -53,6 +57,7 @@ export const AuthForm = () => {
             description: "Please select a role",
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
 
@@ -74,6 +79,7 @@ export const AuthForm = () => {
             description: signUpError.message,
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
 
@@ -81,6 +87,7 @@ export const AuthForm = () => {
           title: "Success",
           description: "Please check your email to verify your account",
         });
+        setIsLoading(false);
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
