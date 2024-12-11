@@ -69,18 +69,22 @@ export const SubcontractorRow = ({
     <>
       <TableRow 
         key={sub.id} 
-        className={`group hover:bg-gray-50 cursor-pointer ${isLoading ? 'opacity-50' : ''}`}
+        className={cn(
+          "group hover:bg-gray-50 cursor-pointer touch-manipulation",
+          isLoading && "opacity-50"
+        )}
         onClick={handleRowClick}
       >
-        <TableCell onClick={(e) => e.stopPropagation()}>
+        <TableCell className="sticky left-0 bg-background" onClick={(e) => e.stopPropagation()}>
           <Checkbox
             checked={selected}
             onCheckedChange={(checked) => onSelect(sub.id, checked as boolean)}
             aria-label={`Select ${sub.name}`}
             disabled={isLoading}
+            className="touch-manipulation"
           />
         </TableCell>
-        <TableCell>
+        <TableCell className="sticky left-[40px] bg-background">
           <CompanyCell id={sub.id} company={sub.company} />
         </TableCell>
         {!isMobile && (

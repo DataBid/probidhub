@@ -2,12 +2,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { DateRange } from "./schema";
 import { SearchFilter } from "./filters/SearchFilter";
 import { DateRangeFilter } from "./filters/DateRangeFilter";
 import { TradesFilter } from "./filters/TradesFilter";
 import { format } from "date-fns";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface SubcontractorFiltersProps {
   searchQuery: string;
@@ -34,6 +36,8 @@ export const SubcontractorFilters = ({
   locationFilter,
   onLocationChange,
 }: SubcontractorFiltersProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const toggleTrade = (trade: string) => {
     if (selectedTrades.includes(trade)) {
       onTradesChange(selectedTrades.filter((t) => t !== trade));
@@ -62,50 +66,78 @@ export const SubcontractorFilters = ({
 
   return (
     <div className="flex flex-col gap-4 mb-6">
+      {/* Search is always visible */}
       <div className="flex flex-col sm:flex-row gap-4">
         <SearchFilter searchQuery={searchQuery} onSearchChange={onSearchChange} />
-        <DateRangeFilter dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
+        
+        {/* Mobile toggle button */}
+        <Button
+          variant="outline"
+          className="sm:hidden flex items-center justify-between w-full"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4 ml-2" />
+          ) : (
+            <ChevronDown className="h-4 w-4 ml-2" />
+          )}
+        </Button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <TradesFilter selectedTrades={selectedTrades} onTradesChange={onTradesChange} />
+      {/* Collapsible filters section */}
+      <div className={cn(
+        "flex flex-col gap-4 transition-all duration-200",
+        !isExpanded && "hidden sm:flex"
+      )}>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <DateRangeFilter dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
+        </div>
 
-        <Select value={statusFilter} onValueChange={onStatusChange}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Filter by Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="invited">Invited</SelectItem>
-            <SelectItem value="archived">Archived</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <TradesFilter selectedTrades={selectedTrades} onTradesChange={onTradesChange} />
 
-        <Input
-          placeholder="Filter by location..."
-          value={locationFilter}
-          onChange={(e) => onLocationChange(e.target.value)}
-          className="w-full sm:w-[200px]"
-        />
+          <Select value={statusFilter} onValueChange={onStatusChange}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Filter by Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="invited">Invited</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+          </Select>
 
-        {activeFilterCount > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleClearFilters}
-            className="whitespace-nowrap"
-          >
-            Clear All Filters
-            <Badge variant="secondary" className="ml-2">
-              {activeFilterCount}
-            </Badge>
-          </Button>
-        )}
+          <Input
+            placeholder="Filter by location..."
+            value={locationFilter}
+            onChange={(e) => onLocationChange(e.target.value)}
+            className="w-full sm:w-[200px]"
+          />
+
+          {activeFilterCount > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClearFilters}
+              className="whitespace-nowrap"
+            >
+              Clear All Filters
+              <Badge variant="secondary" className="ml-2">
+                {activeFilterCount}
+              </Badge>
+            </Button>
+          )}
+        </div>
       </div>
 
+      {/* Active filters badges */}
       {(selectedTrades.length > 0 || dateRange.from || locationFilter) && (
-        <div className="flex flex-wrap gap-2">
+        <div className={cn(
+          "flex flex-wrap gap-2",
+          !isExpanded && "hidden sm:flex"
+        )}>
           {selectedTrades.map((trade) => (
             <Badge
               key={trade}
