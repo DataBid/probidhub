@@ -12,6 +12,11 @@ interface SubcontractorTableProps {
   refetch: () => void;
 }
 
+export type SortConfig = {
+  column: string;
+  direction: 'asc' | 'desc';
+} | null;
+
 export const SubcontractorTable = ({
   subcontractors,
   isLoading,
@@ -19,6 +24,7 @@ export const SubcontractorTable = ({
 }: SubcontractorTableProps) => {
   const [formOpen, setFormOpen] = useState(false);
   const [selectedSubcontractor, setSelectedSubcontractor] = useState<any>();
+  const [sortConfig, setSortConfig] = useState<SortConfig>(null);
   const { toast } = useToast();
 
   const handleEdit = (subcontractor: any) => {
@@ -58,6 +64,30 @@ export const SubcontractorTable = ({
     });
   };
 
+  const sortedSubcontractors = [...subcontractors].sort((a, b) => {
+    if (!sortConfig) return 0;
+
+    const { column, direction } = sortConfig;
+    const aValue = a[column];
+    const bValue = b[column];
+
+    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const handleSort = (column: string) => {
+    setSortConfig((currentSort) => {
+      if (!currentSort || currentSort.column !== column) {
+        return { column, direction: 'asc' };
+      }
+      if (currentSort.direction === 'asc') {
+        return { column, direction: 'desc' };
+      }
+      return null;
+    });
+  };
+
   if (isLoading) {
     return <SubcontractorTableLoading />;
   }
@@ -65,10 +95,12 @@ export const SubcontractorTable = ({
   return (
     <Card className="p-3 sm:p-6">
       <SubcontractorTableContent
-        subcontractors={subcontractors}
+        subcontractors={sortedSubcontractors}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onInvite={handleInvite}
+        sortConfig={sortConfig}
+        onSort={handleSort}
       />
       <SubcontractorForm
         open={formOpen}
