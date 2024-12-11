@@ -14,11 +14,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     console.log("AuthProvider: Starting session initialization");
     
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("AuthProvider: Initial session fetch:", session?.user?.id || 'No session');
-      setInitialSession(session);
-      setIsLoading(false);
-    });
+    const initSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log("AuthProvider: Initial session fetch:", session?.user?.id || 'No session');
+        setInitialSession(session);
+      } catch (error) {
+        console.error("AuthProvider: Error fetching session:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("AuthProvider: Auth state changed:", session?.user?.id || 'No session');

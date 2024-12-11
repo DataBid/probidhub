@@ -1,20 +1,18 @@
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useSession } from "@supabase/auth-helpers-react";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const Index = () => {
   const session = useSession();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (session) {
       console.log("Index: Session detected, redirecting to dashboard");
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     }
-  }, [session]);
-
-  if (session) {
-    return null;
-  }
+  }, [session, navigate]);
 
   return <AuthForm />;
 };

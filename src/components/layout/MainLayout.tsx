@@ -13,15 +13,17 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!session) {
-      console.log("MainLayout: No session found, redirecting to login");
-      navigate("/");
-      return;
-    }
+    const checkSession = async () => {
+      if (!session) {
+        console.log("MainLayout: No session found, redirecting to login");
+        navigate("/");
+      }
+    };
+
+    checkSession();
   }, [session, navigate]);
 
   if (!session) {
-    console.log("MainLayout: No session, returning null");
     return null;
   }
 
