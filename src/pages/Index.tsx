@@ -12,6 +12,10 @@ const Index = () => {
     }
   }, [session]);
 
+  if (session) {
+    return null;
+  }
+
   return <AuthForm />;
 };
 

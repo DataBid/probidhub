@@ -65,21 +65,18 @@ function App() {
 
   useEffect(() => {
     console.log("App: Starting session initialization");
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error("App: Session initialization error:", error);
-      }
+    
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
       console.log("App: Initial session fetch:", session?.user?.id || 'No session');
       setInitialSession(session);
       setIsLoading(false);
     });
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("App: Auth state changed:", session?.user?.id || 'No session');
       setInitialSession(session);
-      if (session && window.location.pathname === '/') {
-        window.location.href = '/dashboard';
-      }
     });
 
     return () => {
@@ -88,22 +85,22 @@ function App() {
     };
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   return (
     <SessionContextProvider 
       supabaseClient={supabase}
       initialSession={initialSession}
     >
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <Toaster />
+        {isLoading ? (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : (
+          <>
+            <RouterProvider router={router} />
+            <Toaster />
+          </>
+        )}
       </QueryClientProvider>
     </SessionContextProvider>
   );
