@@ -18,8 +18,8 @@ export const SubcontractorHeader = ({ onAdd, onExport, onImportSuccess }: Subcon
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Saved Companies</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage all your companies, including subcontractors, suppliers, owners, architects, and engineers.
+          <p className="text-sm text-muted-foreground max-w-[600px]">
+            Manage your companies, including subcontractors, suppliers, and other partners.
           </p>
         </div>
         <div className="flex items-center gap-2">
