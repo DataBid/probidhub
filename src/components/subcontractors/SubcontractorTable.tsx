@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SubcontractorTableLoading } from "./SubcontractorTableLoading";
 import { SubcontractorTableContent } from "./SubcontractorTableContent";
 import { SubcontractorBulkActions } from "./SubcontractorBulkActions";
+import { SubcontractorTablePagination } from "./SubcontractorTablePagination";
 
 interface SubcontractorTableProps {
   subcontractors: any[];
@@ -18,6 +19,8 @@ export type SortConfig = {
   direction: 'asc' | 'desc';
 } | null;
 
+const ITEMS_PER_PAGE = 10;
+
 export const SubcontractorTable = ({
   subcontractors,
   isLoading,
@@ -27,6 +30,7 @@ export const SubcontractorTable = ({
   const [selectedSubcontractor, setSelectedSubcontractor] = useState<any>();
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
 
   const handleEdit = (subcontractor: any) => {
@@ -137,6 +141,14 @@ export const SubcontractorTable = ({
     return 0;
   });
 
+  // Calculate pagination
+  const totalPages = Math.ceil(sortedSubcontractors.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedSubcontractors = sortedSubcontractors.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
   const handleSort = (column: string) => {
     setSortConfig((currentSort) => {
       if (!currentSort || currentSort.column !== column) {
@@ -151,7 +163,7 @@ export const SubcontractorTable = ({
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedIds(sortedSubcontractors.map(sub => sub.id));
+      setSelectedIds(paginatedSubcontractors.map(sub => sub.id));
     } else {
       setSelectedIds([]);
     }
@@ -163,6 +175,11 @@ export const SubcontractorTable = ({
     } else {
       setSelectedIds(prev => prev.filter(prevId => prevId !== id));
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectedIds([]); // Clear selections when changing pages
   };
 
   if (isLoading) {
@@ -178,7 +195,7 @@ export const SubcontractorTable = ({
         onStatusChange={handleBulkStatusChange}
       />
       <SubcontractorTableContent
-        subcontractors={sortedSubcontractors}
+        subcontractors={paginatedSubcontractors}
         selectedIds={selectedIds}
         onSelectAll={handleSelectAll}
         onSelectOne={handleSelectOne}
@@ -187,6 +204,11 @@ export const SubcontractorTable = ({
         onInvite={handleInvite}
         sortConfig={sortConfig}
         onSort={handleSort}
+      />
+      <SubcontractorTablePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
       />
       <SubcontractorForm
         open={formOpen}
