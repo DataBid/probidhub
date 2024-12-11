@@ -43,14 +43,14 @@ export const SubcontractorFilters = ({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Trades</SelectItem>
-          <SelectItem value="electrical">Electrical</SelectItem>
-          <SelectItem value="plumbing">Plumbing</SelectItem>
-          <SelectItem value="hvac">HVAC</SelectItem>
-          <SelectItem value="carpentry">Carpentry</SelectItem>
-          <SelectItem value="masonry">Masonry</SelectItem>
-          <SelectItem value="painting">Painting</SelectItem>
-          <SelectItem value="roofing">Roofing</SelectItem>
-          <SelectItem value="landscaping">Landscaping</SelectItem>
+          <SelectItem value="Electrical">Electrical</SelectItem>
+          <SelectItem value="Plumbing">Plumbing</SelectItem>
+          <SelectItem value="HVAC">HVAC</SelectItem>
+          <SelectItem value="Carpentry">Carpentry</SelectItem>
+          <SelectItem value="Masonry">Masonry</SelectItem>
+          <SelectItem value="Painting">Painting</SelectItem>
+          <SelectItem value="Roofing">Roofing</SelectItem>
+          <SelectItem value="Landscaping">Landscaping</SelectItem>
         </SelectContent>
       </Select>
 
