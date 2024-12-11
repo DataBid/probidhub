@@ -15,7 +15,7 @@ export const CommunicationSection = ({ subcontractorId }: CommunicationSectionPr
       const { data, error } = await supabase
         .from('communication_logs')
         .select('*')
-        .eq('subcontractor_id', subcontractorId)
+        .eq('company_id', subcontractorId)  // Changed from subcontractor_id to company_id
         .order('created_at', { ascending: false })
         .limit(3);
 
