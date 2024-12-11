@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import { SubcontractorForm } from "./SubcontractorForm";
-import { SubcontractorRow } from "./SubcontractorRow";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { SubcontractorTableLoading } from "./SubcontractorTableLoading";
+import { SubcontractorTableContent } from "./SubcontractorTableContent";
 
 interface SubcontractorTableProps {
   subcontractors: any[];
@@ -60,49 +59,17 @@ export const SubcontractorTable = ({
   };
 
   if (isLoading) {
-    return (
-      <Card className="p-6">
-        <div className="flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      </Card>
-    );
+    return <SubcontractorTableLoading />;
   }
 
   return (
     <Card className="p-3 sm:p-6">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Trade</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {subcontractors.map((sub) => (
-              <SubcontractorRow
-                key={sub.id}
-                sub={sub}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onInvite={handleInvite}
-              />
-            ))}
-            {subcontractors.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  No subcontractors found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <SubcontractorTableContent
+        subcontractors={subcontractors}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onInvite={handleInvite}
+      />
       <SubcontractorForm
         open={formOpen}
         onOpenChange={setFormOpen}
