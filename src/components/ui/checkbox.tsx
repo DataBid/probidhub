@@ -12,11 +12,11 @@ const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   CheckboxProps
 >(({ className, indeterminate, ...props }, ref) => {
-  const checkboxRef = React.useRef<HTMLButtonElement>(null);
+  const checkboxRef = React.useRef<any>(null);
 
   React.useEffect(() => {
     if (checkboxRef.current) {
-      checkboxRef.current.indeterminate = indeterminate ?? false;
+      checkboxRef.current.dataset.indeterminate = indeterminate ? 'true' : 'false';
     }
   }, [indeterminate]);
 
