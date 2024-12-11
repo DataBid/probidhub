@@ -6,7 +6,13 @@ interface SubcontractorPreviewDialogProps {
   sub: {
     id: string;
     name: string;
+    company: string;
     email: string;
+    phone?: string;
+    location?: string;
+    notes?: string;
+    trade: string;
+    status?: string;
   };
   previewOpen: boolean;
   setPreviewOpen: (open: boolean) => void;
