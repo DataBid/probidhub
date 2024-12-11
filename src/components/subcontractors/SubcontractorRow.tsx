@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CompanyCell } from "./row/CompanyCell";
 import { ContactDetails } from "./row/ContactDetails";
 import { TradeCell } from "./row/TradeCell";
+import { RowActions } from "./row/RowActions";
 import { getStatusColor } from "./utils/tradeUtils";
 import { useState } from "react";
 import { SubcontractorPreview } from "./SubcontractorPreview";
@@ -96,24 +97,11 @@ export const SubcontractorRow = ({
             >
               {sub.status}
             </Badge>
-            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMessageOpen(true)}
-                title="Send message"
-              >
-                <Mail className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setHistoryOpen(true)}
-                title="View communication history"
-              >
-                <MessageSquare className="h-4 w-4" />
-              </Button>
-            </div>
+            <RowActions
+              onInvite={() => onInvite(sub.email)}
+              onEdit={() => onEdit(sub)}
+              onDelete={() => onDelete(sub.id)}
+            />
           </div>
         </TableCell>
       </TableRow>
