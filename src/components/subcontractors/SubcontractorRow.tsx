@@ -6,8 +6,10 @@ import { ContactDetails } from "./row/ContactDetails";
 import { TradeCell } from "./row/TradeCell";
 import { RowActions } from "./row/RowActions";
 import { getStatusColor } from "./utils/tradeUtils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SubcontractorPreview } from "./SubcontractorPreview";
+import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SubcontractorRowProps {
   sub: {
@@ -20,6 +22,7 @@ interface SubcontractorRowProps {
     status?: string;
     notes?: string;
     phone?: string;
+    last_contact?: string;
   };
   selected: boolean;
   onSelect: (id: string, checked: boolean) => void;
@@ -37,10 +40,39 @@ export const SubcontractorRow = ({
   onInvite 
 }: SubcontractorRowProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [specialties, setSpecialties] = useState<string[]>([]);
+  const [activeBidsCount, setActiveBidsCount] = useState(0);
   const statusColor = getStatusColor(sub.status);
 
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      const { data, error } = await supabase
+        .from('subcontractor_specialties')
+        .select('specialty')
+        .eq('subcontractor_id', sub.id);
+      
+      if (!error && data) {
+        setSpecialties(data.map(s => s.specialty));
+      }
+    };
+
+    const fetchActiveBids = async () => {
+      const { count, error } = await supabase
+        .from('bids')
+        .select('*', { count: 'exact', head: true })
+        .eq('subcontractor_id', sub.id)
+        .eq('status', 'pending');
+      
+      if (!error && count !== null) {
+        setActiveBidsCount(count);
+      }
+    };
+
+    fetchSpecialties();
+    fetchActiveBids();
+  }, [sub.id]);
+
   const handleRowClick = (e: React.MouseEvent) => {
-    // Don't open preview if clicking on company link, checkbox, or action buttons
     const target = e.target as HTMLElement;
     if (
       target.closest('a') || 
@@ -84,11 +116,32 @@ export const SubcontractorRow = ({
         </TableCell>
         <TableCell>{sub.location || "N/A"}</TableCell>
         <TableCell>
+          {sub.last_contact ? (
+            format(new Date(sub.last_contact), 'MMM d, yyyy')
+          ) : (
+            "Never"
+          )}
+        </TableCell>
+        <TableCell>
           <Badge 
             variant="outline" 
             className={`${statusColor}`}
           >
             {sub.status}
+          </Badge>
+        </TableCell>
+        <TableCell>
+          <div className="flex gap-1 flex-wrap">
+            {specialties.map((specialty, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {specialty}
+              </Badge>
+            ))}
+          </div>
+        </TableCell>
+        <TableCell>
+          <Badge variant="secondary" className="font-mono">
+            {activeBidsCount}
           </Badge>
         </TableCell>
         <TableCell onClick={(e) => e.stopPropagation()}>

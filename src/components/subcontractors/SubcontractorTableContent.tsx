@@ -70,7 +70,10 @@ export const SubcontractorTableContent = ({
             <SortableHeader column="name" label="Contact Name" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="trade" label="Trade" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="location" label="Location" sortConfig={sortConfig} onSort={onSort} />
+            <SortableHeader column="last_contact" label="Last Contact" sortConfig={sortConfig} onSort={onSort} />
             <SortableHeader column="status" label="Status" sortConfig={sortConfig} onSort={onSort} />
+            <TableHead>Specialties</TableHead>
+            <TableHead>Active Bids</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -88,7 +91,7 @@ export const SubcontractorTableContent = ({
           ))}
           {subcontractors.length === 0 && (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground">
+              <TableCell colSpan={10} className="text-center text-muted-foreground">
                 No subcontractors found
               </TableCell>
             </TableRow>

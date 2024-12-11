@@ -422,6 +422,35 @@ export type Database = {
           },
         ]
       }
+      subcontractor_specialties: {
+        Row: {
+          created_at: string
+          id: string
+          specialty: string
+          subcontractor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          specialty: string
+          subcontractor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          specialty?: string
+          subcontractor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_specialties_subcontractor_id_fkey"
+            columns: ["subcontractor_id"]
+            isOneToOne: false
+            referencedRelation: "subcontractors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subcontractors: {
         Row: {
           company: string
@@ -429,6 +458,7 @@ export type Database = {
           email: string
           gc_id: string
           id: string
+          last_contact: string | null
           location: string | null
           name: string
           notes: string | null
@@ -443,6 +473,7 @@ export type Database = {
           email: string
           gc_id: string
           id?: string
+          last_contact?: string | null
           location?: string | null
           name: string
           notes?: string | null
@@ -457,6 +488,7 @@ export type Database = {
           email?: string
           gc_id?: string
           id?: string
+          last_contact?: string | null
           location?: string | null
           name?: string
           notes?: string | null
