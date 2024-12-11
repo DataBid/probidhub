@@ -43,3 +43,18 @@ export const prepareProjectsData = (projects: any[]) => {
     Stage: project.stage || 'N/A'
   }));
 };
+
+export const prepareSubcontractorsData = (subcontractors: any[]) => {
+  return subcontractors.map(sub => ({
+    'Name': sub.name,
+    'Company': sub.company,
+    'Trade': sub.trade,
+    'Email': sub.email,
+    'Phone': sub.phone || 'N/A',
+    'Location': sub.location || 'N/A',
+    'Status': sub.status || 'N/A',
+    'Created At': format(new Date(sub.created_at), 'yyyy-MM-dd'),
+    'Last Updated': format(new Date(sub.updated_at), 'yyyy-MM-dd'),
+    'Notes': sub.notes || ''
+  }));
+};

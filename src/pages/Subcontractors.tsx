@@ -5,6 +5,8 @@ import { SubcontractorTable } from "@/components/subcontractors/SubcontractorTab
 import { SubcontractorFilters } from "@/components/subcontractors/SubcontractorFilters";
 import { SubcontractorHeader } from "@/components/subcontractors/SubcontractorHeader";
 import { useUser } from "@supabase/auth-helpers-react";
+import { downloadCSV, prepareSubcontractorsData } from "@/utils/exportUtils";
+import { useToast } from "@/hooks/use-toast";
 
 export const SubcontractorsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,6 +14,7 @@ export const SubcontractorsPage = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [formOpen, setFormOpen] = useState(false);
   const user = useUser();
+  const { toast } = useToast();
 
   const { data: subcontractors, isLoading, refetch } = useQuery({
     queryKey: ["subcontractors", searchQuery, tradeFilter, statusFilter],
@@ -58,9 +61,28 @@ export const SubcontractorsPage = () => {
     enabled: !!user?.id,
   });
 
+  const handleExport = () => {
+    if (!subcontractors?.length) {
+      toast({
+        title: "No data to export",
+        description: "There are no subcontractors matching your current filters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const exportData = prepareSubcontractorsData(subcontractors);
+    downloadCSV(exportData, "subcontractors");
+    
+    toast({
+      title: "Export successful",
+      description: "Your subcontractors list has been exported successfully.",
+    });
+  };
+
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
-      <SubcontractorHeader onAdd={() => setFormOpen(true)} />
+      <SubcontractorHeader onAdd={() => setFormOpen(true)} onExport={handleExport} />
 
       <div className="space-y-4">
         <SubcontractorFilters
