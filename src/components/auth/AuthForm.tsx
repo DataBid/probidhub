@@ -13,7 +13,8 @@ export const AuthForm = () => {
       <Card className="w-full max-w-md">
         <div className="flex flex-col items-center mt-8">
           <Building2 className="h-12 w-12 text-primary mb-2" />
-          <h1 className="text-3xl font-bold text-primary mb-4">BidWall</h1>
+          <h1 className="text-3xl font-bold text-primary mb-1">ProBidHub</h1>
+          <p className="text-sm text-construction-500 mb-4">Construction Bidding</p>
         </div>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-construction-900">
