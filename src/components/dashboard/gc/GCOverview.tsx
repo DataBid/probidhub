@@ -13,15 +13,58 @@ import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Respons
 import { Progress } from "@/components/ui/progress";
 import { ProjectsAttention } from "../ProjectsAttention";
 import { ProjectStatusBadge } from "@/components/projects/details/components/ProjectStatusBadge";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GCOverviewProps {
   userProfile: any;
 }
 
+interface FullBid {
+  id: string;
+  status: string | null;
+  response_date: string | null;
+}
+
 export const GCOverview = ({ userProfile }: GCOverviewProps) => {
   const navigate = useNavigate();
-  const { projects, isLoading } = useProjectsData();
   const isMobile = useIsMobile();
+  
+  // Use a separate query to get full bid details including status
+  const { data: projectsWithFullBids, isLoading } = useQuery({
+    queryKey: ["projects-with-full-bids"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("projects")
+        .select(`
+          id,
+          title,
+          stage,
+          location,
+          project_class,
+          industry,
+          bids_due,
+          prequalification,
+          created_at,
+          updated_at,
+          bids (
+            id,
+            status,
+            response_date
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Error fetching projects with full bids:", error);
+        throw error;
+      }
+
+      return data;
+    }
+  });
+  
+  const projects = projectsWithFullBids;
   
   // Calculate quick stats
   const activeProjects = projects?.filter(p => p.stage === 'active').length || 0;
@@ -33,7 +76,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
     
     // Safely access bid properties with type checking
     const pendingBidsCount = project.bids.filter(bid => {
-      return 'status' in bid && bid.status === 'pending';
+      return bid.status === 'pending';
     }).length;
     
     return acc + pendingBidsCount;
