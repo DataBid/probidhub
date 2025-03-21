@@ -19,7 +19,7 @@ export const ProjectResponses = ({ project }: ProjectResponsesProps) => {
   const viewedRate = totalBids > 0 ? Math.round((viewedBids / totalBids) * 100) : 0;
   const pendingRate = totalBids > 0 ? Math.round((pendingBids / totalBids) * 100) : 0;
 
-  // Fix the issue with max being 0 by ensuring there's at least one bid
+  // Check if there are any bids
   const hasAnyBids = totalBids > 0;
 
   return (

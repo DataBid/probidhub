@@ -7,7 +7,6 @@ import { useUserProfile } from "@/components/dashboard/hooks/useUserProfile";
 import { GCDashboard } from "@/components/dashboard/gc/GCDashboard";
 import { SubDashboard } from "@/components/dashboard/sub/SubDashboard";
 import { AdminDashboard } from "@/components/dashboard/admin/AdminDashboard";
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 
 const Dashboard = () => {
   const session = useSession();
@@ -42,10 +41,9 @@ const Dashboard = () => {
     return null;
   }
 
-  // Wrap the role-specific dashboard with the DashboardLayout
+  // Render the appropriate dashboard based on user role
   return (
     <div>
-      {/* Render the appropriate dashboard based on user role */}
       {userProfile?.role === "admin" ? (
         <AdminDashboard />
       ) : userProfile?.role === "sub" ? (
