@@ -1,3 +1,4 @@
+
 import { Send, MessageSquare, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProjectStatusBadge } from "./components/ProjectStatusBadge";
@@ -30,25 +31,28 @@ export const ProjectHeader = ({ project }: ProjectHeaderProps) => {
             <Button 
               size="lg"
               className="bg-primary hover:bg-primary-hover shadow-lg hover:shadow-xl transition-all duration-200"
+              width="auto"
             >
               <Send className="w-5 h-5 mr-2" />
-              Submit Bid
+              <span className="truncate">Submit Bid</span>
             </Button>
             <Button 
               variant="outline" 
               size="lg"
+              width="auto"
               className="hover:bg-accent/10 shadow hover:shadow-md transition-all duration-200"
             >
               <MessageSquare className="w-5 h-5 mr-2" />
-              Ask a Question
+              <span className="truncate">Ask a Question</span>
             </Button>
             <Button 
               variant="outline" 
               size="lg"
+              width="auto"
               className="hover:bg-accent/10 shadow hover:shadow-md transition-all duration-200"
             >
               <Upload className="w-5 h-5 mr-2" />
-              Upload Files
+              <span className="truncate">Upload Files</span>
             </Button>
           </div>
         </div>

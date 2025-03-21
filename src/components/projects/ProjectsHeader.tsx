@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -8,9 +9,10 @@ export const ProjectsHeader = () => {
         <div className="py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <Button 
             className="bg-primary hover:bg-primary-hover text-white transition-colors duration-200 w-full sm:w-auto"
+            truncate
           >
             <Plus className="mr-2 h-4 w-4" />
-            Create New Project
+            <span>Create New Project</span>
           </Button>
         </div>
       </div>

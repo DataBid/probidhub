@@ -66,9 +66,10 @@ export const DashboardActions = ({ userRole }: DashboardActionsProps) => {
               <Button 
                 className="bg-primary hover:bg-primary/90 text-white transition-all duration-300 w-full transform hover:-translate-y-1"
                 onClick={() => navigate('/projects/new')}
+                truncate
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Create New Project
+                <span>Create New Project</span>
               </Button>
             )}
             
@@ -76,31 +77,34 @@ export const DashboardActions = ({ userRole }: DashboardActionsProps) => {
               <Button 
                 className="bg-[#9b87f5] hover:bg-[#8a76e4] text-white transition-all duration-300 w-full transform hover:-translate-y-1"
                 onClick={() => navigate('/subcontractors')}
+                truncate
               >
                 <Users className="mr-2 h-4 w-4" />
-                Manage Subcontractors
+                <span>Manage Subcontractors</span>
               </Button>
             )}
             
             <Button 
               className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white transition-all duration-300 w-full transform hover:-translate-y-1"
               onClick={() => navigate('/projects')}
+              truncate
             >
               <FolderOpen className="mr-2 h-4 w-4" />
-              {isGC ? "All Projects" : "Available Projects"}
+              <span>{isGC ? "All Projects" : "Available Projects"}</span>
             </Button>
             
             {pendingBidsCount > 0 && isGC && (
               <Button 
                 variant="outline"
-                className="border-[#F97316] text-[#F97316] hover:bg-[#F97316]/10 w-full justify-between transition-all duration-300 transform hover:-translate-y-1"
+                className="border-[#F97316] text-[#F97316] hover:bg-[#F97316]/10 hover:text-[#F97316] w-full justify-between transition-all duration-300 transform hover:-translate-y-1"
                 onClick={() => navigate('/bids')}
+                truncate
               >
                 <span className="flex items-center">
                   <Bell className="mr-2 h-4 w-4" />
                   Pending Bids
                 </span>
-                <Badge className="bg-[#F97316] hover:bg-[#F97316] text-white animate-pulse">
+                <Badge className="bg-[#F97316] hover:bg-[#F97316] text-white animate-pulse shrink-0">
                   {pendingBidsCount}
                 </Badge>
               </Button>
@@ -109,14 +113,15 @@ export const DashboardActions = ({ userRole }: DashboardActionsProps) => {
             {urgentProjectsCount > 0 && isGC && (
               <Button 
                 variant="outline"
-                className="border-[#ea384c] text-[#ea384c] hover:bg-[#ea384c]/10 w-full justify-between transition-all duration-300 transform hover:-translate-y-1"
+                className="border-[#ea384c] text-[#ea384c] hover:bg-[#ea384c]/10 hover:text-[#ea384c] w-full justify-between transition-all duration-300 transform hover:-translate-y-1"
                 onClick={() => navigate('/projects?filter=upcoming')}
+                truncate
               >
                 <span className="flex items-center">
                   <Clock className="mr-2 h-4 w-4" />
                   Urgent Deadlines
                 </span>
-                <Badge className="bg-[#ea384c] hover:bg-[#ea384c] text-white animate-pulse">
+                <Badge className="bg-[#ea384c] hover:bg-[#ea384c] text-white animate-pulse shrink-0">
                   {urgentProjectsCount}
                 </Badge>
               </Button>
@@ -136,6 +141,7 @@ export const DashboardActions = ({ userRole }: DashboardActionsProps) => {
                     variant="ghost" 
                     className="justify-start text-sm text-muted-foreground hover:text-foreground transition-all duration-200"
                     onClick={() => navigate('/bids')}
+                    truncate
                   >
                     Review {pendingBidsCount} pending {pendingBidsCount === 1 ? 'bid' : 'bids'}
                   </Button>
@@ -146,6 +152,7 @@ export const DashboardActions = ({ userRole }: DashboardActionsProps) => {
                     variant="ghost" 
                     className="justify-start text-sm text-muted-foreground hover:text-foreground transition-all duration-200"
                     onClick={() => navigate('/projects?filter=upcoming')}
+                    truncate
                   >
                     Address {urgentProjectsCount} upcoming {urgentProjectsCount === 1 ? 'deadline' : 'deadlines'}
                   </Button>
@@ -155,6 +162,7 @@ export const DashboardActions = ({ userRole }: DashboardActionsProps) => {
                   variant="ghost" 
                   className="justify-start text-sm text-muted-foreground hover:text-foreground transition-all duration-200"
                   onClick={() => navigate('/analytics')}
+                  truncate
                 >
                   Review project analytics
                 </Button>

@@ -87,8 +87,8 @@ export const ProjectResponses = ({ project }: ProjectResponsesProps) => {
           </TooltipProvider>
         </div>
       ) : (
-        <div className="flex w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div className="text-xs text-muted-foreground px-2 py-3">No bids yet</div>
+        <div className="flex w-full h-8 bg-gray-200 rounded-full overflow-hidden items-center justify-center">
+          <div className="text-xs text-muted-foreground">No bids yet</div>
         </div>
       )}
       

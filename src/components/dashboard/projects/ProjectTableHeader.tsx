@@ -1,3 +1,4 @@
+
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ export const ProjectTableHeader = ({ onSort }: ProjectTableHeaderProps) => {
             variant="ghost"
             onClick={() => onSort("created_at")}
             className="h-8 px-2"
+            truncate
           >
             Posted Date
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -30,6 +32,7 @@ export const ProjectTableHeader = ({ onSort }: ProjectTableHeaderProps) => {
             variant="ghost"
             onClick={() => onSort("bids_due")}
             className="h-8 px-2"
+            truncate
           >
             Bid Deadline
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -40,6 +43,7 @@ export const ProjectTableHeader = ({ onSort }: ProjectTableHeaderProps) => {
             variant="ghost"
             onClick={() => onSort("stage")}
             className="h-8 px-2"
+            truncate
           >
             Status
             <ArrowUpDown className="ml-2 h-4 w-4" />

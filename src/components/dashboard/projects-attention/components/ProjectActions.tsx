@@ -1,3 +1,4 @@
+
 import { ArrowRight, CalendarPlus, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -50,29 +51,32 @@ export const ProjectActions = ({ project, onRefetch }: ProjectActionsProps) => {
       <Button
         variant="outline"
         size="sm"
+        width="auto"
         onClick={handleSendReminder}
-        className="text-primary hover:text-primary-foreground hover:bg-primary"
+        className="text-primary hover:text-white hover:bg-primary"
       >
         <ArrowRight className="h-4 w-4" />
-        Send Reminder
+        <span className="truncate">Send Reminder</span>
       </Button>
       <Button
         variant="outline"
         size="sm"
+        width="auto"
         onClick={handleExtendDeadline}
-        className="text-primary hover:text-primary-foreground hover:bg-primary"
+        className="text-primary hover:text-white hover:bg-primary"
       >
         <CalendarPlus className="h-4 w-4" />
-        Extend Deadline
+        <span className="truncate">Extend Deadline</span>
       </Button>
       <Button
         variant="outline"
         size="sm"
+        width="auto"
         onClick={() => navigate(`/projects/${project.id}`)}
-        className="text-primary hover:text-primary-foreground hover:bg-primary"
+        className="text-primary hover:text-white hover:bg-primary"
       >
         <ExternalLink className="h-4 w-4" />
-        View Details
+        <span className="truncate">View Details</span>
       </Button>
     </div>
   );

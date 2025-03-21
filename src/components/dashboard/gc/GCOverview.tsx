@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Plus, Download, Clock, ArrowRight, FileText, Users, BarChart, Calendar, CheckCircle, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +29,6 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
-  // Use a separate query to get full bid details including status
   const { data: projectsWithFullBids, isLoading } = useQuery({
     queryKey: ["projects-with-full-bids"],
     queryFn: async () => {
@@ -66,15 +64,11 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
   
   const projects = projectsWithFullBids;
   
-  // Calculate quick stats
   const activeProjects = projects?.filter(p => p.stage === 'active').length || 0;
   
-  // Fix the pendingBids calculation with proper type checking
   const pendingBids = projects?.reduce((acc, project) => {
-    // Check if project.bids exists and is an array
     if (!project.bids || !Array.isArray(project.bids)) return acc;
     
-    // Safely access bid properties with type checking
     const pendingBidsCount = project.bids.filter(bid => {
       return bid.status === 'pending';
     }).length;
@@ -82,7 +76,6 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
     return acc + pendingBidsCount;
   }, 0) || 0;
   
-  // Projects with upcoming deadlines (next 7 days)
   const upcomingDeadlines = projects?.filter(project => {
     const deadline = new Date(project.bids_due);
     const now = new Date();
@@ -91,14 +84,12 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
     return diffDays >= 0 && diffDays <= 7;
   }).length || 0;
 
-  // Generate simplified data for project status chart
   const projectStatusData = [
     { name: "Active", value: activeProjects, fill: "#10b981" },
     { name: "Pending", value: projects?.filter(p => p.stage === 'pending').length || 0, fill: "#f59e0b" },
     { name: "Closed", value: projects?.filter(p => p.stage === 'closed').length || 0, fill: "#ef4444" }
   ];
 
-  // Generate bid response data for visualization
   const bidResponseData = [
     { name: "Pending", value: pendingBids, fill: "#94a3b8" },
     { name: "Viewed", value: projects?.reduce((acc, p) => acc + (p.bids?.filter(b => b.status === 'viewed').length || 0), 0) || 0, fill: "#f59e0b" },
@@ -107,7 +98,6 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Enhanced GC Welcome Banner */}
       <div className="bg-gradient-to-r from-primary/90 to-primary rounded-lg shadow-md overflow-hidden">
         <div className="p-5 sm:p-6 md:p-8">
           <h1 className="text-xl sm:text-2xl font-bold mb-2 text-white">{userProfile?.company_name ? `Welcome back, ${userProfile.company_name}` : 'Welcome back'}</h1>
@@ -117,25 +107,26 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
             <Button 
               onClick={() => navigate('/projects/new')}
               size={isMobile ? "sm" : "default"}
-              className="bg-white text-primary hover:bg-white/90 font-medium"
+              width="auto"
+              className="bg-white text-primary hover:bg-white/90 hover:text-primary font-medium"
             >
               <Plus className="mr-2 h-4 w-4" />
-              Create New Project
+              <span className="truncate">Create New Project</span>
             </Button>
             <Button 
               onClick={() => navigate('/subcontractors')}
               variant="outline" 
               size={isMobile ? "sm" : "default"}
-              className="text-white border-white hover:bg-white/20 font-medium"
+              width="auto"
+              className="text-white border-white hover:bg-white/20 hover:text-white font-medium"
             >
               <Users className="mr-2 h-4 w-4" />
-              Manage Subcontractors
+              <span className="truncate">Manage Subcontractors</span>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Quick Access Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
         <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-4 flex items-center">
@@ -198,9 +189,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
         </Card>
       </div>
 
-      {/* Interactive Metrics Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Project Status Distribution */}
         <Card className="shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl">Project Status Distribution</CardTitle>
@@ -228,7 +217,6 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
           </CardContent>
         </Card>
 
-        {/* Bid Response Overview */}
         <Card className="shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl">Bid Response Overview</CardTitle>
@@ -281,13 +269,11 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
         </Card>
       </div>
 
-      {/* Quick Metrics Overview */}
       <section className="rounded-lg border bg-card shadow-sm p-4">
         <h2 className="text-lg font-semibold mb-4 px-2">Performance Metrics</h2>
         <QuickMetrics userRole="gc" />
       </section>
 
-      {/* Projects Requiring Attention Section */}
       <section className="rounded-lg border bg-card shadow-sm p-4">
         <div className="flex items-center justify-between mb-4 px-2">
           <h2 className="text-lg font-semibold">Projects Requiring Attention</h2>
@@ -303,15 +289,12 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
         <ProjectsAttention userRole="gc" />
       </section>
 
-      {/* Notifications Widget for Urgent Items */}
       <section className="rounded-lg border bg-card shadow-sm p-4">
         <h2 className="text-lg font-semibold mb-4 px-2">Important Notifications</h2>
         <NotificationsWidget userRole="gc" />
       </section>
 
-      {/* Main Dashboard Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Project Activity Feed */}
         <Card className="lg:col-span-2 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl">Recent Activity</CardTitle>
@@ -342,7 +325,6 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
           </CardContent>
         </Card>
 
-        {/* Quick Actions Panel */}
         <Card className="shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl">Quick Actions</CardTitle>
@@ -354,7 +336,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
               onClick={() => navigate('/projects/new')}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Create New Project
+              <span className="truncate">Create New Project</span>
             </Button>
             <Button 
               variant="outline" 
@@ -362,7 +344,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
               onClick={() => navigate('/subcontractors/new')}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add Subcontractor
+              <span className="truncate">Add Subcontractor</span>
             </Button>
             <Button 
               variant="outline" 
@@ -370,7 +352,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
               onClick={() => navigate('/projects')}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export Project Report
+              <span className="truncate">Export Project Report</span>
             </Button>
             <Button 
               variant="outline" 
@@ -378,7 +360,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
               onClick={() => navigate('/analytics')}
             >
               <BarChart className="mr-2 h-4 w-4" />
-              View Analytics
+              <span className="truncate">View Analytics</span>
             </Button>
           </CardContent>
         </Card>
