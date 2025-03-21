@@ -4,6 +4,7 @@ import { Plus, Download, Clock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProjectsData } from "../projects/hooks/useProjectsData";
+import { Project } from "@/components/dashboard/projects-attention/types";
 
 interface GCOverviewProps {
   userProfile: any;
@@ -15,8 +16,17 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
   
   // Calculate quick stats
   const activeProjects = projects?.filter(p => p.stage === 'active').length || 0;
+  
+  // Fix the pendingBids calculation with proper type checking
   const pendingBids = projects?.reduce((acc, project) => {
-    const pendingBidsCount = project.bids?.filter(bid => bid.status === 'pending').length || 0;
+    // Check if project.bids exists and is an array
+    if (!project.bids || !Array.isArray(project.bids)) return acc;
+    
+    // Safely access bid properties with type checking
+    const pendingBidsCount = project.bids.filter(bid => {
+      return 'status' in bid && bid.status === 'pending';
+    }).length;
+    
     return acc + pendingBidsCount;
   }, 0) || 0;
   

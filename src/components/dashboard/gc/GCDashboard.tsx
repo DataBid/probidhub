@@ -1,11 +1,10 @@
 
 import { useSession } from "@supabase/auth-helpers-react";
 import { useUserProfile } from "../hooks/useUserProfile";
-import { DashboardLayout } from "../DashboardLayout";
-import { GCOverview } from "./GCOverview";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { GCOverview } from "./GCOverview";
 
 export const GCDashboard = () => {
   const session = useSession();
@@ -42,9 +41,6 @@ export const GCDashboard = () => {
     return null;
   }
 
-  return (
-    <DashboardLayout>
-      <GCOverview userProfile={userProfile} />
-    </DashboardLayout>
-  );
+  // Return the GCOverview directly instead of wrapping in DashboardLayout
+  return <GCOverview userProfile={userProfile} />;
 };
