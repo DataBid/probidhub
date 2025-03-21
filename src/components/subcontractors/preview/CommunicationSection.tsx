@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -15,7 +16,7 @@ export const CommunicationSection = ({ subcontractorId }: CommunicationSectionPr
       const { data, error } = await supabase
         .from('communication_logs')
         .select('*')
-        .eq('company_id', subcontractorId)  // Changed from subcontractor_id to company_id
+        .eq('company_id', subcontractorId)
         .order('created_at', { ascending: false })
         .limit(3);
 

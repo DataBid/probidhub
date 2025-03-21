@@ -17,10 +17,12 @@ interface CommunicationHistoryProps {
 interface CommunicationLog {
   id: string;
   type: string;
-  content: string;
-  subject?: string;
+  content: string | null;
+  subject: string | null;
   created_at: string;
-  subcontractor_id: string;
+  company_id: string;
+  gc_id: string;
+  status: string | null;
 }
 
 export const CommunicationHistory = ({ 
@@ -36,7 +38,7 @@ export const CommunicationHistory = ({
       const { data, error } = await supabase
         .from('communication_logs')
         .select('*')
-        .eq('subcontractor_id', subcontractorId)
+        .eq('company_id', subcontractorId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
