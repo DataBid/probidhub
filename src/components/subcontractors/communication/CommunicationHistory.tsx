@@ -1,3 +1,4 @@
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +12,15 @@ interface CommunicationHistoryProps {
   onOpenChange: (open: boolean) => void;
   subcontractorId: string;
   subcontractorName: string;
+}
+
+interface CommunicationLog {
+  id: string;
+  type: string;
+  content: string;
+  subject?: string;
+  created_at: string;
+  subcontractor_id: string;
 }
 
 export const CommunicationHistory = ({ 
@@ -30,7 +40,7 @@ export const CommunicationHistory = ({
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as CommunicationLog[];
     },
     enabled: open && !!subcontractorId,
   });
