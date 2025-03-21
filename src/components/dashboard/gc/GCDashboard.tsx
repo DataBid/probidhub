@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { GCOverview } from "./GCOverview";
+import { DashboardActions } from "../DashboardActions";
 
 export const GCDashboard = () => {
   const session = useSession();
@@ -41,6 +42,13 @@ export const GCDashboard = () => {
     return null;
   }
 
-  // Return the GCOverview directly instead of wrapping in DashboardLayout
-  return <GCOverview userProfile={userProfile} />;
+  return (
+    <div className="px-4 py-6 max-w-7xl mx-auto">
+      {/* Quick Action Buttons Bar at the top */}
+      <DashboardActions userRole={userProfile?.role} />
+      
+      {/* Main Dashboard Content */}
+      <GCOverview userProfile={userProfile} />
+    </div>
+  );
 };
