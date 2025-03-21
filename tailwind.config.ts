@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -56,7 +57,7 @@ export default {
           foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "#F1F0FB", // Soft gray
+          DEFAULT: "#F5F8F6", // Updated to subtle green tint
           foreground: "#8E9196", // Neutral gray
         },
         popover: {
