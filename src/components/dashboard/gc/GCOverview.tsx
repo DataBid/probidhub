@@ -98,16 +98,15 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-lg shadow-md overflow-hidden">
-        <div className="p-5 sm:p-6 md:p-8">
-          <h1 className="text-xl sm:text-2xl font-bold mb-2 text-white">{userProfile?.company_name ? `Welcome back, ${userProfile.company_name}` : 'Welcome back'}</h1>
-          <p className="text-white/90 mb-4 max-w-2xl">Manage your projects and subcontractor bids efficiently from your personalized dashboard</p>
+      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-lg shadow-md overflow-hidden mb-6">
+        <div className="p-5 sm:p-8 md:p-10">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3 text-white">{userProfile?.company_name ? `Welcome back, ${userProfile.company_name}` : 'Welcome back'}</h1>
+          <p className="text-white/90 mb-6 max-w-2xl text-base sm:text-lg">Manage your projects and subcontractor bids efficiently from your personalized dashboard</p>
           
           <div className="flex flex-wrap gap-3 mt-4">
             <Button 
               onClick={() => navigate('/projects/new')}
               size={isMobile ? "sm" : "default"}
-              width="auto"
               className="bg-white text-primary hover:bg-white/90 hover:text-primary font-medium"
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -117,7 +116,6 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
               onClick={() => navigate('/subcontractors')}
               variant="outline" 
               size={isMobile ? "sm" : "default"}
-              width="auto"
               className="text-white border-white hover:bg-white/20 hover:text-white font-medium"
             >
               <Users className="mr-2 h-4 w-4" />

@@ -43,14 +43,11 @@ export const GCDashboard = () => {
   }
 
   return (
-    <div className="px-4 py-6 max-w-7xl mx-auto">
-      {/* Quick Action Buttons Bar with animation */}
-      <div className="animate-fade-in">
-        <DashboardActions userRole={userProfile?.role} />
-      </div>
+    <div className="px-0 py-0 sm:px-2 max-w-7xl mx-auto">
+      {/* Removed the DashboardActions from here since it's now part of the welcome section */}
       
-      {/* Main Dashboard Content with staggered animation */}
-      <div className="animate-fade-in" style={{ animationDelay: "0.15s" }}>
+      {/* Main Dashboard Content with GCOverview that contains the welcome section */}
+      <div className="animate-fade-in">
         <GCOverview userProfile={userProfile} />
       </div>
     </div>

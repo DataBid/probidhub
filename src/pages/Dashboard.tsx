@@ -43,7 +43,7 @@ const Dashboard = () => {
 
   // Render the appropriate dashboard based on user role
   return (
-    <div>
+    <div className="p-0 sm:p-2 md:p-4">
       {userProfile?.role === "admin" ? (
         <AdminDashboard />
       ) : userProfile?.role === "sub" ? (
