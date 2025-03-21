@@ -26,14 +26,14 @@ export const AnalyticsLineChart = ({ data, dataKey }: AnalyticsLineChartProps) =
 
   return (
     <ChartContainer className="h-[250px] sm:h-[300px] w-full" config={{}}>
-      <defs>
-        <linearGradient id={`lineGradient-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={fill} stopOpacity={0.3}/>
-          <stop offset="100%" stopColor={fill} stopOpacity={0}/>
-        </linearGradient>
-      </defs>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data || []} margin={{ top: 5, right: 10, bottom: 45, left: 30 }}>
+          <defs>
+            <linearGradient id={`lineGradient-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={fill} stopOpacity={0.3}/>
+              <stop offset="100%" stopColor={fill} stopOpacity={0}/>
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
           <XAxis 
             dataKey="date" 
