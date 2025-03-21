@@ -1,12 +1,13 @@
 
 import { Button } from "@/components/ui/button";
-import { Plus, Download, Clock, ArrowRight } from "lucide-react";
+import { Plus, Download, Clock, ArrowRight, FileText, Users, BarChart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProjectsData } from "../projects/hooks/useProjectsData";
 import { Project } from "@/components/dashboard/projects-attention/types";
 import { QuickMetrics } from "../QuickMetrics";
 import { NotificationsWidget } from "../NotificationsWidget";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface GCOverviewProps {
   userProfile: any;
@@ -15,6 +16,7 @@ interface GCOverviewProps {
 export const GCOverview = ({ userProfile }: GCOverviewProps) => {
   const navigate = useNavigate();
   const { projects, isLoading } = useProjectsData();
+  const isMobile = useIsMobile();
   
   // Calculate quick stats
   const activeProjects = projects?.filter(p => p.stage === 'active').length || 0;
@@ -42,110 +44,116 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
   }).length || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Enhanced GC Welcome Banner */}
-      <div className="bg-gradient-to-r from-primary/80 to-primary rounded-lg p-6 text-white shadow-md">
-        <h1 className="text-2xl font-bold mb-2">Welcome back, {userProfile?.company_name || 'Contractor'}</h1>
-        <p className="text-white/90 mb-4">Manage your projects and subcontractor bids efficiently</p>
-        <div className="flex flex-wrap gap-3 mt-4">
-          <Button 
-            onClick={() => navigate('/projects/new')}
-            className="bg-white text-primary hover:bg-white/90"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Create New Project
-          </Button>
-          <Button 
-            onClick={() => navigate('/subcontractors')}
-            variant="outline" 
-            className="text-white border-white hover:bg-white/20"
-          >
-            Manage Subcontractors
-          </Button>
+      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-lg shadow-md overflow-hidden">
+        <div className="p-5 sm:p-6 md:p-8">
+          <h1 className="text-xl sm:text-2xl font-bold mb-2 text-white">{userProfile?.company_name ? `Welcome back, ${userProfile.company_name}` : 'Welcome back'}</h1>
+          <p className="text-white/90 mb-4 max-w-2xl">Manage your projects and subcontractor bids efficiently from your personalized dashboard</p>
+          
+          <div className="flex flex-wrap gap-3 mt-4">
+            <Button 
+              onClick={() => navigate('/projects/new')}
+              size={isMobile ? "sm" : "default"}
+              className="bg-white text-primary hover:bg-white/90 font-medium"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create New Project
+            </Button>
+            <Button 
+              onClick={() => navigate('/subcontractors')}
+              variant="outline" 
+              size={isMobile ? "sm" : "default"}
+              className="text-white border-white hover:bg-white/20 font-medium"
+            >
+              <Users className="mr-2 h-4 w-4" />
+              Manage Subcontractors
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Quick Metrics Overview */}
-      <QuickMetrics userRole="gc" />
-
-      {/* Notifications Widget for Urgent Items */}
-      <NotificationsWidget userRole="gc" />
-
-      {/* Quick Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Active Projects</p>
-                <p className="text-2xl font-bold">{activeProjects}</p>
-              </div>
-              <div className="p-2 bg-primary/10 rounded-full text-primary">
-                <Download className="h-5 w-5" />
-              </div>
+      {/* Quick Access Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+        <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4 flex items-center">
+            <div className="p-3 mr-4 bg-primary/10 rounded-full">
+              <FileText className="h-6 w-6 text-primary" />
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="mt-4 w-full justify-between"
-              onClick={() => navigate('/projects')}
-            >
-              View All Projects <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Projects</p>
+              <h3 className="text-xl font-bold">{activeProjects}</h3>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-primary" 
+                onClick={() => navigate('/projects')}
+              >
+                View all
+                <ArrowRight className="ml-1 h-3 w-3" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending Responses</p>
-                <p className="text-2xl font-bold">{pendingBids}</p>
-              </div>
-              <div className="p-2 bg-yellow-500/10 rounded-full text-yellow-500">
-                <Clock className="h-5 w-5" />
-              </div>
+        
+        <Card className="border-l-4 border-l-yellow-500 shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4 flex items-center">
+            <div className="p-3 mr-4 bg-yellow-500/10 rounded-full">
+              <Clock className="h-6 w-6 text-yellow-500" />
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="mt-4 w-full justify-between"
-              onClick={() => navigate('/bids')}
-            >
-              Review Pending Bids <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Pending Bids</p>
+              <h3 className="text-xl font-bold">{pendingBids}</h3>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-yellow-500" 
+                onClick={() => navigate('/bids')}
+              >
+                Review bids
+                <ArrowRight className="ml-1 h-3 w-3" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Upcoming Deadlines</p>
-                <p className="text-2xl font-bold">{upcomingDeadlines}</p>
-              </div>
-              <div className="p-2 bg-red-500/10 rounded-full text-red-500">
-                <Clock className="h-5 w-5" />
-              </div>
+        
+        <Card className="border-l-4 border-l-red-500 shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4 flex items-center">
+            <div className="p-3 mr-4 bg-red-500/10 rounded-full">
+              <Clock className="h-6 w-6 text-red-500" />
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="mt-4 w-full justify-between"
-              onClick={() => navigate('/projects?filter=upcoming')}
-            >
-              View Urgent Projects <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Upcoming Deadlines</p>
+              <h3 className="text-xl font-bold">{upcomingDeadlines}</h3>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-red-500" 
+                onClick={() => navigate('/projects?filter=upcoming')}
+              >
+                View urgent
+                <ArrowRight className="ml-1 h-3 w-3" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Quick Metrics Overview */}
+      <section className="rounded-lg border bg-card shadow-sm p-4">
+        <h2 className="text-lg font-semibold mb-4 px-2">Performance Metrics</h2>
+        <QuickMetrics userRole="gc" />
+      </section>
+
+      {/* Notifications Widget for Urgent Items */}
+      <section className="rounded-lg border bg-card shadow-sm p-4">
+        <h2 className="text-lg font-semibold mb-4 px-2">Important Notifications</h2>
+        <NotificationsWidget userRole="gc" />
+      </section>
 
       {/* Main Dashboard Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Project Activity Feed */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+        <Card className="lg:col-span-2 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl">Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -174,25 +182,43 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
         </Card>
 
         {/* Quick Actions Panel */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+        <Card className="shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/projects/new')}>
-                <Plus className="mr-2 h-4 w-4" />
-                Create New Project
-              </Button>
-              <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/subcontractors/new')}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Subcontractor
-              </Button>
-              <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/projects')}>
-                <Download className="mr-2 h-4 w-4" />
-                Export Project Report
-              </Button>
-            </div>
+          <CardContent className="space-y-4">
+            <Button 
+              variant="default" 
+              className="w-full justify-start bg-primary/90 hover:bg-primary"
+              onClick={() => navigate('/projects/new')}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create New Project
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start border-primary/30 text-primary hover:bg-primary/5"
+              onClick={() => navigate('/subcontractors/new')}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Subcontractor
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => navigate('/projects')}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Export Project Report
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => navigate('/analytics')}
+            >
+              <BarChart className="mr-2 h-4 w-4" />
+              View Analytics
+            </Button>
           </CardContent>
         </Card>
       </div>
