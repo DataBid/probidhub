@@ -19,6 +19,9 @@ export const ProjectResponses = ({ project }: ProjectResponsesProps) => {
   const viewedRate = totalBids > 0 ? Math.round((viewedBids / totalBids) * 100) : 0;
   const pendingRate = totalBids > 0 ? Math.round((pendingBids / totalBids) * 100) : 0;
 
+  // Fix the issue with max being 0 by ensuring there's at least one bid
+  const hasAnyBids = totalBids > 0;
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between mb-1">
@@ -33,55 +36,61 @@ export const ProjectResponses = ({ project }: ProjectResponsesProps) => {
         </span>
       </div>
       
-      <div className="flex w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div 
-                className="bg-green-500 h-full transition-all duration-500"
-                style={{ width: `${responseRate}%` }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <div className="text-xs">
-                {respondedBids} Responded ({responseRate}%)
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      {hasAnyBids ? (
+        <div className="flex w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div 
+                  className="bg-green-500 h-full transition-all duration-500"
+                  style={{ width: `${responseRate}%` }}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-xs">
+                  {respondedBids} Responded ({responseRate}%)
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div 
-                className="bg-blue-500 h-full transition-all duration-500"
-                style={{ width: `${viewedRate}%` }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <div className="text-xs">
-                {viewedBids} Viewed ({viewedRate}%)
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div 
+                  className="bg-blue-500 h-full transition-all duration-500"
+                  style={{ width: `${viewedRate}%` }}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-xs">
+                  {viewedBids} Viewed ({viewedRate}%)
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div 
-                className="bg-gray-400 h-full transition-all duration-500"
-                style={{ width: `${pendingRate}%` }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <div className="text-xs">
-                {pendingBids} Pending ({pendingRate}%)
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div 
+                  className="bg-gray-400 h-full transition-all duration-500"
+                  style={{ width: `${pendingRate}%` }}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-xs">
+                  {pendingBids} Pending ({pendingRate}%)
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      ) : (
+        <div className="flex w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="text-xs text-muted-foreground px-2 py-3">No bids yet</div>
+        </div>
+      )}
       
       <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
