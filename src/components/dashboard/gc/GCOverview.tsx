@@ -116,7 +116,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
               onClick={() => navigate('/subcontractors')}
               variant="outline" 
               size={isMobile ? "sm" : "default"}
-              className="text-white border-white hover:bg-white/20 hover:text-white font-medium"
+              className="bg-primary/30 text-white border-white/70 hover:bg-white/20 hover:text-white font-medium"
             >
               <Users className="mr-2 h-4 w-4" />
               <span className="truncate">Manage Subcontractors</span>
