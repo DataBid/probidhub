@@ -1,53 +1,58 @@
 
-import { useSession } from "@supabase/auth-helpers-react";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loader2, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Plus, Calendar, Clock, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getStatusColor } from "@/utils/statusColorUtils";
+import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 export const BidBoard = () => {
-  const session = useSession();
-
   const { data: bids, isLoading } = useQuery({
-    queryKey: ['sub-bids', session?.user?.id],
+    queryKey: ["bids-board"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('bids')
         .select(`
-          *,
-          project:projects(*)
+          id,
+          status,
+          created_at,
+          response_date,
+          projects (
+            id,
+            title,
+            bids_due,
+            location,
+            stage
+          )
         `)
-        .eq('subcontractor_id', session?.user?.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(30);
 
       if (error) throw error;
       return data;
     },
-    enabled: !!session?.user?.id,
   });
 
-  const getStatusIcon = (status: string | null) => {
-    switch(status) {
-      case 'interested':
-        return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-      case 'not_interested':
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-amber-500" />;
-    }
-  };
-
-  const getStatusBadge = (status: string | null) => {
-    switch(status) {
-      case 'interested':
-        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Will Bid</Badge>;
-      case 'not_interested':
-        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Not Bidding</Badge>;
-      default:
-        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Pending</Badge>;
+  // Group bids by status
+  const columns = {
+    new: {
+      title: "New Invitations",
+      bids: bids?.filter(bid => !bid.status || bid.status === 'pending') || []
+    },
+    viewed: {
+      title: "Viewed",
+      bids: bids?.filter(bid => bid.status === 'viewed') || []
+    },
+    inProgress: {
+      title: "In Progress",
+      bids: bids?.filter(bid => bid.status === 'in_progress') || []
+    },
+    submitted: {
+      title: "Submitted",
+      bids: bids?.filter(bid => bid.status === 'responded') || []
     }
   };
 
@@ -55,27 +60,10 @@ export const BidBoard = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Your Bid Board</CardTitle>
+          <CardTitle>Bid Board</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex justify-center p-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!bids || bids.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Bid Board</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center p-6 text-muted-foreground">
-            <p>You don't have any bid invitations yet.</p>
-          </div>
+        <CardContent className="flex items-center justify-center p-6 min-h-[300px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </CardContent>
       </Card>
     );
@@ -83,25 +71,54 @@ export const BidBoard = () => {
 
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <CardTitle>Your Bid Board</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Bid Board</CardTitle>
+        <Button size="sm" variant="outline" className="gap-1">
+          <Plus className="h-4 w-4" /> Add Bid
+        </Button>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {bids.map((bid) => (
-            <div key={bid.id} className="flex flex-col p-4 border rounded-lg">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-medium">{bid.project?.title || 'Untitled Project'}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Due: {bid.project?.bids_due ? format(new Date(bid.project.bids_due), 'MMM d, yyyy') : 'No due date'}
-                  </p>
-                </div>
-                {getStatusBadge(bid.status)}
+      <CardContent className="overflow-auto pb-6">
+        <div className="grid grid-cols-4 gap-4">
+          {Object.entries(columns).map(([id, column]) => (
+            <div key={id} className="flex flex-col h-full">
+              <div className="bg-muted p-2 rounded-t-md border-b flex justify-between items-center">
+                <h3 className="font-medium text-sm">{column.title}</h3>
+                <Badge variant="secondary" className="text-xs">
+                  {column.bids.length}
+                </Badge>
               </div>
-              <div className="flex justify-between items-center mt-2">
-                <p className="text-sm">{bid.project?.location || 'No location specified'}</p>
-                <Button variant="outline" size="sm">View Details</Button>
+              <div className="flex-1 bg-muted/40 rounded-b-md p-2 space-y-2 min-h-[250px]">
+                {column.bids.map((bid) => (
+                  <div 
+                    key={bid.id} 
+                    className="bg-white p-3 rounded-md border shadow-sm hover:shadow transition-shadow cursor-pointer"
+                  >
+                    <div className="font-medium text-sm truncate mb-1">
+                      {bid.projects?.title}
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-2 truncate">
+                      {bid.projects?.location}
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>
+                          {bid.projects?.bids_due ? format(new Date(bid.projects.bids_due), "MMM d") : "No date"}
+                        </span>
+                      </div>
+                      <Badge className={getStatusColor(bid.projects?.stage || "")}>
+                        {bid.projects?.stage}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                {column.bids.length === 0 && (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-sm text-muted-foreground text-center py-4">
+                      No bids in this status
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
