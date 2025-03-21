@@ -1,3 +1,4 @@
+
 import { useSession } from "@supabase/auth-helpers-react";
 import { QuickMetrics } from "./QuickMetrics";
 import { DashboardActions } from "./DashboardActions";
@@ -10,7 +11,9 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserProfile } from "./hooks/useUserProfile";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, User } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export const DashboardLayout = () => {
   const session = useSession();
@@ -50,6 +53,22 @@ export const DashboardLayout = () => {
 
   return (
     <div className="px-2 sm:px-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden pb-20 lg:pb-6">
+      {/* User Role Information */}
+      <div className="bg-white shadow-sm p-4 rounded-lg mb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <div>
+          <h2 className="font-medium flex items-center">
+            <User className="mr-2 h-4 w-4" />
+            Current User: <span className="ml-2 font-bold">{session.user.email}</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Role: <span className="font-semibold text-primary">{userProfile?.role || "No role assigned"}</span>
+          </p>
+        </div>
+        <Link to="/test-users" className="mt-2 sm:mt-0">
+          <Button variant="outline" size="sm">Change Role</Button>
+        </Link>
+      </div>
+      
       <DashboardActions userRole={userProfile?.role} />
       
       <Suspense fallback={
