@@ -1,10 +1,13 @@
+
 import { createBrowserRouter } from "react-router-dom";
-import { MainLayout } from "@/components/layout/MainLayout";
-import Dashboard from "@/pages/Dashboard";
 import Index from "@/pages/Index";
+import Dashboard from "@/pages/Dashboard";
+import Subcontractors from "@/pages/Subcontractors";
 import Projects from "@/pages/Projects";
 import ProjectDetails from "@/pages/ProjectDetails";
-import Subcontractors from "@/pages/Subcontractors";
+import TestUsers from "@/pages/TestUsers";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { RoleGuard } from "@/components/auth/RoleGuard";
 
 export const router = createBrowserRouter([
   {
@@ -12,10 +15,24 @@ export const router = createBrowserRouter([
     element: <Index />,
   },
   {
+    path: "/test-users",
+    element: <TestUsers />,
+  },
+  {
     path: "/dashboard",
     element: (
       <MainLayout>
         <Dashboard />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/subcontractors",
+    element: (
+      <MainLayout>
+        <RoleGuard allowedRoles={["gc", "admin"]}>
+          <Subcontractors />
+        </RoleGuard>
       </MainLayout>
     ),
   },
@@ -32,14 +49,6 @@ export const router = createBrowserRouter([
     element: (
       <MainLayout>
         <ProjectDetails />
-      </MainLayout>
-    ),
-  },
-  {
-    path: "/subcontractors",
-    element: (
-      <MainLayout>
-        <Subcontractors />
       </MainLayout>
     ),
   },
