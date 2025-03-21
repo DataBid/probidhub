@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProjectsData } from "../projects/hooks/useProjectsData";
 import { Project } from "@/components/dashboard/projects-attention/types";
+import { QuickMetrics } from "../QuickMetrics";
+import { NotificationsWidget } from "../NotificationsWidget";
 
 interface GCOverviewProps {
   userProfile: any;
@@ -41,7 +43,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
 
   return (
     <div className="space-y-6">
-      {/* GC Welcome Banner */}
+      {/* Enhanced GC Welcome Banner */}
       <div className="bg-gradient-to-r from-primary/80 to-primary rounded-lg p-6 text-white shadow-md">
         <h1 className="text-2xl font-bold mb-2">Welcome back, {userProfile?.company_name || 'Contractor'}</h1>
         <p className="text-white/90 mb-4">Manage your projects and subcontractor bids efficiently</p>
@@ -63,7 +65,13 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
         </div>
       </div>
 
-      {/* Quick Stats */}
+      {/* Quick Metrics Overview */}
+      <QuickMetrics userRole="gc" />
+
+      {/* Notifications Widget for Urgent Items */}
+      <NotificationsWidget userRole="gc" />
+
+      {/* Quick Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -134,7 +142,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
 
       {/* Main Dashboard Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Project Activity Feed - Takes 2/3 of the space on larger screens */}
+        {/* Project Activity Feed */}
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
@@ -165,7 +173,7 @@ export const GCOverview = ({ userProfile }: GCOverviewProps) => {
           </CardContent>
         </Card>
 
-        {/* Quick Actions Panel - Takes 1/3 of the space */}
+        {/* Quick Actions Panel */}
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
