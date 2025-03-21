@@ -1,4 +1,8 @@
-import { Home, FileText, Users, Settings, Search, Inbox, Award, BarChart } from "lucide-react";
+
+import { 
+  Home, FileText, Users, Settings, Search, Inbox, Award, 
+  BarChart, ShieldCheck, Wrench, UserCog, FileStack
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSession } from "@supabase/auth-helpers-react";
@@ -34,26 +38,43 @@ export const DashboardSidebar = () => {
   const getMenuItems = () => {
     const baseItems = [
       { icon: Home, label: "Dashboard", href: "/dashboard" },
-      { icon: Settings, label: "Settings", href: "/settings" },
     ];
 
     const gcItems = [
       { icon: FileText, label: "Projects", href: "/projects" },
-      { icon: Users, label: "Saved Companies", href: "/subcontractors" }, // Updated label here
+      { icon: Users, label: "Subcontractors", href: "/subcontractors" },
       { icon: BarChart, label: "Analytics", href: "/analytics" },
     ];
 
     const subItems = [
-      { icon: Inbox, label: "Invitations", href: "/invitations" },
+      { icon: Inbox, label: "Bid Board", href: "/bid-board" },
       { icon: Search, label: "Find Projects", href: "/projects" },
       { icon: Award, label: "Prequalification", href: "/prequalification" },
     ];
 
-    return [
-      ...baseItems,
-      ...(userProfile?.role === "gc" ? gcItems : []),
-      ...(userProfile?.role === "sub" ? subItems : []),
+    const adminItems = [
+      { icon: ShieldCheck, label: "Admin Panel", href: "/admin" },
+      { icon: UserCog, label: "User Management", href: "/users" },
+      { icon: Wrench, label: "System Config", href: "/system" },
+      { icon: FileStack, label: "Activity Logs", href: "/logs" },
     ];
+
+    // Common items at the end for all users
+    const commonItems = [
+      { icon: Settings, label: "Settings", href: "/settings" },
+    ];
+
+    const items = [...baseItems];
+
+    if (userProfile?.role === "gc") {
+      items.push(...gcItems);
+    } else if (userProfile?.role === "sub") {
+      items.push(...subItems);
+    } else if (userProfile?.role === "admin") {
+      items.push(...adminItems);
+    }
+
+    return [...items, ...commonItems];
   };
 
   const menuItems = getMenuItems();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -14,8 +14,24 @@ interface SignupFormProps {
 export const SignupForm = ({ onToggleMode, isLoading, setIsLoading }: SignupFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"gc" | "sub" | null>(null);
+  const [role, setRole] = useState<"gc" | "sub" | "admin" | null>(null);
+  const [showAdminOption, setShowAdminOption] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        setShowAdminOption(true);
+        toast({
+          title: "Admin option enabled",
+          description: "You can now select the Admin role during signup.",
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +110,7 @@ export const SignupForm = ({ onToggleMode, isLoading, setIsLoading }: SignupForm
           disabled={isLoading}
         />
       </div>
-      <RoleSelect value={role} onChange={setRole} />
+      <RoleSelect value={role} onChange={setRole} showAdminOption={showAdminOption} />
       <Button 
         type="submit" 
         className="w-full bg-primary hover:bg-primary/90"

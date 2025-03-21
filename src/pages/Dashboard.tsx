@@ -1,13 +1,18 @@
+
 import { useSession } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Loader2 } from "lucide-react";
+import { useUserProfile } from "@/components/dashboard/hooks/useUserProfile";
+import { GCDashboard } from "@/components/dashboard/gc/GCDashboard";
+import { SubDashboard } from "@/components/dashboard/sub/SubDashboard";
+import { AdminDashboard } from "@/components/dashboard/admin/AdminDashboard";
 
 const Dashboard = () => {
   const session = useSession();
   const navigate = useNavigate();
   const [isInitializing, setIsInitializing] = useState(true);
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
   useEffect(() => {
     console.log("Dashboard: Initializing with session:", session?.user?.id || 'No session');
@@ -24,12 +29,28 @@ const Dashboard = () => {
     return () => clearTimeout(timer);
   }, [session, navigate, isInitializing]);
 
-  // Remove the loading spinner here since MainLayout already handles it
-  if (!session || isInitializing) {
+  if (isInitializing || isLoadingProfile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!session) {
     return null;
   }
 
-  return <DashboardLayout />;
+  // Render the appropriate dashboard based on user role
+  switch (userProfile?.role) {
+    case "admin":
+      return <AdminDashboard />;
+    case "sub":
+      return <SubDashboard />;
+    case "gc":
+    default:
+      return <GCDashboard />;
+  }
 };
 
 export default Dashboard;
