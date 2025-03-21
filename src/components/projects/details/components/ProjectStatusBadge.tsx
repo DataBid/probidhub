@@ -1,3 +1,4 @@
+
 import { CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -36,11 +37,13 @@ export const ProjectStatusBadge = ({ status, className }: ProjectStatusBadgeProp
 
   return (
     <span className={cn(
-      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border",
+      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-300 hover:shadow-sm",
       config.color,
       className
     )}>
-      {config.icon}
+      <span className="transition-transform duration-300 hover:scale-110">
+        {config.icon}
+      </span>
       {status || 'Unknown'}
     </span>
   );

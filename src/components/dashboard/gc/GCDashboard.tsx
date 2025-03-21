@@ -44,11 +44,15 @@ export const GCDashboard = () => {
 
   return (
     <div className="px-4 py-6 max-w-7xl mx-auto">
-      {/* Quick Action Buttons Bar at the top */}
-      <DashboardActions userRole={userProfile?.role} />
+      {/* Quick Action Buttons Bar with animation */}
+      <div className="animate-fade-in">
+        <DashboardActions userRole={userProfile?.role} />
+      </div>
       
-      {/* Main Dashboard Content */}
-      <GCOverview userProfile={userProfile} />
+      {/* Main Dashboard Content with staggered animation */}
+      <div className="animate-fade-in" style={{ animationDelay: "0.15s" }}>
+        <GCOverview userProfile={userProfile} />
+      </div>
     </div>
   );
 };
